@@ -1,0 +1,41 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#error {
+    color: red;
+}
+
+#grid {
+    display: grid;
+    margin-top: 10px;
+    grid-template-columns: repeat(var(--size), 50px);
+    grid-template-rows: repeat(var(--size), 50px);
+    gap: 1px; 
+}
+
+.cell {
+    width: 50px; 
+    height: 50px;
+    background-color: lightgray;
+    border: 1px solid #6f6f6f50;
+    cursor: pointer;
+}
+
+.cell.active {
+    background-color: green; /* Цвет клетки при активации */
+}
+
+.cell.main {
+    background-color: rgb(242, 238, 116);
+}
+
+.cell.path {
+    background-color: rgb(49, 255, 8) !important;
+}
+
+:root {
+    --size: ;
+}
