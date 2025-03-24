@@ -3,7 +3,7 @@ let session;
 async function loadModel() {
     try {
         // Загружаем ONNX-модель
-        session = await ort.InferenceSession.create('../nn/model.onnx');
+        session = await ort.InferenceSession.create('./nn/model.onnx');
         console.log('ONNX модель загружена');
     } catch (error) {
         console.error('Ошибка загрузки модели:', error);
