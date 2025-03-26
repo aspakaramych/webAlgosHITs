@@ -1,4 +1,9 @@
 body {
+    margin: 0;
+    padding: 0;
+}
+
+#field {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -41,6 +46,10 @@ body {
     background-color: rgb(49, 255, 8) !important;
 }
 
+.cell.show {
+    background-color: pink;
+}
+
 .cell.mark {
     border: solid 2px rgb(194, 103, 38) !important;
 }
@@ -52,7 +61,6 @@ body {
 .cell.deadlock {
     background-color: red !important;
 }
-
 
 :root {
     --size: ;
