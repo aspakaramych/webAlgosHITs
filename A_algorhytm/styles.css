@@ -8,12 +8,17 @@ body {
     color: red;
 }
 
+#result {
+    margin-top: 10px;
+    color: orange;
+}
+
 #grid {
     display: grid;
     margin-top: 10px;
     grid-template-columns: repeat(var(--size), 50px);
     grid-template-rows: repeat(var(--size), 50px);
-    gap: 1px; 
+    gap: 3px; 
 }
 
 .cell {
@@ -35,6 +40,19 @@ body {
 .cell.path {
     background-color: rgb(49, 255, 8) !important;
 }
+
+.cell.mark {
+    border: solid 2px rgb(194, 103, 38) !important;
+}
+
+.cell.curr {
+    background-color: orange;
+}
+
+.cell.deadlock {
+    background-color: red !important;
+}
+
 
 :root {
     --size: ;
