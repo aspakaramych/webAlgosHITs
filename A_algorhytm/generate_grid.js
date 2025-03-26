@@ -1,11 +1,13 @@
 document.getElementById("generate").addEventListener("click", getGrid);
-document.getElementById("getNeigh").addEventListener('click', fillTheGraph);
+// document.getElementById("getNeigh").addEventListener('click', fillTheGraph);
 document.getElementById("start").addEventListener("click", AstarAlgo);
+document.getElementById("step").addEventListener("click", showAlgorhytm);
 
 let paintedCells = [];
 let mainCells = [];
 let size;
 let grid;
+let userStep = 0;
 function getGrid() {
     paintedCells = [];
     mainCells = [];
@@ -72,7 +74,7 @@ function getGrid() {
         grid.appendChild(cell); // Добавляем клетку в контейнер
     }
 
-    console.log(paintedCells);  
+    // console.log(paintedCells);  
 }
 
 let graph = new Map();
@@ -103,7 +105,7 @@ function getNeighbors(x, y) {
     if(!paintedCells.some(cell => cell.row === x && cell.col === y-1) && y-1 >= 0) {
         neigh.push({row: x, col: y-1});
     }
-    console.log(x + ' ,' + y + ': \n' + neigh);
+    // console.log(x + ' ,' + y + ': \n' + neigh);
     return neigh;
 }
 
@@ -157,38 +159,54 @@ class PriorityQueue {
 }
 let path = new Map();
 
+let choosed = [];
+let find = new Map();
+
 function AstarAlgo() {
     path.clear();
     fillTheGraph();
     borders = new PriorityQueue();
     let start = mainCells[0];
-    // console.log(start);
     let goal = mainCells[1];
-    // console.log(goal);
     path.set(`${start.row},${start.col}`, 0);    
     borders.add(start, 0);
     let visited = [];
+    let reached = false;
+
+    let step = 0;
+
     while(!borders.isEmpty()) {
         curr = borders.peek();
         borders.get();
+        choosed[step] = curr;
 
         if(curr.row === goal.row && curr.col === goal.col) {
+            reached = true;
             break;
         }
         // console.log(graph);
         // console.log(curr);
         // console.log(graph.get(`${curr.row},${curr.col}`));
+        currFind = [];
         for(let next of graph.get(`${curr.row},${curr.col}`)) {
-            console.log(next);
+            // console.log(next);
             if(!visited[`${next.row},${next.col}`]) {
                 borders.add(next, evrEval(goal, next));
                 path.set(`${next.row},${next.col}`, curr);
                 visited[`${next.row},${next.col}`] = true;
+                currFind.push(next);
             }
         }
+        find.set(step, currFind);
+        step++;
     }
-    console.log(path);
-    getPath();   
+    console.log(choosed);
+    console.log(find);
+    if(reached) {
+        getPath();   
+    } else {
+        document.getElementById("error").textContent = "Путь не найден";
+    }
 }
 
 function getPath() {
@@ -199,6 +217,33 @@ function getPath() {
         // cell.classList.toggle('path');
         grid.children[curr.row * size + curr.col].classList.toggle('path');
         curr = path.get(`${curr.row},${curr.col}`); 
-        console.log(curr);
+        // console.log(curr);
     }
+}
+
+function isNear(x1, y1, x2, y2) {
+    return (Math.abs(x1 - x2) <= 1 && Math.abs(y1 - y2) <= 1);
+}
+
+function showAlgorhytm() {
+    console.log(userStep);
+    if(path.size == 0) {
+        AstarAlgo();
+        AstarAlgo();
+    }
+    if(userStep > 0) {
+        grid.children[choosed[userStep - 1].row * size + choosed[userStep - 1].col].classList.add('path');
+        for(let i of find.get(userStep-1)) {
+            grid.children[i.row * size + i.col].classList.remove('mark');
+        }
+        if(!isNear(choosed[userStep - 1].row, choosed[userStep - 1].col, choosed[userStep].row, choosed[userStep].col)) {
+            grid.children[choosed[userStep-1].row * size + choosed[userStep-1].col].classList.add('deadlock');              //TODO: если не visited - помечать
+        }
+    }
+    grid.children[choosed[userStep].row * size + choosed[userStep].col].classList.add('curr');
+
+    for(let i of find.get(userStep)) {
+        grid.children[i.row * size + i.col].classList.add('mark');
+    }
+    userStep++;
 }
