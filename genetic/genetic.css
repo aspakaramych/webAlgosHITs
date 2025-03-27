@@ -1,4 +1,5 @@
 body {
+    touch-action: none;
     text-align: center;
     margin: 0;
     padding: 0;
@@ -14,6 +15,14 @@ body {
     cursor: crosshair;
 }
 
+#startButton {
+    position: absolute;
+}
+
+#output {
+    text-align: right;
+}
+
 .dot {
     position: absolute;
     width: 10px;
@@ -21,4 +30,13 @@ body {
     background-color: red;
     border-radius: 50%;
     transform: translate(-50%, -50%);
+}
+
+svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
 }
