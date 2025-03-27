@@ -12,19 +12,15 @@ async function loadWeights(filePath) {
 function forwardPass(input, weights) {
     const { weight_0_1, weight_1_2 } = weights;
 
-    // Первый слой: input -> hidden
     const layer_1 = weight_0_1.map(row => {
         const dotProduct = row.reduce((sum, weight, idx) => sum + weight * input[idx], 0);
         return Math.tanh(dotProduct); // Активация tanh
     });
 
-    // Второй слой: hidden -> output
     const layer_2 = weight_1_2.map(row => {
         const dotProduct = row.reduce((sum, weight, idx) => sum + weight * layer_1[idx], 0);
         return dotProduct;
     });
-
-    // Применяем softmax
     const exp = layer_2.map(val => Math.exp(val));
     const sum = exp.reduce((a, b) => a + b, 0);
     return exp.map(val => val / sum);
@@ -32,9 +28,9 @@ function forwardPass(input, weights) {
 
 function setupCanvas(canvas) {
     const ctx = canvas.getContext('2d');
-    ctx.fillStyle = 'white'; // Фон белый
-    ctx.fillRect(0, 0, canvas.width, canvas.height); // Очищаем canvas
-    ctx.fillStyle = 'black'; // Рисуем черным цветом
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'black';
 
     let isDrawing = false;
 
