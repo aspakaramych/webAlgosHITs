@@ -5,6 +5,13 @@ body {
     padding: 0;
 }
 
+#mainField {
+    display: flex;
+    flex-direction: column;
+        justify-content: center;
+        align-items: center;
+}
+
 #table {
     position: relative;
     width: 100%;
