@@ -4,9 +4,11 @@
 
 #card_field {
     display: flex;
-    flex-direction: row;
-    align-items: center;
+    flex-direction: column;
+    /* align-items: center; */
     justify-content: center;
+    margin-top: 10px;
+    margin-left: 10%;
 }
 
 .block_1 p, .block_2 p, .block_3 p {
@@ -15,11 +17,49 @@
 }
 
 .block {
+    background-color: rgba(190, 198, 230, 0.275);
     border: 2px rgb(121, 121, 121) solid;
     border-radius: 10px;
-    /* padding: 10px; */
+    padding: 10px;
+    width: 80%;
+    height: 302px;
+    margin: 10px;
+    display: inline-block;
+}
+
+#email_block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(32, 54, 225, 0.199);
+    border: 2px rgb(121, 121, 121) solid;
+    border-radius: 10px;
+    padding: 10px;
+    width: 97%;
+    height: 302px;
+    margin: 10px;
+
+
+
+}
+
+#astar_wrap {
+    border: 1px rgb(104, 93, 188) solid;
     width: 300px;
     height: 300px;
-    margin: 7px;
-    display: inline-block;
+    border-radius: 9px;
+}
+
+#cluster_wrap {
+    border: 1px rgb(0, 0, 0) solid;
+    width: 300px;
+    height: 300px;
+    border-radius: 9px;
+}
+
+#genetic_wrap {
+    border: 1px rgb(170, 0, 255) solid;
+    width: 300px;
+    height: 300px;
+    border-radius: 9px;
 }
