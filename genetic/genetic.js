@@ -1,8 +1,14 @@
 let dots = [];
 let isProcessing = false;
 
-let cnt_population = 100;
-let cnt_epoch = 1000;
+let cnt_population = 1000;
+let cnt_epoch = 10000;
+let mutation_rate = 0.3;
+let tournament_size = cnt_population / 100;
+let cnt_pairs = cnt_population / 4;
+
+//реализуем алгоритм Эшелмана (CHC (Cross-generational Selection, Heterogeneous Recombination, and Cataclysmic Mutation))
+//
 
 function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -42,38 +48,52 @@ function mutation(array) {
     [array[i], array[j]] = [array[j], array[i]];
 }
 
-function crossover(parent1, parent2) {
-    let used = Array(parent1.length).fill(0);
+// алгоритм кроссовера по Эшелману, берём по половине генов от обоих родителей
+function halfUniformCrossover(parent1, parent2) {
+    const length = parent1.length;
+    let child = Array(length).fill(null);
+    let used = new Set();
 
-    let child = Array(parent1.length).fill(0);
+    const positions = Array.from({ length }, (_, i) => i);
+    shuffleArray(positions);
+    const selectedPositions = positions.slice(0, Math.floor(length / 2));
 
-    let start = Math.floor(Math.random() * (parent1.length - 1));
-    let end  = start + Math.floor(Math.random() * (parent1.length - 1 - start));
-
-    for (let i = start; i < end; i++) {
-        child[i] = parent1[i];
-        used[parent1[i]] = 1;
+    for (let pos of selectedPositions) {
+        child[pos]  = parent1[pos];
+        used.add(parent1[pos]);
     }
 
     let ptr = 0;
-
-    for (let i = 0; i < child.length; i++) {
-        if (i >= start && i < end) continue;
-
-        while (ptr !== child.length &&  ptr < parent2.length && used[parent2[ptr]] === 1 ) {
-            ptr++;
+    for (let i = 0; i < length; i++) {
+        if (child[i] === null) {
+            while (used.has(parent2[ptr])) {
+                ptr++;
+            }
+            child[i] = parent2[ptr];
+            used.add(parent2[ptr]);
         }
-
-        if (ptr === child.length) {
-            break;
-        }
-
-        child[i] = parent2[ptr];
-        used[parent2[ptr]] = 1;
-
     }
 
     return child;
+}
+
+//выбор особи турнирным способом
+function selectParent(population, dist) {
+    let candidates = [];
+    for (let i = 0; i < tournament_size; i++) {
+        candidates.push(population[Math.floor(Math.random() * (population.length - 1))]);
+    }
+
+    let winner = 0;
+    let min_fitness = fitness(dist, candidates[0]);
+    for (let i = 1; i < candidates.length; i++) {
+        let temp = fitness(dist, candidates[i])
+        if (temp < min_fitness) {
+            winner = i;
+            min_fitness = temp;
+        }
+    }
+    return candidates[winner];
 }
 
 function generatePopulation(cntIndivid, numTowns) {
@@ -110,10 +130,6 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     startButton.addEventListener('click', (event) => {
-        if (isProcessing) {
-            return;
-        }
-        isProcessing = true;
         geneticAlgorithm();
     })
 
@@ -147,16 +163,22 @@ document.addEventListener('DOMContentLoaded', () => {
         async function alghorythm() {
             for (let i = 0; i < cnt_epoch; i++) {
                 population.sort((a, b) => fitness(dist, a) - fitness(dist, b));
-                for (let j = 0; j < cnt_population / 2; j++) {
-                    population[j + cnt_population / 2] = crossover(population[j], population[j + 1]);
+                for (let j = 0; j < cnt_pairs; j++) {
+                    population[population.length - j - 1] = halfUniformCrossover(selectParent(population, dist), selectParent(population, dist));
                 }
+
+                for (let j = 1; j < 1 + Math.floor(mutation_rate * cnt_population); j++) {
+                    mutation(population[j]);
+                }
+
                 drawLines(population[0]);
 
-                await delay(500);
+                await delay(100);
             }
+            console.log('пытка кончилась');
         }
         alghorythm();
-        console.log('пытка кончилась');
+
     }
 })
 
