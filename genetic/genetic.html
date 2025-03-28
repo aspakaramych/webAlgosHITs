@@ -8,12 +8,22 @@
     <title>Генетический алгоритм</title>
 </head>
 <body>
+    <section class="page_header">
+        <h1 class = "logo">
+            <a href="../mainpage/index.html" class="name">
+                <img src="../images/logo192x192.png" class="image">
+                <span class="logo_text">AlgoCrew</span>
+            </a>
+        </h1>
+    </section>
     <h1>Расставьте точки на плоскости</h1>
     <div id="table">
         <svg id = "lines"></svg>
     </div>
     <script src="staticWindow.js"></script>
-    <button id="startButton">Поиск оптимального пути</button>
+    <div id="mainField">
+        <button id="startButton">Поиск оптимального пути</button>
+    </div>
     <pre id='output'></pre>
     <script src="genetic.js"></script>
 </body>
