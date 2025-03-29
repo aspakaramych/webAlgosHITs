@@ -6,8 +6,22 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <input type="file" id="InputCsv" accept=".csv">
-    <div id="output"></div>
-    <script src="js/csv_loader.js"></script>
+    <div class="container">
+        <div class="section">
+            <textarea id="training-data" placeholder="Enter your train data in Csv format"></textarea>
+            <button id="build-tree">Build Decision Tree</button>
+        </div>
+        <div class="section">
+            <pre id="tree-out"></pre>
+        </div>
+        <div class="section">
+            <textarea id="new-data" placeholder="Enter new data"></textarea>
+            <button id="predict">Classify</button>
+        </div>
+        <div class="section">
+            <pre id="result"></pre>
+        </div>
+    </div>
+    <script type="module" src="./js/script.js"></script>
 </body>
 </html>
