@@ -1,5 +1,5 @@
 function entropy(labels) {
-    const counts = {}
+    const counts = {};
     labels.forEach(label => counts[label] = (counts[label] || 0) + 1);
     const total = labels.length;
     return -Object.values(counts).reduce((sum, count) => {
@@ -7,6 +7,7 @@ function entropy(labels) {
         return sum + probability * Math.log2(probability);
     }, 0);
 }
+
 
 function informationGain(data, feature, values, targetColumn) {
     const totalEntropy = entropy(data.map(item => item[targetColumn]));
@@ -21,6 +22,7 @@ function informationGain(data, feature, values, targetColumn) {
     return totalEntropy - weightedEntropy;
 }
 
+
 function buildNode(subset, features, targetColumn) {
     if (subset.length === 0) return null;
 
@@ -33,8 +35,8 @@ function buildNode(subset, features, targetColumn) {
     let bestFeature = null;
     let bestGain = -Infinity;
     for (const feature of features) {
-        const values = [...new Set(subset.map(item => item[feature]))];
-        const gain = informationGain(subset, feature, values, targetColumn);
+        const featureValues = [...new Set(subset.map(item => item[feature]))];
+        const gain = informationGain(subset, feature, featureValues, targetColumn);
         if (gain > bestGain) {
             bestGain = gain;
             bestFeature = feature;
@@ -42,10 +44,45 @@ function buildNode(subset, features, targetColumn) {
     }
 
     const node = { feature: bestFeature, children: {} };
-    const values = [...new Set(subset.map(item => item[bestFeature]))];
-    for (const value of values) {
+    const featureValues = [...new Set(subset.map(item => item[bestFeature]))];
+    for (const value of featureValues) {
         const subdata = subset.filter(item => item[bestFeature] === value);
         node.children[value] = buildNode(subdata, features, targetColumn);
     }
     return node;
+}
+
+
+export function buildDecisionTree(data, targetColumn) {
+    if (!data || data.length === 0) {
+        throw new Error('No data');
+    }
+    const keys = Object.keys(data[0]);
+    if (!keys.includes(targetColumn)) {
+        throw new Error('No target column');
+    }
+    const features = keys.filter(key => key !== targetColumn);
+    return buildNode(data, features, targetColumn);
+}
+
+
+export function predict(tree, dataPoint) {
+    let currentNode = tree;
+
+    while (currentNode) {
+        if (currentNode.label !== undefined) {
+            return currentNode.label;
+        }
+
+        const feature = currentNode.feature;
+        const value = dataPoint[feature];
+
+        if (currentNode.children && currentNode.children[value]) {
+            currentNode = currentNode.children[value];
+        } else {
+            throw new Error(`No matching rule found for feature '${feature}' with value '${value}'.`);
+        }
+    }
+
+    throw new Error("Tree traversal ended unexpectedly.");
 }
