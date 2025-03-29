@@ -1,12 +1,22 @@
 import {
-    PriorityQueue
+    PriorityQueue,
+    Queue
 } from './PriorityQueue.js'
 
 document.getElementById("generate").addEventListener("click", getGrid);
 document.getElementById("start").addEventListener("click", AstarAlgo);
 document.getElementById("step").addEventListener("click", showAlgorhytm);
 
+class Edge {
+    constructor() {
+        this.from = null;
+        this.to = null;
+        this.weightn = null;
+    }
+}
+
 let paintedCells = [];
+let pathCells = [];
 let mainCells = [];
 let size;
 let grid;
@@ -21,15 +31,18 @@ function getGrid() {
     grid.innerHTML= '';
 
     for (let i = 0; i < size * size; i++) {
-        const cell = document.createElement('div');
+        let cell = document.createElement('div');
         cell.classList.add('cell');
-
-        if(Math.random() > 0.5) {
-            cell.classList.toggle('active');
-            const row = Math.floor(i / size); 
-            const col = i % size;
-            paintedCells.push({ row, col });
-        }
+        cell.classList.add('active')
+        const row = Math.floor(i / size); 
+        const col = i % size;
+        paintedCells.push({ row, col });
+        // if(Math.random() > 0.5) {
+        //     cell.classList.toggle('active');
+        //     const row = Math.floor(i / size); 
+        //     const col = i % size;
+        //     paintedCells.push({ row, col });
+        // }
 
         cell.addEventListener('click', function() {
             cell.classList.toggle('active');
@@ -77,9 +90,10 @@ function getGrid() {
             }
         });
         
-        grid.appendChild(cell); // Добавляем клетку в контейнер
+        grid.appendChild(cell);
     }
-
+    // console.log(grid);
+    PrimAlgorhtim();
 }
 
 let graph = new Map();
@@ -127,9 +141,10 @@ function AstarAlgo() {
         document.getElementById("error").textContent = "Главных точек должно быть две - начальная и конечная";
         return;
     }
-
+    console.log(graph)
     clear();
     fillTheGraph();
+    console.log(graph)
 
     let borders = new PriorityQueue();
 
@@ -144,7 +159,7 @@ function AstarAlgo() {
 
     while(!borders.isEmpty()) {
         let curr = borders.peek();
-        borders.get();
+        borders.pop();
         choosed[step] = curr;
 
         if(curr.row === goal.row && curr.col === goal.col) {
@@ -152,6 +167,7 @@ function AstarAlgo() {
             break;
         }
         let currFind = [];
+        console.log(graph);
         for(let next of graph.get(`${curr.row},${curr.col}`)) {
             if(!visited[`${next.row},${next.col}`]) {
                 borders.add(next, evrEval(goal, next));
@@ -213,4 +229,45 @@ function clear() {
     path.clear();
     choosed = [];
     find.clear();
+}
+
+function PrimAlgorhtim() {
+    let startX = Math.floor(Math.random() * size);
+    let startY = Math.floor(Math.random() * size);
+    let queue = [];
+    queue.push({row: startX, col: startY});
+    
+    pathCells.push({row: startX, col: startY});
+    grid.children[startX * size + startY].classList.remove('active');
+    paintedCells.splice(paintedCells.findIndex(cell => cell.row === startX && cell.col === startY), 1);
+
+
+    while(queue.length > 0) {
+        let current = queue.splice(Math.floor(Math.random() * queue.length), 1)[0];
+        let directions = [
+            [2,0],
+            [0,2],
+            [-2,0],
+            [0,-2]
+        ];
+
+        for(let dir of directions) {
+            if(current.row + dir[0] >= 0 && current.row + dir[0] < size && current.col + dir[1] >= 0 && current.col + dir[1] < size) {
+                if(!pathCells.some(cell => cell.row === current.row + dir[0] && cell.col === current.col + dir[1])) {
+                    
+                    grid.children[(current.row + dir[0]) * size + current.col + dir[1]].classList.remove('active');
+                    grid.children[(current.row + dir[0]/2) * size + current.col + dir[1]/2].classList.remove('active');
+
+                    paintedCells.splice(paintedCells.findIndex(cell => cell.row === current.row + dir[0] && cell.col === current.col + dir[1]), 1);
+                    paintedCells.splice(paintedCells.findIndex(cell => cell.row === current.row + dir[0]/2 && cell.col === current.col + dir[1]/2), 1);
+
+                    pathCells.push({row: current.row + dir[0], col: current.col + dir[1]});
+                    pathCells.push({row: current.row + dir[0]/2, col: current.col + dir[1]/2});
+
+                    queue.push({row: current.row + dir[0], col: current.col + dir[1]});
+                }
+            }
+        }
+    }
+    console.log(paintedCells);
 }
