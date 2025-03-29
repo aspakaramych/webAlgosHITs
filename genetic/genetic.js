@@ -3,12 +3,12 @@ let isProcessing = false;
 
 let cnt_population = 1000;
 let cnt_epoch = 10000;
-let mutation_rate = 0.3;
-let tournament_size = cnt_population / 100;
-let cnt_pairs = cnt_population / 4;
+let mutation_rate = 0.95;
+let tournament_size = 10;
+let cnt_pairs = cnt_population / 2;
+let threshold_stagnation = 100;
 
 //реализуем алгоритм Эшелмана (CHC (Cross-generational Selection, Heterogeneous Recombination, and Cataclysmic Mutation))
-//
 
 function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -77,6 +77,8 @@ function halfUniformCrossover(parent1, parent2) {
     return child;
 }
 
+
+
 //выбор особи турнирным способом
 function selectParent(population, dist) {
     let candidates = [];
@@ -96,6 +98,17 @@ function selectParent(population, dist) {
     return candidates[winner];
 }
 
+//расстояние хэмминга (различие между родителями) для предотвращения инбридинга
+function distHamming(parent1, parent2) {
+    let distance = 0;
+    for (let i = 0; i < parent1.length; i++) {
+        if (parent1[i] !== parent2[i]) {
+            distance++;
+        }
+    }
+    return distance;
+}
+
 function generatePopulation(cntIndivid, numTowns) {
     let rightOrder = Array.from({length: numTowns}, (_, index) => index);
     let population = [];
@@ -104,6 +117,12 @@ function generatePopulation(cntIndivid, numTowns) {
         population.push([...rightOrder]);
     }
     return population;
+}
+
+function cataclysmicMutation(population) {
+    for (let i = 1; i < population.length; i++) {
+        shuffleArray(population[i]);
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -161,19 +180,34 @@ document.addEventListener('DOMContentLoaded', () => {
         let population = generatePopulation(cnt_population, dots.length);
         drawLines(population[0]);
         async function alghorythm() {
+            let stagnation = 0;
+            let elite = population[0];
             for (let i = 0; i < cnt_epoch; i++) {
                 population.sort((a, b) => fitness(dist, a) - fitness(dist, b));
-                for (let j = 0; j < cnt_pairs; j++) {
-                    population[population.length - j - 1] = halfUniformCrossover(selectParent(population, dist), selectParent(population, dist));
+                if (population[0] === elite) stagnation++;
+                elite = population[0];
+                if (stagnation > threshold_stagnation) {
+                    stagnation = 0;
+                    cataclysmicMutation(population);
+                }
+                else {
+                    for (let j = 0; j < cnt_pairs; j++) {
+                        let parent1 = selectParent(population, dist);
+                        let parent2 = selectParent(population, dist);
+                        if (distHamming(parent1, parent2) > Math.floor(Math.random() * (parent1.length - 1) * 0.5)) {
+                            population[population.length - j - 1] = halfUniformCrossover(parent1, parent2);
+                        }
+                    }
                 }
 
                 for (let j = 1; j < 1 + Math.floor(mutation_rate * cnt_population); j++) {
                     mutation(population[j]);
                 }
 
-                drawLines(population[0]);
+                drawLines(elite);
 
-                await delay(100);
+                console.log(i);
+                await delay(1);
             }
             console.log('пытка кончилась');
         }
