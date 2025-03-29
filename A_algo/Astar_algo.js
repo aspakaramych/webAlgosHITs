@@ -1,19 +1,11 @@
 import {
-    PriorityQueue,
-    Queue
+    PriorityQueue
 } from './PriorityQueue.js'
 
 document.getElementById("generate").addEventListener("click", getGrid);
 document.getElementById("start").addEventListener("click", AstarAlgo);
 document.getElementById("step").addEventListener("click", showAlgorhytm);
-
-class Edge {
-    constructor() {
-        this.from = null;
-        this.to = null;
-        this.weightn = null;
-    }
-}
+document.getElementById("showBySteps").addEventListener("click", showBySteps);
 
 let paintedCells = [];
 let pathCells = [];
@@ -24,6 +16,7 @@ let userStep = 0;
 function getGrid() {
     paintedCells = [];
     mainCells = [];
+    pathCells = [];
     grid = document.getElementById('grid');
     size = parseInt(document.getElementById('size').value);
     document.documentElement.style.setProperty('--size', size);
@@ -37,12 +30,6 @@ function getGrid() {
         const row = Math.floor(i / size); 
         const col = i % size;
         paintedCells.push({ row, col });
-        // if(Math.random() > 0.5) {
-        //     cell.classList.toggle('active');
-        //     const row = Math.floor(i / size); 
-        //     const col = i % size;
-        //     paintedCells.push({ row, col });
-        // }
 
         cell.addEventListener('click', function() {
             cell.classList.toggle('active');
@@ -93,7 +80,7 @@ function getGrid() {
         grid.appendChild(cell);
     }
     // console.log(grid);
-    PrimAlgorhtim();
+    PrimAlgorhitm();
 }
 
 let graph = new Map();
@@ -136,15 +123,15 @@ let choosed = [];
 let find = new Map();
 
 function AstarAlgo() {
-    console.log(mainCells);
+    // console.log(mainCells);
     if(mainCells.length < 2) {
         document.getElementById("error").textContent = "Главных точек должно быть две - начальная и конечная";
         return;
     }
-    console.log(graph)
+    // console.log(graph)
     clear();
     fillTheGraph();
-    console.log(graph)
+    // console.log(graph)
 
     let borders = new PriorityQueue();
 
@@ -167,7 +154,7 @@ function AstarAlgo() {
             break;
         }
         let currFind = [];
-        console.log(graph);
+        // console.log(graph);
         for(let next of graph.get(`${curr.row},${curr.col}`)) {
             if(!visited[`${next.row},${next.col}`]) {
                 borders.add(next, evrEval(goal, next));
@@ -201,13 +188,15 @@ function isNear(x1, y1, x2, y2) {
     return ((Math.abs(x1 - x2) <= 1 && Math.abs(y1 - y2) <= 1) && !(Math.abs(x1 - x2) == 1 && Math.abs(y1 - y2) == 1));
 }
 
-function showAlgorhytm() {
-    console.log(userStep);
+async function showAlgorhytm() {
     if(path.size == 0) {
         AstarAlgo();
         AstarAlgo();
     }
     if(userStep > 0) {
+        if(userStep >= find.size) {
+            return;
+        }
         grid.children[choosed[userStep-1].row * size + choosed[userStep-1].col].classList.remove('curr');
         grid.children[choosed[userStep - 1].row * size + choosed[userStep - 1].col].classList.add('show');
         for(let i of find.get(userStep-1)) {
@@ -231,15 +220,33 @@ function clear() {
     find.clear();
 }
 
-function PrimAlgorhtim() {
-    let startX = Math.floor(Math.random() * size);
-    let startY = Math.floor(Math.random() * size);
+async function showBySteps() {
+    let delay = document.getElementById("inputDelay").value;
+    console.log(delay);
+    if(path.size == 0) {
+        AstarAlgo();
+        AstarAlgo();
+    }
+    // setInterval(showAlgorhytm, 1000);
+    while(userStep < find.size) {
+        await new Promise(resolve => {      // устанавливаем пользовательскую задержку 
+            setTimeout(() => {              // await ждёт вызова resolve() 
+                showAlgorhytm();        
+                resolve();
+            }, delay);
+        });
+    }
+}
+
+function PrimAlgorhitm() {
+    let startRow = Math.floor(Math.random() * size);
+    let startCol = Math.floor(Math.random() * size);
     let queue = [];
-    queue.push({row: startX, col: startY});
+    queue.push({row: startRow, col: startCol});
     
-    pathCells.push({row: startX, col: startY});
-    grid.children[startX * size + startY].classList.remove('active');
-    paintedCells.splice(paintedCells.findIndex(cell => cell.row === startX && cell.col === startY), 1);
+    pathCells.push({row: startRow, col: startCol});
+    grid.children[startRow * size + startCol].classList.remove('active');
+    paintedCells.splice(paintedCells.findIndex(cell => cell.row === startRow && cell.col === startCol), 1);
 
 
     while(queue.length > 0) {

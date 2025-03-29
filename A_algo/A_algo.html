@@ -19,15 +19,19 @@
     </section>
     <section id="field">
         <h1>Поле</h1>
-        <button id="start">Старт</button>
-        <button id="step">Сделать шаг</button>
+        <div id="menu">
+            <button id="start">Старт</button>
+            <button id="step">Сделать шаг</button>
+            <button id="showBySteps">Последовательно</button>
+            <input id="inputDelay" type="range" min="0" max="1000" step="10" value="50">
+        </div>
+        
         <p id="error"></p>
         <input type="number" id="size" placeholder="Введите размер поля">
         <button id="generate">Сгенерировать</button>
         <div id="grid"></div>
     </section>
     <section>
-        ...
     </section>
     
     <script src="Astar_algo.js" type="module"></script>
