@@ -1,44 +1,77 @@
 export class PriorityQueue {
     constructor() {
-        this.items = [];
+        this.coords = [];
     }
 
     add(element, priority) {
-        const queueElement = { element, priority };
-        let added = false;
+        let newElement = { element, priority };
+        let isInserted = false;
 
-        for (let i = 0; i < this.items.length; i++) {
-            if (queueElement.priority < this.items[i].priority) {
-                this.items.splice(i, 0, queueElement);
-                added = true;
+        for (let i = 0; i < this.coords.length; i++) {
+            if (newElement.priority < this.coords[i].priority) {
+                this.coords.splice(i, 0, newElement);
+                isInserted = true;
                 break;
             }
         }
 
-        if (!added) {
-            this.items.push(queueElement);
+        if (!isInserted) {
+            this.coords.push(newElement);
         }
     }
 
-    get() {
+    pop() {
         if (this.isEmpty()) {
             return null;
         }
-        return this.items.shift().element;
+        return this.coords.shift().element;
     }
 
     isEmpty() {
-        return this.items.length === 0;
+        return this.coords.length == 0;
     }
 
     peek() {
         if (this.isEmpty()) {
             return null
         }
-        return this.items[0].element;
+        return this.coords[0].element;
     }
 
     size() {
-        return this.items.length;
+        return this.coords.length;
+    }
+}
+
+export class Queue {
+    constructor() {
+        this.coords = [];
+    }
+
+    add(element) {
+        let newElement = element;
+        this.coords.splice(this.coords.length, 0, newElement);
+    }
+
+    pop() {
+        if (this.isEmpty()) {
+            return null;
+        }
+        return this.coords.shift();
+    }
+
+    isEmpty() {
+        return this.coords.length == 0;
+    }
+
+    peek() {
+        if (this.isEmpty()) {
+            return null
+        }
+        return this.coords[0].element;
+    }
+
+    size() {
+        return this.coords.length;
     }
 }
