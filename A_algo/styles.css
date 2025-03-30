@@ -26,6 +26,20 @@ body {
     gap: 3px; 
 }
 
+#menu {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+#start {
+    height: 32px;
+    width: 32px;
+    border-radius: 100px;
+    background-image: url(../images/favicon-32x32.png);
+}
+
 .cell {
     width: 50px; 
     height: 50px;
@@ -47,7 +61,7 @@ body {
 }
 
 .cell.show {
-    background-color: pink;
+    background-color: rgb(26, 255, 0);
 }
 
 .cell.mark {

@@ -5,8 +5,10 @@ import {
 document.getElementById("generate").addEventListener("click", getGrid);
 document.getElementById("start").addEventListener("click", AstarAlgo);
 document.getElementById("step").addEventListener("click", showAlgorhytm);
+document.getElementById("showBySteps").addEventListener("click", showBySteps);
 
 let paintedCells = [];
+let pathCells = [];
 let mainCells = [];
 let size;
 let grid;
@@ -14,6 +16,7 @@ let userStep = 0;
 function getGrid() {
     paintedCells = [];
     mainCells = [];
+    pathCells = [];
     grid = document.getElementById('grid');
     size = parseInt(document.getElementById('size').value);
     document.documentElement.style.setProperty('--size', size);
@@ -21,15 +24,12 @@ function getGrid() {
     grid.innerHTML= '';
 
     for (let i = 0; i < size * size; i++) {
-        const cell = document.createElement('div');
+        let cell = document.createElement('div');
         cell.classList.add('cell');
-
-        if(Math.random() > 0.5) {
-            cell.classList.toggle('active');
-            const row = Math.floor(i / size); 
-            const col = i % size;
-            paintedCells.push({ row, col });
-        }
+        cell.classList.add('active')
+        const row = Math.floor(i / size); 
+        const col = i % size;
+        paintedCells.push({ row, col });
 
         cell.addEventListener('click', function() {
             cell.classList.toggle('active');
@@ -77,9 +77,10 @@ function getGrid() {
             }
         });
         
-        grid.appendChild(cell); // Добавляем клетку в контейнер
+        grid.appendChild(cell);
     }
-
+    // console.log(grid);
+    PrimAlgorhitm();
 }
 
 let graph = new Map();
@@ -122,14 +123,15 @@ let choosed = [];
 let find = new Map();
 
 function AstarAlgo() {
-    console.log(mainCells);
+    // console.log(mainCells);
     if(mainCells.length < 2) {
         document.getElementById("error").textContent = "Главных точек должно быть две - начальная и конечная";
         return;
     }
-
+    // console.log(graph)
     clear();
     fillTheGraph();
+    // console.log(graph)
 
     let borders = new PriorityQueue();
 
@@ -144,7 +146,7 @@ function AstarAlgo() {
 
     while(!borders.isEmpty()) {
         let curr = borders.peek();
-        borders.get();
+        borders.pop();
         choosed[step] = curr;
 
         if(curr.row === goal.row && curr.col === goal.col) {
@@ -152,6 +154,7 @@ function AstarAlgo() {
             break;
         }
         let currFind = [];
+        // console.log(graph);
         for(let next of graph.get(`${curr.row},${curr.col}`)) {
             if(!visited[`${next.row},${next.col}`]) {
                 borders.add(next, evrEval(goal, next));
@@ -185,13 +188,15 @@ function isNear(x1, y1, x2, y2) {
     return ((Math.abs(x1 - x2) <= 1 && Math.abs(y1 - y2) <= 1) && !(Math.abs(x1 - x2) == 1 && Math.abs(y1 - y2) == 1));
 }
 
-function showAlgorhytm() {
-    console.log(userStep);
+async function showAlgorhytm() {
     if(path.size == 0) {
         AstarAlgo();
         AstarAlgo();
     }
     if(userStep > 0) {
+        if(userStep >= find.size) {
+            return;
+        }
         grid.children[choosed[userStep-1].row * size + choosed[userStep-1].col].classList.remove('curr');
         grid.children[choosed[userStep - 1].row * size + choosed[userStep - 1].col].classList.add('show');
         for(let i of find.get(userStep-1)) {
@@ -213,4 +218,63 @@ function clear() {
     path.clear();
     choosed = [];
     find.clear();
+}
+
+async function showBySteps() {
+    let delay = document.getElementById("inputDelay").value;
+    console.log(delay);
+    if(path.size == 0) {
+        AstarAlgo();
+        AstarAlgo();
+    }
+    // setInterval(showAlgorhytm, 1000);
+    while(userStep < find.size) {
+        await new Promise(resolve => {      // устанавливаем пользовательскую задержку 
+            setTimeout(() => {              // await ждёт вызова resolve() 
+                showAlgorhytm();        
+                resolve();
+            }, delay);
+        });
+    }
+}
+
+function PrimAlgorhitm() {
+    let startRow = Math.floor(Math.random() * size);
+    let startCol = Math.floor(Math.random() * size);
+    let queue = [];
+    queue.push({row: startRow, col: startCol});
+    
+    pathCells.push({row: startRow, col: startCol});
+    grid.children[startRow * size + startCol].classList.remove('active');
+    paintedCells.splice(paintedCells.findIndex(cell => cell.row === startRow && cell.col === startCol), 1);
+
+
+    while(queue.length > 0) {
+        let current = queue.splice(Math.floor(Math.random() * queue.length), 1)[0];
+        let directions = [
+            [2,0],
+            [0,2],
+            [-2,0],
+            [0,-2]
+        ];
+
+        for(let dir of directions) {
+            if(current.row + dir[0] >= 0 && current.row + dir[0] < size && current.col + dir[1] >= 0 && current.col + dir[1] < size) {
+                if(!pathCells.some(cell => cell.row === current.row + dir[0] && cell.col === current.col + dir[1])) {
+                    
+                    grid.children[(current.row + dir[0]) * size + current.col + dir[1]].classList.remove('active');
+                    grid.children[(current.row + dir[0]/2) * size + current.col + dir[1]/2].classList.remove('active');
+
+                    paintedCells.splice(paintedCells.findIndex(cell => cell.row === current.row + dir[0] && cell.col === current.col + dir[1]), 1);
+                    paintedCells.splice(paintedCells.findIndex(cell => cell.row === current.row + dir[0]/2 && cell.col === current.col + dir[1]/2), 1);
+
+                    pathCells.push({row: current.row + dir[0], col: current.col + dir[1]});
+                    pathCells.push({row: current.row + dir[0]/2, col: current.col + dir[1]/2});
+
+                    queue.push({row: current.row + dir[0], col: current.col + dir[1]});
+                }
+            }
+        }
+    }
+    console.log(paintedCells);
 }
