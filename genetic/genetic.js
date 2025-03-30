@@ -2,12 +2,12 @@ let dots = [];
 let isProcessing = false;
 let controller = new AbortController();
 
-let cnt_population = 100;
+let cnt_population = 1000;
 let cnt_epoch = 10000;
-let mutation_rate = 0.3;
+let mutation_rate = 0.9;
 let tournament_size = 10;
 let cnt_pairs = cnt_population / 2;
-let threshold_stagnation = 100;
+let threshold_stagnation = 50;
 
 let render = 1;
 
@@ -50,8 +50,8 @@ function fitness(dist, way) {
 }
 
 function mutation(array) {
-    const i = Math.floor(Math.random() * (array.length));
-    const j = Math.floor(Math.random() * (array.length));
+    const i = Math.floor(Math.random() * (array.length - 1));
+    const j = Math.floor(Math.random() * (array.length - 1));
     [array[i], array[j]] = [array[j], array[i]];
 }
 
@@ -63,8 +63,9 @@ function halfUniformCrossover(parent1, parent2) {
     let used = new Set();
 
     const start = Math.floor(Math.random() * (lengthPar1 - 1));
+    const end = start + Math.floor(Math.random() * (lengthPar1 - 1 - start));
 
-    for (let i = start; i < start + lengthPar1; i++) {
+    for (let i = start; i < end; i++) {
         child[i]  = parent1[i];
         used.add(parent1[i]);
     }
@@ -148,9 +149,39 @@ function generatePopulation(cntIndivid, numTowns) {
 }
 
 function cataclysmicMutation(population) {
-    for (let i = 1; i < population.length; i++) {
+    for (let i = 1; i < 10; i++) {
+        population[i] = halfUniformCrossover(population[0], population[i])
+    }
+    for (let i = 10; i < population.length; i++) {
         shuffleArray(population[i]);
     }
+}
+
+function twoOptSwap(route, i, k) {
+    return route.slice(0, i)
+        .concat(route.slice(i, k + 1).reverse())
+        .concat(route.slice(k + 1));
+}
+
+function localSearch(dist, route) {
+    let improved = true;
+
+    while (improved) {
+        improved = false;
+
+        for (let i = 1; i < route.length - 2; i++) {
+            for (let k = i + 1; k < route.length - 1; k++) {
+                const newRoute = twoOptSwap(route, i, k);
+
+                if (fitness(dist, newRoute) < fitness(dist, route)) {
+                    route = newRoute;
+                    improved = true;
+                }
+            }
+        }
+    }
+
+    return route;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -222,6 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         drawLines(population[0]);
         controller = new AbortController();
+        let alpha = greedyAlgorithm(dist, 0);
 
         async function alghorythm() {
             let stagnation = 0;
@@ -232,10 +264,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.log("Алгоритм остановлен");
                     return;
                 }
-
+                population.push(alpha);
                 population.sort((a, b) => fitness(dist, a) - fitness(dist, b));
+
+                population = population.slice(0, cnt_population);
                 if (population[0] === elite) stagnation++;
                 elite = population[0];
+
+                elite = localSearch(dist, elite);
+
                 if (stagnation > threshold_stagnation) {
                     stagnation = 0;
                     cataclysmicMutation(population);
@@ -248,13 +285,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         let parent1 = selectParent(population, dist);
                         let parent2 = selectParent(population, dist);
                         if (distHamming(parent1, parent2) > Math.floor(Math.random() * (parent1.length - 1) * 0.5)) {
-                            population[population.length - j - 1] = halfUniformCrossover(parent1, parent2);
+                            population.push(halfUniformCrossover(parent1, parent2));
+                            population.push(halfUniformCrossover(parent1, parent2));
+                            mutation(population[population.length - 1]);
+                            mutation(population[population.length - 2]);
                         }
                     }
                 }
 
                 for (let j = 1; j < 1 + Math.floor(mutation_rate * cnt_population); j++) {
-                    mutation(population[j]);
+                    mutation(population[population.length - j - 1]);
                     if (controller.signal.aborted) {
                         console.log("Алгоритм остановлен");
                         return;
@@ -263,7 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 drawLines(elite);
 
-                console.log(i);
+                console.log(fitness(dist, elite));
 
                 await new Promise((resolve, reject) => {
                     const timeout = setTimeout(resolve, render);
