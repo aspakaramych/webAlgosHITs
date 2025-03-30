@@ -1,17 +1,24 @@
 let dots = [];
 let isProcessing = false;
+let controller = new AbortController();
 
-let cnt_population = 1000;
+let cnt_population = 100;
 let cnt_epoch = 10000;
-let mutation_rate = 0.95;
+let mutation_rate = 0.3;
 let tournament_size = 10;
 let cnt_pairs = cnt_population / 2;
 let threshold_stagnation = 100;
+
+let render = 1;
 
 //реализуем алгоритм Эшелмана (CHC (Cross-generational Selection, Heterogeneous Recombination, and Cataclysmic Mutation))
 
 function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function stopAlgorithm() {
+    controller.abort();
 }
 
 function countDistances(arrayTowns) {
@@ -51,16 +58,15 @@ function mutation(array) {
 // алгоритм кроссовера по Эшелману, берём по половине генов от обоих родителей
 function halfUniformCrossover(parent1, parent2) {
     const length = parent1.length;
+    const lengthPar1 = Math.floor(parent1.length / 2);
     let child = Array(length).fill(null);
     let used = new Set();
 
-    const positions = Array.from({ length }, (_, i) => i);
-    shuffleArray(positions);
-    const selectedPositions = positions.slice(0, Math.floor(length / 2));
+    const start = Math.floor(Math.random() * (lengthPar1 - 1));
 
-    for (let pos of selectedPositions) {
-        child[pos]  = parent1[pos];
-        used.add(parent1[pos]);
+    for (let i = start; i < start + lengthPar1; i++) {
+        child[i]  = parent1[i];
+        used.add(parent1[i]);
     }
 
     let ptr = 0;
@@ -76,8 +82,6 @@ function halfUniformCrossover(parent1, parent2) {
 
     return child;
 }
-
-
 
 //выбор особи турнирным способом
 function selectParent(population, dist) {
@@ -109,6 +113,30 @@ function distHamming(parent1, parent2) {
     return distance;
 }
 
+function greedyAlgorithm(dist, start) {
+    let way = [];
+    let used = new Set();
+    used.add(start);
+    way.push(start);
+    let last = start;
+    for (let i = 0; i < dist.length - 1; i++) {
+        let min = Number.MAX_VALUE;
+        let ver = -1;
+        for (let j = 0; j < dist[last].length; j++) {
+            if (last !== j) {
+                if (min > dist[last][j] && !used.has(j)) {
+                    ver = j;
+                    min = dist[last][j];
+                }
+            }
+        }
+        last = ver;
+        way.push(ver);
+        used.add(ver);
+    }
+    return way;
+}
+
 function generatePopulation(cntIndivid, numTowns) {
     let rightOrder = Array.from({length: numTowns}, (_, index) => index);
     let population = [];
@@ -132,9 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const linesSvg = document.getElementById('lines');
 
     table.addEventListener('click', (event) => {
-        if (isProcessing) {
-            return;
-        }
         const x = event.offsetX;
         const y = event.offsetY;
 
@@ -146,10 +171,24 @@ document.addEventListener('DOMContentLoaded', () => {
         table.appendChild(dot);
 
         dots.push({x, y});
+        if (isProcessing) {
+            stopAlgorithm();
+            setTimeout(() => {
+                geneticAlgorithm();
+            }, render * 10);
+        }
     })
 
     startButton.addEventListener('click', (event) => {
-        geneticAlgorithm();
+        if (isProcessing) {
+            startButton.textContent = 'Поиск оптимального пути';
+            stopAlgorithm();
+            isProcessing = false;
+        }
+        else {
+            geneticAlgorithm();
+            startButton.textContent = 'Остановить процесс поиска';
+        }
     })
 
     function addLine(dot1, dot2) {
@@ -174,24 +213,38 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function geneticAlgorithm() {
+    async function geneticAlgorithm() {
+        isProcessing = true;
         let dist = countDistances(dots);
-        let rightOrder = Array.from({length: dots.length}, (_, index) => index);
         let population = generatePopulation(cnt_population, dots.length);
+        for (let i = 0; i < dist.length; i++) {
+            population[i] = greedyAlgorithm(dist, i);
+        }
         drawLines(population[0]);
+        controller = new AbortController();
+
         async function alghorythm() {
             let stagnation = 0;
             let elite = population[0];
+
             for (let i = 0; i < cnt_epoch; i++) {
+                if (controller.signal.aborted) {
+                    console.log("Алгоритм остановлен");
+                    return;
+                }
+
                 population.sort((a, b) => fitness(dist, a) - fitness(dist, b));
                 if (population[0] === elite) stagnation++;
                 elite = population[0];
                 if (stagnation > threshold_stagnation) {
                     stagnation = 0;
                     cataclysmicMutation(population);
-                }
-                else {
+                } else {
                     for (let j = 0; j < cnt_pairs; j++) {
+                        if (controller.signal.aborted) {
+                            console.log("Алгоритм остановлен");
+                            return;
+                        }
                         let parent1 = selectParent(population, dist);
                         let parent2 = selectParent(population, dist);
                         if (distHamming(parent1, parent2) > Math.floor(Math.random() * (parent1.length - 1) * 0.5)) {
@@ -202,23 +255,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 for (let j = 1; j < 1 + Math.floor(mutation_rate * cnt_population); j++) {
                     mutation(population[j]);
+                    if (controller.signal.aborted) {
+                        console.log("Алгоритм остановлен");
+                        return;
+                    }
                 }
 
                 drawLines(elite);
 
                 console.log(i);
-                await delay(1);
-            }
-            console.log('пытка кончилась');
-        }
-        alghorythm();
 
+                await new Promise((resolve, reject) => {
+                    const timeout = setTimeout(resolve, render);
+                    controller.signal.addEventListener("abort", () => {
+                        clearTimeout(timeout);
+                        reject(new Error("Остановлено"));
+                    });
+                }).catch(() => {
+                    console.log("Задержка прервана");
+                    return;
+                });
+            }
+            console.log('Алгоритм завершен');
+        }
+
+        try {
+            await alghorythm();
+        } catch (error) {
+            console.log("Алгоритм остановлен:", error.message);
+        } finally {
+            isProcessing = false;
+        }
     }
 })
 
 //TODO:
 //add deletion dots
 //scale the table in process
-//add mutation
-//add inbreeding
-//поиграться с количеством особей и количеством эпох
