@@ -1,48 +1,3 @@
-async function loadWeights(filePath) {
-    const response = await fetch(filePath);
-
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return await response.json();
-}
-
-
-function forwardPass(input, weights) {
-    const {weight_0_1, weight_1_2} = weights;
-
-    const layer_1 = weight_0_1.map(row => {
-        const dotProduct = row.reduce((sum, weight, idx) => sum + weight * input[idx], 0);
-        return Math.tanh(dotProduct);
-    });
-
-
-    const layer_2 = weight_1_2.map(row => {
-        const dotProduct = row.reduce((sum, weight, idx) => sum + weight * layer_1[idx], 0);
-        return dotProduct;
-    });
-
-
-    const exp = layer_2.map(val => Math.exp(val));
-    const sum = exp.reduce((a, b) => a + b, 0);
-    return exp.map(val => val / sum);
-}
-
-function checkWeights(weights) {
-    const {weight_0_1, weight_1_2} = weights;
-
-    console.log('Weight_0_1 dimensions:', weight_0_1.length, 'x', weight_0_1[0].length);
-    console.log('Weight_1_2 dimensions:', weight_1_2.length, 'x', weight_1_2[0].length);
-
-    if (weight_0_1.length !== 256 || weight_0_1[0].length !== 784) {
-        throw new Error('Invalid dimensions for weight_0_1. Expected [256 x 784].');
-    }
-    if (weight_1_2.length !== 10 || weight_1_2[0].length !== 256) {
-        throw new Error('Invalid dimensions for weight_1_2. Expected [10 x 256].');
-    }
-}
-
 function setupCanvas(canvas) {
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = 'white';
@@ -115,32 +70,6 @@ function resizeData(data, oldWidth, oldHeight, newWidth, newHeight) {
     return newData;
 }
 
-async function predictDigit(canvas, weightsFilePath) {
-
-    try {
-        const weights = await loadWeights(weightsFilePath);
-        checkWeights(weights);
-        const input = preprocessImage(canvas);
-
-        const output = forwardPass(input, weights);
-        console.log(output);
-
-        const predictedClass = output.indexOf(Math.max(...output));
-
-        const resultElement = document.getElementById('Result');
-        if (resultElement) {
-            resultElement.textContent = `Результат: ${predictedClass}`;
-        } else {
-            console.error('Result element not found!');
-        }
-
-        console.log(`Predicted class: ${predictedClass}`);
-        return predictedClass;
-    } catch (error) {
-        console.error('Error during prediction:', error);
-    }
-
-}
 
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('myCanvas');
@@ -154,6 +83,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setupCanvas(canvas);
 
     submitButton.addEventListener('click', () => {
-        predictDigit(canvas, '../neural_network/neural_network/weights/weights.json');
+        predictDigit(canvas, '../neural_network/neural_network/weights/weightsCNN.json');
     });
 });
