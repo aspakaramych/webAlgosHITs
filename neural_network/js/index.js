@@ -98,7 +98,6 @@ function preprocessImage(canvas) {
     }
 
     const resizedData = resizeData(grayscale, canvas.width, canvas.height, 28, 28);
-
     return resizedData;
 }
 
