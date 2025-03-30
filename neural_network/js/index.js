@@ -1,3 +1,5 @@
+import {createModel} from "./neuralNetwork.js";
+
 function setupCanvas(canvas) {
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = 'white';
@@ -42,14 +44,13 @@ function preprocessImage(canvas) {
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const pixels = imageData.data;
 
-    // Преобразуем RGBA в градации серого
     const grayscale = [];
     for (let i = 0; i < pixels.length; i += 4) {
         const r = pixels[i];
         const g = pixels[i + 1];
         const b = pixels[i + 2];
         const gray = 0.299 * r + 0.587 * g + 0.114 * b;
-        grayscale.push(gray / 255); // Нормализация
+        grayscale.push(gray / 255);
     }
 
     const resizedData = resizeData(grayscale, canvas.width, canvas.height, 28, 28);
@@ -70,6 +71,15 @@ function resizeData(data, oldWidth, oldHeight, newWidth, newHeight) {
     return newData;
 }
 
+async function predict(canvas, path){
+    const model = await createModel(path);
+    const input = preprocessImage(canvas);
+    const output = model.forward(input);
+    const predictedClass = output.indexof(Math.max(...output))
+    console.log(predictedClass)
+    const resultElement = document.getElementById('Result');
+    resultElement.textContent = `Результат ${predictedClass}`;
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('myCanvas');
@@ -83,6 +93,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setupCanvas(canvas);
 
     submitButton.addEventListener('click', () => {
-        predictDigit(canvas, '../neural_network/neural_network/weights/weightsCNN.json');
+        predict(canvas, '../neural_network/neural_network/weights/weights.json');
     });
 });
