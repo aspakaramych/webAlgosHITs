@@ -54,7 +54,10 @@ function preprocessImage(canvas) {
     }
 
     const resizedData = resizeData(grayscale, canvas.width, canvas.height, 28, 28);
-    return resizedData;
+
+
+    const input = [resizedData];
+    return input;
 }
 
 function resizeData(data, oldWidth, oldHeight, newWidth, newHeight) {
@@ -71,14 +74,14 @@ function resizeData(data, oldWidth, oldHeight, newWidth, newHeight) {
     return newData;
 }
 
-async function predict(canvas, path){
+async function predict(canvas, path) {
     const model = await createModel(path);
     const input = preprocessImage(canvas);
     const output = model.forward(input);
-    const predictedClass = output.indexof(Math.max(...output))
-    console.log(predictedClass)
+    const predictedClass = output[0].indexOf(Math.max(...output[0]));
+    console.log(predictedClass);
     const resultElement = document.getElementById('Result');
-    resultElement.textContent = `Результат ${predictedClass}`;
+    resultElement.textContent = `Результат: ${predictedClass}`;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
