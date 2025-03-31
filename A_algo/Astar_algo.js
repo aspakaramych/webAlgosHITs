@@ -151,13 +151,13 @@ function AstarAlgo() {
         let currFind = [];
         for(let next of graph.get(`${curr.row},${curr.col}`)) {
             if(!visited[`${next.row},${next.col}`]) {
-                borders.add(next, evrEval(goal, next));
+                borders.add(next, evrEval(goal, next)); // если еще не посетили - добавляем в клетки на границах с соотв. приоритетом
                 path.set(`${next.row},${next.col}`, curr);
                 visited[`${next.row},${next.col}`] = true;
                 currFind.push(next);
             }
         }
-        find.set(step, currFind);
+        find.set(step, currFind);   // для текущего шага сохраняем, между какими клетакми проходил выбор
         step++;
     }
 
@@ -168,7 +168,8 @@ function AstarAlgo() {
     }
 }
 
-function getPath() {
+// отображает путь
+function getPath() { 
     let curr = mainCells[1];
     curr = path.get(`${curr.row},${curr.col}`); 
     while(curr != mainCells[0]) {
@@ -215,11 +216,11 @@ function clear() {
     choosed = [];
     find.clear();
     finalPath = [];
+    userStep = 0;
 }
 
 async function showBySteps() {
     let delay = document.getElementById("inputDelay").value;
-    userStep = 0;
     if(path.size == 0) {
         AstarAlgo();
         AstarAlgo();
@@ -236,10 +237,10 @@ async function showBySteps() {
 }
 
 function PrimAlgorhitm() {
-    let startRow = Math.floor(Math.random() * size);
+    let startRow = Math.floor(Math.random() * size);    // начинаем с рандомной клетки
     let startCol = Math.floor(Math.random() * size);
     let queue = [];
-    queue.push({row: startRow, col: startCol});
+    queue.push({row: startRow, col: startCol}); // добавляем в очередь, убираем статус стены
     
     pathCells.push({row: startRow, col: startCol});
     grid.children[startRow * size + startCol].classList.remove('wall');
@@ -247,8 +248,8 @@ function PrimAlgorhitm() {
 
 
     while(queue.length > 0) {
-        let current = queue.splice(Math.floor(Math.random() * queue.length), 1)[0];
-        let directions = [
+        let current = queue.splice(Math.floor(Math.random() * queue.length), 1)[0]; // берём из очереди первую клетку
+        let directions = [  // во всех направлениях выбираем клетку через стену
             [2,0],
             [0,2],
             [-2,0],
@@ -256,18 +257,23 @@ function PrimAlgorhitm() {
         ];
 
         for(let dir of directions) {
+            // проверяем что выбранная клетка в пределах поля и ещё не является "тропинкой"
             if(current.row + dir[0] >= 0 && current.row + dir[0] < size && current.col + dir[1] >= 0 && current.col + dir[1] < size) {
                 if(!pathCells.some(cell => cell.row === current.row + dir[0] && cell.col === current.col + dir[1])) {
                     
+                    // если она действивтельно стена - пробуриваем к ней тропинку
                     grid.children[(current.row + dir[0]) * size + current.col + dir[1]].classList.remove('wall');
                     grid.children[(current.row + dir[0]/2) * size + current.col + dir[1]/2].classList.remove('wall');
-
+                    
+                    // убираем статус стены
                     paintedCells.splice(paintedCells.findIndex(cell => cell.row === current.row + dir[0] && cell.col === current.col + dir[1]), 1);
                     paintedCells.splice(paintedCells.findIndex(cell => cell.row === current.row + dir[0]/2 && cell.col === current.col + dir[1]/2), 1);
-
+                    
+                    // добавляем в "тропинки"
                     pathCells.push({row: current.row + dir[0], col: current.col + dir[1]});
                     pathCells.push({row: current.row + dir[0]/2, col: current.col + dir[1]/2});
-
+                    
+                    // добавляем в очередь пикнутую по направлению клетку
                     queue.push({row: current.row + dir[0], col: current.col + dir[1]});
                 }
             }
