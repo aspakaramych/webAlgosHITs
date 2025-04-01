@@ -120,18 +120,6 @@ function centralize(centroids) {    // группируем точки в кла
     return clusters;
 }
 
-function getPointsFromNonEmptyClusters(clusters) {
-    let resultPoints = [];
-    let clusterEntries = Array.from(clusters.entries());
-    for (const [key, value] of clusterEntries) {
-        if (value.length > 0) {
-            resultPoints.push(value);
-        }
-    }
-
-    return resultPoints;
-}
-
 function updateCentroids(centroids, clusters) {
     let newCentroids = [];
     let emptyClusters = [];
@@ -159,14 +147,14 @@ function updateCentroids(centroids, clusters) {
             
             if (clusterPoints.length <= 1) continue;
             
-            const [x, y] = key.split(',').map(Number);
-            let currCentroid = {x: x, y: y};                // достаём текущий центроид
+            const [x, y] = key.split(',').map(Number);      // берём непустой кластер
+            let currCentroid = {x: x, y: y};                // достаём его центроид
             let variance = 0;
             
             for (let k = 0; k < clusterPoints.length; k++) {
                 let currPoint = clusterPoints[k];
-                variance += Math.pow(getDistance(currPoint, currCentroid), 2);
-            }
+                variance += Math.pow(getDistance(currPoint, currCentroid), 2);  // считаем внутрикластерный разброс точек
+            }                                                                   // квадрат - чтобы увеличить веса "выбросов" 
             
             if (variance > maxVariance) {                   // находим кластер с наибольшим разбросом точек
                 maxVariance = variance;
@@ -176,14 +164,14 @@ function updateCentroids(centroids, clusters) {
         
         // перераспределяем точки в пустые центроиды
         if (targetClusterKey) {
-            let targetCluster = clusters.get(targetClusterKey);
+            let targetCluster = clusters.get(targetClusterKey);     // берём кластер
             let [x, y] = targetClusterKey.split(',').map(Number);
             let centroid = {x: x, y: y};
             
             let maxDist = 0;
             let farthestPoint = null;
             
-            for (let m = 0; m < targetCluster.length; m++) {    // находим самую удаленную точку
+            for (let m = 0; m < targetCluster.length; m++) {    // находим его самую удаленную точку
                 let point = targetCluster[m];
                 let dist = getDistance(point, centroid);
                 if (dist > maxDist) {
@@ -195,8 +183,8 @@ function updateCentroids(centroids, clusters) {
             if (farthestPoint) {
                 newCentroids.push(farthestPoint);   // делаем из самой отдалённой точки центроид
                 for (let n = 1; n < emptyClusters.length; n++) {
-                    let currPoints = getPointsFromNonEmptyClusters(clusters);       // добавляем случайные точки из других кластеров
-                    if (currPoints && currPoints.length > 0) {                      // случайные, чтобы центроиды не смещались в сторону выбросов при их наличии              
+                    let currPoints = points;       // добавляем случайные точки из других кластеров
+                    if (currPoints && currPoints.length > 0) { // случайные, чтобы центроиды не смещались в сторону выбросов при их наличии              
                         let randomIndex = Math.floor(Math.random() * currPoints.length);
                         newCentroids.push(currPoints[randomIndex]);
                     }
@@ -208,7 +196,7 @@ function updateCentroids(centroids, clusters) {
     return newCentroids;
 }
 
-// Проверка на сходимость
+// проверка на идентичность, чтобы прекратить итерации
 function isTheSame(oldCentroids, newCentroids, threshold = 1) {
     if (!oldCentroids || oldCentroids.length !== newCentroids.length) return false;
     
@@ -235,6 +223,10 @@ function draw(clusters) {
     }
 }
 
+// метод силуэтов - оценка качества кластеризации
+// средняя сумма расстояний от точки до точек своего кластера должна быть меньше
+// средней суммы расстояний от точки до точек другого кластера для высокой оценки кластеризации -
+// высокий результат - значит, точка в нужном кластере, иначе - надо бы перераспределить её в другой
 function silhouetteCoef(clusters, centroids) {
     let totalScore = 0;
     let totalPoints = 0;
@@ -258,7 +250,7 @@ function silhouetteCoef(clusters, centroids) {
                 a = sumDist / count;
             }
             
-            let minAvgDist = Infinity;                      // минимальное среднее расстояние до других кластеров (b)
+            let minAvgDist = Infinity;                      // минимальное среднее расстояние до точек других кластеров (b)
             
             for (let otherCentr of centroids) {
                 if (otherCentr === centr) continue;
@@ -280,7 +272,7 @@ function silhouetteCoef(clusters, centroids) {
             }
             
             let b = minAvgDist === Infinity ? 0 : minAvgDist;   // вычисляем силуэт
-            let res = Math.max(a, b) !== 0 ? (b - a) / Math.max(a, b) : 0;
+            let res = Math.max(a, b) !== 0 ? (b - a) / Math.max(a, b) : 0; 
             
             totalScore += isNaN(res) ? 0 : res;
             totalPoints++;
@@ -293,10 +285,11 @@ function silhouetteCoef(clusters, centroids) {
 function cluserizationAlgo() {
     let bestK = 1;
     let bestScore = 0;
+    const maxK = Math.min(10, points.length);
     let bestClusters = null;
     let bestCentroids = null;
     
-    for (let k = 1; k <= 15; k++) {
+    for (let k = 1; k <= maxK; k++) {
         let centroids = getCentroids(k);
         let prevCentroids = null;
         let clusters = null;
