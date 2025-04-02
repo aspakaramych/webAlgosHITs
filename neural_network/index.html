@@ -5,11 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Document</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../common_styles.css">
 </head>
 <body>
-    <canvas id="myCanvas" width="50" height="50"></canvas>
-    <button id="submitButton">Submit</button>
-    <div id="Result">Результат</div>
-    <script type="module" src="js/index.js"></script>
+    <section class="page_header">
+        <h1 class = "logo">
+            <a href="../mainpage/index.html" class="name">
+                <img src="../images/logo192x192.png" class="image">
+                <span class="logo_text">AlgoCrew</span>
+            </a>
+        </h1>
+    </section>
+    <div id="main_field">
+        <canvas id="myCanvas" width="50" height="50"></canvas>
+        <button id="submitButton">Submit</button>
+        <div id="Result">Результат</div>
+        <script type="module" src="js/index.js"></script>
+    </div>
 </body>
 </html>
