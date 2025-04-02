@@ -42,43 +42,36 @@ function drawPixel(canvas, event) {
 function preprocessImage(canvas) {
     const ctx = canvas.getContext('2d');
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const pixels = imageData.data;
+    const data = imageData.data;
 
-    const grayscale = [];
-    for (let i = 0; i < pixels.length; i += 4) {
-        const r = pixels[i];
-        const g = pixels[i + 1];
-        const b = pixels[i + 2];
-        const gray = 0.299 * r + 0.587 * g + 0.114 * b;
-        grayscale.push(gray / 255);
-    }
+    const resized = Array.from({ length: 28 }, () => Array(28).fill(0));
 
-    const resizedData = resizeData(grayscale, canvas.width, canvas.height, 28, 28);
+    for (let y = 0; y < 50; y++) {
+        for (let x = 0; x < 50; x++) {
+            const pixelIndex = (y * 50 + x) * 4;
+            const gray = data[pixelIndex] / 255;
 
+            const newX = Math.floor((x / 50) * 28);
+            const newY = Math.floor((y / 50) * 28);
 
-    const input = [resizedData];
-    return input;
-}
-
-function resizeData(data, oldWidth, oldHeight, newWidth, newHeight) {
-    const newData = new Array(newWidth * newHeight);
-
-    for (let y = 0; y < newHeight; y++) {
-        for (let x = 0; x < newWidth; x++) {
-            const oldX = Math.min(Math.floor((x / newWidth) * oldWidth), oldWidth - 1);
-            const oldY = Math.min(Math.floor((y / newHeight) * oldHeight), oldHeight - 1);
-            newData[y * newWidth + x] = data[oldY * oldWidth + oldX];
+            resized[newY][newX] += gray;
         }
     }
 
-    return newData;
+
+    const maxValue = Math.max(...resized.flat());
+    return resized.map(row => row.map(val => val / maxValue));
 }
 
 async function predict(canvas, path) {
     const model = await createModel(path);
     const input = preprocessImage(canvas);
-    const output = model.forward(input);
+
+    const flatInput = [input.flat()];
+
+    const output = model.forward(flatInput);
     const predictedClass = output[0].indexOf(Math.max(...output[0]));
+
     console.log(predictedClass);
     const resultElement = document.getElementById('Result');
     resultElement.textContent = `Результат: ${predictedClass}`;

@@ -1,48 +1,68 @@
-class NeuralNetwork {
-    constructor(layers) {
-        this.layers = layers;
-    }
-
-    forward(input) {
-        let output = input;
-        for (const layer of this.layers) {
-            output = layer.forward(output);
+function dotProduct(matA, matB) {
+    const result = [];
+    for (let i = 0; i < matA.length; i++) {
+        const row = [];
+        for (let j = 0; j < matB[0].length; j++) {
+            let sum = 0;
+            for (let k = 0; k < matA[0].length; k++) {
+                sum += matA[i][k] * matB[k][j];
+            }
+            row.push(sum);
         }
-        return output;
+        result.push(row);
     }
+    return result;
 }
 
-class DenseLayer {
-    constructor(weights, activation = 'relu') {
+function max(matrix) {
+    return matrix.map(row => row.map(x => Math.max(x, 0)));
+}
+
+function softmax(matrix) {
+    const expMatrix = matrix.map(row => row.map(x => Math.exp(x - Math.max(...row))));
+    const sums = expMatrix.map(row => row.reduce((a, b) => a + b, 0));
+    return expMatrix.map((row, i) => row.map(x => x / sums[i]));
+}
+
+class Linear {
+    constructor(weights) {
         this.weights = weights;
-        this.activation = activation;
     }
 
-    forward(input) {
-        const output = input.map(row => {
-            return this.weights[0].map((_, i) => {
-                return row.reduce((sum, val, j) => sum + val * this.weights[j][i], 0);
-            });
-        });
-
-        if (this.activation === 'relu') {
-            return output.map(row => row.map(x => Math.max(0, x)));
-        } else if (this.activation === 'softmax') {
-            return this.softmax(output);
-        }
-        return output;
-    }
-
-    softmax(matrix) {
-        return matrix.map(row => {
-            const max = Math.max(...row);
-            const exps = row.map(x => Math.exp(x - max));
-            const sum = exps.reduce((a, b) => a + b, 0);
-            return exps.map(x => x / sum);
-        });
+    forward(x) {
+        return dotProduct(x, this.weights);
     }
 }
 
+class ReLU {
+    forward(x) {
+        return max(x);
+    }
+}
+
+class Softmax {
+    forward(x) {
+        return softmax(x);
+    }
+}
+
+class Sequential {
+    constructor() {
+        this.layers = [];
+    }
+
+    add(layer) {
+        this.layers.push(layer);
+    }
+
+    forward(x) {
+        for (const layer of this.layers) {
+            x = layer.forward(x);
+            console.log("Layer output:", x);
+        }
+        return x;
+    }
+}
 
 async function loadWeights(path) {
     const response = await fetch(path);
@@ -56,9 +76,18 @@ async function loadWeights(path) {
 
 export async function createModel(path) {
     const weights = await loadWeights(path);
-    const model = new NeuralNetwork([
-        new DenseLayer(weights.layer_0.weights, 'relu'),
-        new DenseLayer(weights.layer_3.weights, 'softmax'),
-    ]);
+
+    console.log("Layer 1 weights shape:", [weights.layer_1.length, weights.layer_1[0].length]);
+    console.log("Layer 2 weights shape:", [weights.layer_2.length, weights.layer_2[0].length]);
+    console.log("Layer 3 weights shape:", [weights.layer_3.length, weights.layer_3[0].length]);
+
+    const model = new Sequential();
+    model.add(new Linear(weights.layer_1));
+    model.add(new ReLU());
+    model.add(new Linear(weights.layer_2));
+    model.add(new ReLU());
+    model.add(new Linear(weights.layer_3));
+    model.add(new Softmax());
+
     return model;
 }
