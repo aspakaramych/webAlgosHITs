@@ -4,7 +4,7 @@ let controller = new AbortController();
 
 let cnt_population = 1000;
 let cnt_epoch = 10000;
-let mutation_rate = 0.9;
+let mutation_rate = 0.3;
 let tournament_size = 10;
 let cnt_pairs = cnt_population / 2;
 let threshold_stagnation = 50;
@@ -169,8 +169,8 @@ function localSearch(dist, route) {
     while (improved) {
         improved = false;
 
-        for (let i = 1; i < route.length - 2; i++) {
-            for (let k = i + 1; k < route.length - 1; k++) {
+        for (let i = 1; i < route.length; i++) {
+            for (let k = i + 1; k < route.length; k++) {
                 const newRoute = twoOptSwap(route, i, k);
 
                 if (fitness(dist, newRoute) < fitness(dist, route)) {
@@ -311,10 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         clearTimeout(timeout);
                         reject(new Error("Остановлено"));
                     });
-                }).catch(() => {
-                    console.log("Задержка прервана");
-                    return;
-                });
+                })
             }
             console.log('Алгоритм завершен');
         }

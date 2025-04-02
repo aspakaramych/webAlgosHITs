@@ -13,7 +13,10 @@ let mainCells = [];
 let size;
 let grid;
 let userStep = 0;
+
+// генерируем поле (все клетки закрашены - это для алгоритма Прима)
 function getGrid() {
+    clear();
     paintedCells = [];
     mainCells = [];
     pathCells = [];
@@ -24,20 +27,19 @@ function getGrid() {
     grid.innerHTML= '';
 
     for (let i = 0; i < size * size; i++) {
-        let cell = document.createElement('div');
+
+        let cell = document.createElement('div'); // "клетка" представляет собой div, в который мы добавляем классы "👍"
         cell.classList.add('cell');
-        cell.classList.add('active')
+        cell.classList.add('wall')
+
         const row = Math.floor(i / size); 
         const col = i % size;
         paintedCells.push({ row, col });
 
-        cell.addEventListener('click', function() {
-            cell.classList.toggle('active');
+        cell.addEventListener('click', function() { // лкм - ставим/убираем стену
+            cell.classList.toggle('wall');
 
-            const row = Math.floor(i / size); 
-            const col = i % size;
-
-            if (cell.classList.contains('active')) {
+            if (cell.classList.contains('wall')) {
                 paintedCells.push({ row, col });
             } else {
                 const index = paintedCells.findIndex(cell => cell.row === row && cell.col === col);
@@ -47,14 +49,11 @@ function getGrid() {
             }
         });
         
-        cell.addEventListener('contextmenu', function() {
+        cell.addEventListener('contextmenu', function() { // на пкм ставим/убираем начальную/конечную точку
             cell.classList.toggle('main');
 
-            const row = Math.floor(i / size); 
-            const col = i % size;
-
-            if(cell.classList.contains('active')) {
-                cell.classList.remove('active');
+            if(cell.classList.contains('wall')) {         // если там была стена - убираем
+                cell.classList.remove('wall');
                 const index = paintedCells.findIndex(cell => cell.row === row && cell.col === col);
                 if (index > -1) {
                     paintedCells.splice(index, 1);
@@ -62,7 +61,7 @@ function getGrid() {
             }
 
             if(cell.classList.contains('main')) {
-                if(mainCells.length < 2) {
+                if(mainCells.length < 2) {                 // если "главных" точек <= 2 - всё ок, иначе - выдаём ошибку
                     mainCells.push({row, col});
                     document.getElementById("error").textContent = "";
                 } else {
@@ -79,24 +78,23 @@ function getGrid() {
         
         grid.appendChild(cell);
     }
-    // console.log(grid);
-    PrimAlgorhitm();
+    PrimAlgorhitm(); // алгоритм Прима расчиащает клетки-стены
 }
 
 let graph = new Map();
 
-function fillTheGraph() {
+function fillTheGraph() {       
     graph.clear();
     for(let i = 0; i < size; i++) {
         for(let j = 0; j < size; j++) {
-            if(!paintedCells.some(cell => cell.row === i && cell.col === j)) {
+            if(!paintedCells.some(cell => cell.row === i && cell.col === j)) {  // для каждой клетки-не-стены добавляем соседей
                 graph.set(`${i},${j}`, getNeighbors(i, j));
             }
         }
     }
 }
 
-function getNeighbors(x, y) {
+function getNeighbors(x, y) {   // соседи слева-снизу-справа-сверху
     let neigh = [];
     if(!paintedCells.some(cell => cell.row === x+1 && cell.col === y) && x+1 < size) {
         neigh.push({row: x+1, col: y});
@@ -113,25 +111,22 @@ function getNeighbors(x, y) {
     return neigh;
 }
 
-function evrEval(a , b) {
+function evrEval(a , b) {   // эвристическая оценка - метрика Манхеттена - оцениваем расстояние до конечной точки
     return Math.abs(a.row - b.row) + Math.abs(a.col - b.col);
 }
 
-let path = new Map();
-let finalPath = [];
-let choosed = [];
-let find = new Map();
+let path = new Map();       // клетки искомого пути
+let finalPath = [];         // координаты клеток искомого пути
+let choosed = [];           // какая клетка выбиралась алгоритмом на каждой итерации
+let find = new Map();       // отображение на экране - выбор между какими точками происходил на данном шаге
 
 function AstarAlgo() {
-    // console.log(mainCells);
     if(mainCells.length < 2) {
         document.getElementById("error").textContent = "Главных точек должно быть две - начальная и конечная";
         return;
     }
-    // console.log(graph)
     clear();
     fillTheGraph();
-    // console.log(graph)
 
     let borders = new PriorityQueue();
 
@@ -154,27 +149,27 @@ function AstarAlgo() {
             break;
         }
         let currFind = [];
-        // console.log(graph);
         for(let next of graph.get(`${curr.row},${curr.col}`)) {
             if(!visited[`${next.row},${next.col}`]) {
-                borders.add(next, evrEval(goal, next));
+                borders.add(next, evrEval(goal, next)); // если еще не посетили - добавляем в клетки на границах с соотв. приоритетом
                 path.set(`${next.row},${next.col}`, curr);
                 visited[`${next.row},${next.col}`] = true;
                 currFind.push(next);
             }
         }
-        find.set(step, currFind);
+        find.set(step, currFind);   // для текущего шага сохраняем, между какими клетакми проходил выбор
         step++;
     }
 
     if(reached) {
-        getPath();   
+        getPath();  
     } else {
         document.getElementById("error").textContent = "Путь не найден";
     }
 }
 
-function getPath() {
+// отображает путь
+function getPath() { 
     let curr = mainCells[1];
     curr = path.get(`${curr.row},${curr.col}`); 
     while(curr != mainCells[0]) {
@@ -197,16 +192,18 @@ async function showAlgorhytm() {
         if(userStep >= find.size) {
             return;
         }
-        grid.children[choosed[userStep-1].row * size + choosed[userStep-1].col].classList.remove('curr');
-        grid.children[choosed[userStep - 1].row * size + choosed[userStep - 1].col].classList.add('show');
-        for(let i of find.get(userStep-1)) {
-            grid.children[i.row * size + i.col].classList.remove('mark');
+        grid.children[choosed[userStep-1].row * size + choosed[userStep-1].col].classList.remove('curr');  // снимаем полномочия лидирующей клетки с предыдущей
+        grid.children[choosed[userStep - 1].row * size + choosed[userStep - 1].col].classList.add('show'); // текущие пройденные клетки (это
+        for(let i of find.get(userStep-1)) {                                                               // при выборе последовательной анимации)
+            grid.children[i.row * size + i.col].classList.remove('mark'); // помечаем точки, между готорыми происхожит выбор
         }
+        // если прошлая клетка не рядом с текущей - она считается тупиком, или "невыгодной точке на текущем шагу" - 
+        // может быть, к ней ещё вернёмся
         if(!isNear(choosed[userStep - 1].row, choosed[userStep - 1].col, choosed[userStep].row, choosed[userStep].col) && !finalPath.find(el => el ==`${choosed[userStep - 1].row},${choosed[userStep - 1].col}`)) {
             grid.children[choosed[userStep-1].row * size + choosed[userStep-1].col].classList.add('deadlock');
         }
     }
-    grid.children[choosed[userStep].row * size + choosed[userStep].col].classList.add('curr');
+    grid.children[choosed[userStep].row * size + choosed[userStep].col].classList.add('curr'); // клетка - главный герой
 
     for(let i of find.get(userStep)) {
         grid.children[i.row * size + i.col].classList.add('mark');
@@ -218,16 +215,17 @@ function clear() {
     path.clear();
     choosed = [];
     find.clear();
+    finalPath = [];
+    userStep = 0;
 }
 
 async function showBySteps() {
     let delay = document.getElementById("inputDelay").value;
-    console.log(delay);
     if(path.size == 0) {
         AstarAlgo();
         AstarAlgo();
     }
-    // setInterval(showAlgorhytm, 1000);
+
     while(userStep < find.size) {
         await new Promise(resolve => {      // устанавливаем пользовательскую задержку 
             setTimeout(() => {              // await ждёт вызова resolve() 
@@ -239,19 +237,19 @@ async function showBySteps() {
 }
 
 function PrimAlgorhitm() {
-    let startRow = Math.floor(Math.random() * size);
+    let startRow = Math.floor(Math.random() * size);    // начинаем с рандомной клетки
     let startCol = Math.floor(Math.random() * size);
     let queue = [];
-    queue.push({row: startRow, col: startCol});
+    queue.push({row: startRow, col: startCol}); // добавляем в очередь, убираем статус стены
     
     pathCells.push({row: startRow, col: startCol});
-    grid.children[startRow * size + startCol].classList.remove('active');
+    grid.children[startRow * size + startCol].classList.remove('wall');
     paintedCells.splice(paintedCells.findIndex(cell => cell.row === startRow && cell.col === startCol), 1);
 
 
     while(queue.length > 0) {
-        let current = queue.splice(Math.floor(Math.random() * queue.length), 1)[0];
-        let directions = [
+        let current = queue.splice(Math.floor(Math.random() * queue.length), 1)[0]; // берём из очереди первую клетку
+        let directions = [  // во всех направлениях выбираем клетку через стену
             [2,0],
             [0,2],
             [-2,0],
@@ -259,22 +257,26 @@ function PrimAlgorhitm() {
         ];
 
         for(let dir of directions) {
+            // проверяем что выбранная клетка в пределах поля и ещё не является "тропинкой"
             if(current.row + dir[0] >= 0 && current.row + dir[0] < size && current.col + dir[1] >= 0 && current.col + dir[1] < size) {
                 if(!pathCells.some(cell => cell.row === current.row + dir[0] && cell.col === current.col + dir[1])) {
                     
-                    grid.children[(current.row + dir[0]) * size + current.col + dir[1]].classList.remove('active');
-                    grid.children[(current.row + dir[0]/2) * size + current.col + dir[1]/2].classList.remove('active');
-
+                    // если она действивтельно стена - пробуриваем к ней тропинку
+                    grid.children[(current.row + dir[0]) * size + current.col + dir[1]].classList.remove('wall');
+                    grid.children[(current.row + dir[0]/2) * size + current.col + dir[1]/2].classList.remove('wall');
+                    
+                    // убираем статус стены
                     paintedCells.splice(paintedCells.findIndex(cell => cell.row === current.row + dir[0] && cell.col === current.col + dir[1]), 1);
                     paintedCells.splice(paintedCells.findIndex(cell => cell.row === current.row + dir[0]/2 && cell.col === current.col + dir[1]/2), 1);
-
+                    
+                    // добавляем в "тропинки"
                     pathCells.push({row: current.row + dir[0], col: current.col + dir[1]});
                     pathCells.push({row: current.row + dir[0]/2, col: current.col + dir[1]/2});
-
+                    
+                    // добавляем в очередь пикнутую по направлению клетку
                     queue.push({row: current.row + dir[0], col: current.col + dir[1]});
                 }
             }
         }
     }
-    console.log(paintedCells);
 }
