@@ -17,4 +17,25 @@ document.getElementById('build-tree').addEventListener('click', () => {
     } catch (error) {
         alert(error.message);
     }
-})
+});
+
+document.getElementById('predict').addEventListener('click', () => {
+    if (!decisionTree) {
+        alert('Please build the decision tree first.');
+        return;
+    }
+
+    const csvData = document.getElementById('new-data').value;
+    if (!csvData) {
+        alert('Please enter new data.');
+        return;
+    }
+
+    try {
+        const parsedData = parseCSV(csvData);
+        const predictions = predictAll(decisionTree, parsedData);
+        document.getElementById('classification-result').textContent = predictions.join('\n');
+    } catch (error) {
+        alert(`Error during classification: ${error.message}`);
+    }
+});
