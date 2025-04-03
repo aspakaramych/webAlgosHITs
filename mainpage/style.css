@@ -1,7 +1,7 @@
 body {
-    /* background-color: ; */
+    background: linear-gradient(to top, rgb(108, 108, 246), pink);
 }
-
+    
 #left_card_field {
     display: flex;
     flex-direction: column;
@@ -27,48 +27,40 @@ body {
 
 .block {
     background-color: #ededed;
-    border: 2px #a2a1a1 solid;
-    border-radius: 10px;
+    /* border: 2px #a2a1a1 solid; */
+    background: linear-gradient(#ededed, #ededed) padding-box,
+                linear-gradient(to top,  darkorchid, rgba(74, 74, 209, 0.738)) border-box;
+    border-radius: 15px;
+    border: 4px solid transparent;
     padding: 10px;
     width: 85%;
     height: 190px;
     margin: 10px;
     display: inline-block;
+    position: relative; /* Устанавливаем относительное позиционирование для блока */
 }
 
-#description {
+#name {
     font-family: "Google Sans", Roboto, Arial, sans-serif;
     font-weight: 400;
     font-size: 25px;
     color: #5583bc;
     text-align: center;
-    position: relative;
-    bottom: 195px;
-    left: 70px;
+    position: absolute; /* Позиционируем описание абсолютно */
+    bottom: 19vh; /* Расположение от нижней границы блока */
+    left: 50%; /* Центрируем по горизонтали */
 }
 
-#astar-description {
-    font-family: "Google Sans", Roboto, Arial, sans-serif;
-    font-weight: 400;
-    font-size: 19px;
-    color: #2f2f2f;
-    position: absolute;
-    top: 22%;
-    left: 25%;
-    border-radius: 5px; /* Закругленные углы */
-    z-index: 10; /* Убедитесь, что текст находится поверх других элементов */
-}
-
-#clusterization-description {
+#description {
     font-family: "Google Sans", Roboto, Arial, sans-serif;
     font-weight: 400;
     font-size: 19px;
     color: #2f2f2f;
     position: absolute;
     top: 50%;
-    left: 25%;
-    border-radius: 5px; /* Закругленные углы */
-    z-index: 10; /* Убедитесь, что текст находится поверх других элементов */
+    left: 40%;
+    border-radius: 5px;
+
 }
 
 #email_block {
@@ -82,9 +74,6 @@ body {
     width: 97%;
     height: 302px;
     margin: 10px;
-
-
-
 }
 
 #astar_wrap {
