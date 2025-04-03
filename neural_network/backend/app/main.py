@@ -17,7 +17,7 @@ async def get_prediction(data=Body()):
     decoded_data = data.decode("utf-8")
     parsed_data = json.loads(decoded_data)
     num_array = np.array(parsed_data["data"]).astype(np.uint8)
-    num = predict(num_array, "neural_network/backend/app/weights/weights.json")
+    num = predict(num_array, "./app/weights/weights.json")
     return num
 
 if __name__ == '__main__':
