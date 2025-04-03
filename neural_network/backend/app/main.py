@@ -3,7 +3,7 @@ import numpy as np
 from fastapi import FastAPI, Body
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-from neural_network.backend.nn.neural_network import predict
+from .nn.neural_network import predict
 
 app = FastAPI()
 app.add_middleware(
@@ -17,7 +17,7 @@ async def get_prediction(data=Body()):
     decoded_data = data.decode("utf-8")
     parsed_data = json.loads(decoded_data)
     num_array = np.array(parsed_data["data"]).astype(np.uint8)
-    num = predict(num_array, "neural_network/backend/weights/weights.json")
+    num = predict(num_array, "neural_network/backend/app/weights/weights.json")
     return num
 
 if __name__ == '__main__':

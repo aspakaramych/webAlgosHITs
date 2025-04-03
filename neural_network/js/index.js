@@ -46,7 +46,7 @@ function canvasToArray(canvas) {
 async function predict(canvas) {
     const input = canvasToArray(canvas);
     console.log(input);
-    const response = await fetch("http://localhost:8000/predict", {
+    const response = await fetch("http://localhost:80/predict", {
         method: "POST",
         body: JSON.stringify({
             'data': input
