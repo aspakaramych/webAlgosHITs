@@ -1,5 +1,3 @@
-import {createModel} from "./neuralNetwork.js";
-
 function setupCanvas(canvas) {
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = 'white';
@@ -39,42 +37,31 @@ function drawPixel(canvas, event) {
     ctx.fillRect(x, y, 1, 1);
 }
 
-function preprocessImage(canvas) {
+function canvasToArray(canvas) {
     const ctx = canvas.getContext('2d');
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const data = imageData.data;
-
-    const resized = Array.from({ length: 28 }, () => Array(28).fill(0));
-
-    for (let y = 0; y < 50; y++) {
-        for (let x = 0; x < 50; x++) {
-            const pixelIndex = (y * 50 + x) * 4;
-            const gray = data[pixelIndex] / 255;
-
-            const newX = Math.floor((x / 50) * 28);
-            const newY = Math.floor((y / 50) * 28);
-
-            resized[newY][newX] += gray;
-        }
-    }
-
-
-    const maxValue = Math.max(...resized.flat());
-    return resized.map(row => row.map(val => val / maxValue));
+    return Array.from(imageData.data);
 }
 
-async function predict(canvas, path) {
-    const model = await createModel(path);
-    const input = preprocessImage(canvas);
+async function predict(canvas) {
+    const input = canvasToArray(canvas);
+    console.log(input);
+    const response = await fetch("http://localhost:8000/predict", {
+        method: "POST",
+        body: JSON.stringify({
+            'data': input
+        })
+    });
+    if (response.ok) {
+        const predictedClass = await response.json();
 
-    const flatInput = [input.flat()];
+        const resultElement = document.getElementById('Result');
+        resultElement.textContent = `Результат: ${predictedClass}`;
+    }
+    else{
+        console.log(response);
+    }
 
-    const output = model.forward(flatInput);
-    const predictedClass = output[0].indexOf(Math.max(...output[0]));
-
-    console.log(predictedClass);
-    const resultElement = document.getElementById('Result');
-    resultElement.textContent = `Результат: ${predictedClass}`;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -89,6 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setupCanvas(canvas);
 
     submitButton.addEventListener('click', () => {
-        predict(canvas, '../neural_network/neural_network/weights/weights.json');
+        predict(canvas);
     });
 });
