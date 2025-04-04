@@ -33,7 +33,7 @@ document.getElementById('predict').addEventListener('click', () => {
 
     try {
         const parsedData = parseCSV(csvData);
-        const predictions = predictAll(decisionTree, parsedData);
+        const predictions = predict(decisionTree, parsedData);
         document.getElementById('classification-result').textContent = predictions.join('\n');
     } catch (error) {
         alert(`Error during classification: ${error.message}`);
