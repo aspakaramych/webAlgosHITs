@@ -8,3 +8,36 @@ body {
     align-items: center;
     justify-content: center;
 }
+
+#info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between; /* Расположение элементов по краям */
+    width: 900px; /* Ширина равна ширине канваса */
+    margin-top: 10px; /* Отступ сверху для отделения от канваса */
+}
+
+#info_description {
+    border: 2px black solid;
+    padding: 2%;
+    margin-right: 10px;
+    background-color: bisque;
+    border-radius: 10px;
+}
+
+#nums_k {
+    height: 8vh;
+    width: 10%;
+    line-height: 1;
+    font-size: 30px;
+    border: 3px black solid;
+    border-radius: 10px;
+}
+
+#start {
+    height: 8vh;
+    width: 10%;
+    background-color: springgreen;
+    border-radius: 10px;
+}

@@ -19,10 +19,16 @@
     </section>
     <section id="main_section">
         <h1>Поле</h1>
-        <canvas height="600" width="700" id='field'>
-        </canvas>
-        <button id="start">Старт</button>
+        <canvas height="500" width="900" id='field' style="border: 2px black solid; border-radius: 10px;"></canvas>
+        <div id="info"> 
+            <div style="display: flex; flex-direction: row;">
+                <div id="info_description">Введите количество кластеров <br> (по умолчанию - авто)</div>
+                <input id="nums_k" type="number">
+            </div>
+            <button id="start">Старт</button>
+        </div>
         <script src="clusterization.js"></script>
+        
     </section>
 </body>
 </html>

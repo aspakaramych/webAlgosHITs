@@ -285,11 +285,18 @@ function silhouetteCoef(clusters, centroids) {
 function cluserizationAlgo() {
     let bestK = 1;
     let bestScore = 0;
-    const maxK = Math.min(10, points.length);
+    let maxK = Math.min(10, points.length);
     let bestClusters = null;
     let bestCentroids = null;
-    
-    for (let k = 1; k <= maxK; k++) {
+    let k = 1;
+    let nums_k = parseInt(document.getElementById('nums_k').value)
+    console.log(nums_k)
+    if(!isNaN(nums_k)) {
+        k = nums_k;
+        maxK = nums_k += 1;
+
+    }
+    for (; k < maxK; k++) {
         let centroids = getCentroids(k);
         let prevCentroids = null;
         let clusters = null;
@@ -314,5 +321,6 @@ function cluserizationAlgo() {
         }
     }
     
+
     draw(bestClusters);
 }
