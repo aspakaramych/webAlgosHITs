@@ -1,26 +1,121 @@
 body {
     background-color: #f3e9e7;
 }
-#main_field {
+
+.parent-container {
     display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f4f9;
+}
+
+
+.container {
+    width: 500px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 80vh;
+    text-align: center;
 }
-canvas {
-    border: 1px solid black;
-    width: 20%;
+
+
+#myCanvas {
+    width: 75%;
     aspect-ratio: 1 / 1;
-    cursor: crosshair;
+    background-color: #e0e0e0;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    margin: 0 auto 20px;
+    display: block;
 }
-button {
-    margin-top: 10px;
+
+
+.button {
     padding: 10px 20px;
     font-size: 16px;
+    color: #fff;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
-#result {
-    margin-top: 10px;
+
+.button:hover {
+    background-color: #45a049;
+}
+
+
+.prediction-result {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border: 2px solid #4CAF50;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.prediction-result h3 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    color: #333;
+}
+
+.result-text {
     font-size: 20px;
     font-weight: bold;
+    color: #4CAF50;
+}
+
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.modal-content p {
+    margin: 0 0 15px;
+    font-size: 16px;
+    color: #333;
+}
+
+.modal-content button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.modal-content button:hover {
+    background-color: #45a049;
+}
+
+
+.blur {
+    filter: blur(5px);
+    pointer-events: none;
 }
