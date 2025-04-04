@@ -8,13 +8,13 @@ context.strokeRect(0, 0, canvas.width, canvas.height);
 
 const STYLES = [
     'red',
-     'pink',
       'blue',
        'orange',
-        'purple',
          'green',
           'brown',
-           'gray',
+          'purple',
+            'pink',
+            'gray',
             'black',
              'magenta', // смесь розового и фиолетового :3
               'yellow',

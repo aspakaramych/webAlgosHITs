@@ -14,6 +14,10 @@ let size;
 let grid;
 let userStep = 0;
 
+document.addEventListener('DOMContentLoaded', function() {
+    getGrid();
+});
+
 // генерируем поле (все клетки закрашены - это для алгоритма Прима)
 function getGrid() {
     clear();
