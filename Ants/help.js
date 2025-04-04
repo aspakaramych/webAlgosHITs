@@ -1,9 +1,10 @@
-let max_pheromones = 10;
+let max_pheromones = 100;
 
 export let colors = {
     'orange': [255, 165, 0, 255],
     'black': [0, 0, 0, 255],
     'green': [0, 128, 0, 255],
+    'deepgreen': [0, 255, 0, 255],
     'white': [255, 255, 255, 255],
     'pink': [255, 20, 147, 255],
     'red': [255, 0, 0, 255]
@@ -28,6 +29,8 @@ export function correctPos(height, width, x, y, d) {
     return [newX, newY];
 }
 
+
+
 export function drawRect(ctx, x, y, color, size) {
     ctx.fillStyle = color;
     ctx.fillRect(x - size / 2, y - size / 2, size, size);
@@ -51,6 +54,7 @@ export function updatePixel(ctx, matrix, x, y) {
     if (ceil.ants > 0) changeColorPixel(ctx, x, y, colors['black']);
     else if (ceil.food > 0) changeColorPixel(ctx, x, y, colors['green']);
     else if (ceil.colony === true) changeColorPixel(ctx, x, y, colors['orange']);
+    else if (ceil.pheromones_food > 0) changeColorPixel(ctx, x, y, colorIntensity(colors['deepgreen'], matrix[x][y].pheromones_food, max_pheromones));
     else if (ceil.pheromones_home > 0) changeColorPixel(ctx, x, y, colorIntensity(colors['red'], matrix[x][y].pheromones_home, max_pheromones));
     else changeColorPixel(ctx, x, y, colors['white']);
 }

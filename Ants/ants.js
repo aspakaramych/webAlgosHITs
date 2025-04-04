@@ -6,15 +6,15 @@ import {
     delay
 } from './help.js'
 
-let canvasHeight = 100;
-let canvasWidth = 100;
+let canvasHeight = 200;
+let canvasWidth = 200;
 
 let cnt_ants = 1000;
 
 let d = [[-1, 0], [0, -1], [1, 0], [0, 1]];
 
 let pheromones_step = 1;
-let coef_transpire = 0.1;
+let coef_transpire = 0.01;
 
 document.addEventListener('DOMContentLoaded', () => {
     let canvas = document.getElementById('table');
@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     );
     let ants = [];
     let pheromonesHome = {};
+    let pheromonesFood = {};
 
     canvas.addEventListener('click', (event) => {
         if (mode === 'colony') addColony(event);
@@ -101,25 +102,55 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function isFood(x, y) {
+        return matrix[x][y].food > 0;
+    }
+
+    function nextCeil(ant) {
+        let probability = [1, 1, 1, 1];
+        let cnt = 0;
+        if (ant.state === 'search') {
+            for (let i = 0; i < d.length; i++) {
+                probability[i] += matrix[ant.x][ant.y].pheromones_food;
+                cnt += probability[i];
+            }
+        }
+        else if (ant.state === 'food') {
+            for (let i = 0; i < d.length; i++) {
+                probability[i] +=  matrix[ant.x][ant.y].pheromones_food;
+                cnt += probability[i];
+            }
+        }
+        let path = Math.floor(Math.random() * cnt);
+        let sum = 0;
+        for (let i = 0; i < d.length; i++) {
+            sum += probability[i];
+            if (Math.abs(sum) > Math.abs(path)) return i;
+        }
+        return Math.floor(Math.random() * 3.99);
+    }
+
     function updatePos() {
         for (let i = 0; i < cnt_ants; i++) {
-            let path = Math.floor(Math.random() * 4);
-            if (path === 4) return;
+            let path = nextCeil(ants[i]);
 
             matrix[ants[i].x][ants[i].y].ants--;
-            leavePheromoneHome(ants[i].x, ants[i].y);
+            if (ants[i].state === 'search') leavePheromoneHome(ants[i].x, ants[i].y);
+            else if (ants[i].state === 'food') leavePheromoneFood(ants[i].x, ants[i].y);
             updatePixel(ctx, matrix, ants[i].x, ants[i].y);
 
             let cord = correctPos(canvasHeight, canvasWidth, ants[i].x, ants[i].y, d[path]);
             ants[i].x = cord[0];
             ants[i].y = cord[1];
 
+            if (isFood(ants[i].x, ants[i].y)) ants[i].state = 'food';
+
             matrix[ants[i].x][ants[i].y].ants++;
             updatePixel(ctx, matrix, ants[i].x, ants[i].y);
         }
     }
 
-    function transpirePheromonesHome() {
+    function transpirePheromones() {
         for (const cord in pheromonesHome) {
             pheromonesHome[cord].pheromones_step = pheromonesHome[cord].pheromones_step - pheromones_step * coef_transpire;
             matrix[pheromonesHome[cord].x][pheromonesHome[cord].y].pheromones_home = pheromonesHome[cord].pheromones_step;
@@ -128,6 +159,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 delete pheromonesHome[cord];
                 matrix[pheromonesHome[cord].x][pheromonesHome[cord].y].pheromones_home = 0;
                 updatePixel(ctx, matrix, pheromonesHome[cord].x, pheromonesHome[cord].y);
+            }
+        }
+        for (const cord in pheromonesFood) {
+            pheromonesFood[cord].pheromones_step = pheromonesFood[cord].pheromones_step - pheromones_step * coef_transpire;
+            matrix[pheromonesFood[cord].x][pheromonesFood[cord].y].pheromones_food = pheromonesFood[cord].pheromones_step;
+            updatePixel(ctx, matrix, pheromonesFood[cord].x, pheromonesFood[cord].y);
+            if (pheromonesFood[cord] <= 0) {
+                delete pheromonesFood[cord];
+                matrix[pheromonesFood[cord].x][pheromonesFood[cord].y].pheromones_food = 0;
+                updatePixel(ctx, matrix, pheromonesFood[cord].x, pheromonesFood[cord].y);
             }
         }
     }
@@ -139,10 +180,17 @@ document.addEventListener('DOMContentLoaded', () => {
         matrix[x][y].pheromones_home++;
     }
 
+    function leavePheromoneFood(x, y) {
+        const key = `${x},${y}`;
+        if (matrix[x][y].pheromones_food === 0) pheromonesFood[key] = {pheromones_step, x, y};
+        else pheromonesFood[key].pheromones_step += pheromones_step;
+        matrix[x][y].pheromones_food++;
+    }
+
     async function ants_algorithm() {
         while (true) {
             updatePos();
-            transpirePheromonesHome();
+            transpirePheromones();
             await delay(1);
         }
     }
