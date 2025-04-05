@@ -16,8 +16,9 @@ export function generateColony(colony, cnt_ants) {
         let x = colony[0];
         let y = colony[1];
         let state = 'search';
-        let nutrition = 0;
-        ants.push({ x, y, state, nutrition });
+        let nutrition = 100
+        let memory = [];
+        ants.push({ x, y, state, nutrition, memory });
     }
     return ants;
 }
