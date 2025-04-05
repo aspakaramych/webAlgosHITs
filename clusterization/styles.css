@@ -9,9 +9,9 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between; /* Расположение элементов по краям */
-    width: 900px; /* Ширина равна ширине канваса */
-    margin-top: 10px; /* Отступ сверху для отделения от канваса */
+    justify-content: space-between;
+    width: 900px;
+    margin-top: 10px;
 }
 
 #info_description {
@@ -29,6 +29,13 @@
     font-size: 30px;
     border: 3px black solid;
     border-radius: 10px;
+    transition: 0.3s;
+}
+
+#nums_k:focus {
+    width: 12%;
+    background-color: bisque;
+    transition: 0.3s;
 }
 
 #start {
