@@ -1,7 +1,3 @@
-body {
-    background: linear-gradient(to top, rgb(108, 108, 246), pink);
-}
-    
 #left_card_field {
     display: flex;
     flex-direction: column;
@@ -17,7 +13,6 @@ body {
 #right_card_field {
     display: flex;
     flex-direction: column;
-    /* align-items: left; */
     justify-content: left;
     margin-top: 10px;
     width:40%;
@@ -27,7 +22,6 @@ body {
 
 .block {
     background-color: #ededed;
-    /* border: 2px #a2a1a1 solid; */
     background: linear-gradient(#ededed, #ededed) padding-box,
                 linear-gradient(to top,  darkorchid, rgba(74, 74, 209, 0.738)) border-box;
     border-radius: 15px;
@@ -37,7 +31,8 @@ body {
     height: 190px;
     margin: 10px;
     display: inline-block;
-    position: relative; /* Устанавливаем относительное позиционирование для блока */
+    position: relative;
+    box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 #name {
@@ -46,9 +41,9 @@ body {
     font-size: 25px;
     color: #5583bc;
     text-align: center;
-    position: absolute; /* Позиционируем описание абсолютно */
-    bottom: 19vh; /* Расположение от нижней границы блока */
-    left: 50%; /* Центрируем по горизонтали */
+    position: absolute;
+    bottom: 19vh;
+    left: 50%;
 }
 
 #description {

@@ -14,6 +14,10 @@ let size;
 let grid;
 let userStep = 0;
 
+document.addEventListener('DOMContentLoaded', function() {
+    getGrid();
+});
+
 // генерируем поле (все клетки закрашены - это для алгоритма Прима)
 function getGrid() {
     clear();
@@ -127,6 +131,8 @@ function AstarAlgo() {
     }
     clear();
     fillTheGraph();
+    finalPath.push(`${mainCells[0].row},${mainCells[0].col}`)
+    finalPath.push(`${mainCells[1].row},${mainCells[1].col}`)
 
     let borders = new PriorityQueue();
 
@@ -199,7 +205,7 @@ async function showAlgorhytm() {
         }
         // если прошлая клетка не рядом с текущей - она считается тупиком, или "невыгодной точке на текущем шагу" - 
         // может быть, к ней ещё вернёмся
-        if(!isNear(choosed[userStep - 1].row, choosed[userStep - 1].col, choosed[userStep].row, choosed[userStep].col) && !finalPath.find(el => el ==`${choosed[userStep - 1].row},${choosed[userStep - 1].col}`)) {
+        if(!finalPath.find(el => el ==`${choosed[userStep - 1].row},${choosed[userStep - 1].col}`)) {
             grid.children[choosed[userStep-1].row * size + choosed[userStep-1].col].classList.add('deadlock');
         }
     }

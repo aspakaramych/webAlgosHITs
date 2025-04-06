@@ -12,26 +12,48 @@
     <section class="page_header">
         <h1 class = "logo">
             <a href="../mainpage/index.html" class="name">
-                <img src="../images/logo192x192.png" class="image">
+                <img src="../images/pinpng.com-redstone-dust-png-4986074.png" class="image">
                 <span class="logo_text">AlgoCrew</span>
             </a>
         </h1>
     </section>
-    <section id="field">
-        <h1>Поле</h1>
-        <div id="menu">
-            <button id="start">Старт</button>
-            <button id="step">Сделать шаг</button>
-            <button id="showBySteps">Последовательно</button>
-            <input id="inputDelay" type="range" min="0" max="1000" step="10" value="50">
-        </div>
-        
-        <p id="error"></p>
-        <input type="number" id="size" placeholder="Введите размер поля">
-        <button id="generate">Сгенерировать</button>
-        <div id="grid"></div>
-    </section>
-    
+
+    <div id="main_container">
+        <section id="field">
+            <div style="background-color: rgba(245, 245, 245, 0.323); border-radius: 10px; padding: 10px;">
+                <div id="menu">
+                    <button id="start">Старт ✅</button>
+                    <button id="step">Сделать шаг 🦶</button>
+                    <button id="showBySteps">Последовательно 👣</button>
+                    <label><input id="inputDelay" type="range" min="0" max="500" step="10" value="100"></label>
+                </div>
+                <div style="margin-left: 32%;">
+                    <button id="generate">Сгенерировать</button>
+                    <input id="size" placeholder="Введите размер поля" value = 10 style="margin-top: 10px; margin-bottom: 10px;">
+                </div>
+            </div>
+
+            <div id="grid"></div>
+        </section>
+
+        <section id="description_block">
+            <div id="description_header">Инструкция 📚</div>
+            <div id="description">
+                <div id="text_description">
+                    <button id="start-mock">Старт</button>
+                    - найти путь между
+                    <div style="margin-left: 126px; margin-top: -10px;">точками</div>
+                    <button id="step-mock">Сделать шаг 🦶</button>
+                    - шаг алгоритма
+                    <div style="margin-left: 10px; margin-top: 5px;">показывает варианты выбора следующих клеток</div>
+                    <button id="showBySteps-mock">Последовательно 👣</button>
+                    - анимация
+                    <div style="margin-left: 230px; margin-top: -10px;">поиска пути</div>
+                    <div style="margin-left: 10px; margin-top: 5px;"></div>
+                </div>
+            </div>
+        </section>
+    </div>
     <script src="Astar_algo.js" type="module"></script>
 </body>
 </html>
