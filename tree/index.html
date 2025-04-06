@@ -2,26 +2,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Tree</title>
-    <link rel="stylesheet" href="css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decision Tree App</title>
+    <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
-    <div class="container">
-        <div class="section">
-            <textarea id="training-data" placeholder="Enter your train data in Csv format"></textarea>
-            <button id="build-tree">Build Decision Tree</button>
-        </div>
-        <div class="section">
-            <pre id="tree-out"></pre>
-        </div>
-        <div class="section">
-            <textarea id="new-data" placeholder="Enter new data"></textarea>
-            <button id="predict">Classify</button>
-        </div>
-        <div class="section">
-            <pre id="result"></pre>
-        </div>
+<div class="container">
+    <h1>Decision Tree Builder</h1>
+
+    <div class="section">
+        <h2>Train the Model</h2>
+        <textarea id="train-data" placeholder="Enter training data in CSV format..."></textarea>
+        <button id="train-button">Train</button>
     </div>
-    <script type="module" src="./js/script.js"></script>
+
+    <div class="section">
+        <h2>Decision Tree Visualization</h2>
+        <div id="tree-container" style="width: 800px; height: 600px;"></div>
+    </div>
+
+    <div class="section">
+        <h2>Predict</h2>
+        <textarea id="test-data" placeholder="Enter test data in CSV format..."></textarea>
+        <button id="predict-button">Predict</button>
+        <pre id="prediction-output"></pre>
+    </div>
+</div>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="js/script.js"></script>
 </body>
 </html>
