@@ -55,7 +55,7 @@ export function updatePixel(ctx, matrix, x, y) {
     if (ceil.ants > 0) changeColorPixel(ctx, x, y, colors['black']);
     else if (ceil.food > 0) changeColorPixel(ctx, x, y, colors['green']);
     else if (ceil.colony === true) changeColorPixel(ctx, x, y, colors['orange']);
-    else if (ceil.pheromones_food > 0) changeColorPixel(ctx, x, y, colorIntensity(colors['deepgreen'], matrix[x][y].pheromones_food, max_pheromones));
+    else if (ceil.pheromones_food > 0 && ceil.pheromones_food > 10) changeColorPixel(ctx, x, y, colorIntensity(colors['deepgreen'], matrix[x][y].pheromones_food, max_pheromones));
     else if (ceil.pheromones_home > 0) changeColorPixel(ctx, x, y, colorIntensity(colors['red'], matrix[x][y].pheromones_home, max_pheromones));
     else changeColorPixel(ctx, x, y, colors['white']);
 }

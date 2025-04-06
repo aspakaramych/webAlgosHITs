@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 for (let j = 1; j < 1 + Math.floor(mutation_rate * cnt_population); j++) {
-                    mutation(population[population.length - j - 1]);
+                    mutation(population[j]);
                     if (controller.signal.aborted) {
                         console.log("Алгоритм остановлен");
                         return;
