@@ -1,22 +1,16 @@
-import {
-    drawRect,
-    generateColony,
-    updatePixel,
-    correctPos,
-    delay
-} from './help.js'
+import {correctPos, delay, drawRect, generateColony, updatePixel} from './help.js'
 
 let canvasHeight = 100;
 let canvasWidth = 100;
 
 let cnt_ants = 1000;
 
-let d = [[-1, 0], [0, -1], [1, 0], [0, 1]];
+let d = [[-1, 0], [0, -1], [1, 0], [0, 1], [-1, -1], [1, -1], [1, 1], [-1, 1]];
 
 let coef_transpire = 0.001;
 
-let alpha = 4;
-let beta = 2;
+let alpha = 3;
+let beta = 1;
 
 document.addEventListener('DOMContentLoaded', () => {
     let canvas = document.getElementById('table');
@@ -59,10 +53,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (colony.length > 0) {
             return;
         }
-        const x = event.offsetX;
-        const y = event.offsetY;
-        let colony_size = 1;
-        let ch = Math.ceil(colony_size / 2);
+        let scaleX = canvas.width / canvas.clientWidth;
+        let scaleY = canvas.height / canvas.clientHeight;
+
+        let x = Math.floor(event.offsetX * scaleX);
+        let y = Math.floor(event.offsetY * scaleY);
+        let colony_size = 4;
+        let ch = 1;
 
         if (
             x >= colony_size / 2  && x + colony_size / 2 <= canvasWidth &&
@@ -79,15 +76,20 @@ document.addEventListener('DOMContentLoaded', () => {
             colony.push(x);
             colony.push(y);
         }
+
+        console.log(x, y);
     }
 
     function addFood(event) {
-        const foodWidth = 1;
-        const foodHeight = 1;
+        const foodWidth = 2;
+        const foodHeight = 2;
         let ch = Math.ceil(foodWidth / 2);
 
-        const x = event.offsetX;
-        const y = event.offsetY;
+        let scaleX = canvas.width / canvas.clientWidth;
+        let scaleY = canvas.height / canvas.clientHeight;
+
+        let x = Math.floor(event.offsetX * scaleX);
+        let y = Math.floor(event.offsetY * scaleY);
 
         const nutrition = 100;
 
@@ -114,6 +116,19 @@ document.addEventListener('DOMContentLoaded', () => {
         return matrix[x][y].colony;
     }
 
+    function calculateAngleHeuristic(ant, newX, newY) {
+        let currentDirection = [newX - ant.x, newY - ant.y];
+        let targetDirection = [colony[0] - ant.x, colony[1] - ant.y];
+
+        let dotProduct = currentDirection[0] * targetDirection[0] + currentDirection[1] * targetDirection[1];
+        let magnitudeCurrent = Math.sqrt(currentDirection[0] * currentDirection[0] + currentDirection[1] * currentDirection[1]);
+        let magnitudeTarget = Math.sqrt(targetDirection[0] * targetDirection[0] + targetDirection[1] * targetDirection[1]);
+
+        let cosineAngle = dotProduct / (magnitudeCurrent * magnitudeTarget);
+
+        return Math.max(cosineAngle, 0);
+    }
+
     function nextCeil(ant) {
         let probabilities = [];
         let total = 0;
@@ -131,11 +146,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (ant.state === 'search') {
                     pheromones = matrix[newX][newY].pheromones_food;
+
+                    heuristic = 1;
                 } else if (ant.state === 'food') {
                     pheromones = matrix[newX][newY].pheromones_home;
-                }
 
-                heuristic = 1 / (Math.abs(newX - colony[0]) + Math.abs(newY - colony[1]) + 1);
+                    let distanceToColony = Math.abs(newX - colony[0]) + Math.abs(newY - colony[1]);
+                    heuristic = 1 / (distanceToColony + 1);
+
+                    let angleHeuristic = calculateAngleHeuristic(ant, newX, newY);
+                    heuristic *= angleHeuristic;
+                }
 
                 let probability = Math.pow(pheromones, alpha) * Math.pow(heuristic, beta);
                 probabilities.push({ direction: i, value: probability });
@@ -175,22 +196,22 @@ document.addEventListener('DOMContentLoaded', () => {
             ants[i].x = cord[0];
             ants[i].y = cord[1];
 
-            // Добавляем текущую клетку в память
             ants[i].memory.push({ x: ants[i].x, y: ants[i].y });
 
-            // Ограничиваем длину памяти (например, до 10 шагов)
             if (ants[i].memory.length > 10) {
-                ants[i].memory.shift(); // Удаляем старые шаги
+                ants[i].memory.shift();
             }
 
             if (isFood(ants[i].x, ants[i].y)) {
                 ants[i].nutrition = matrix[ants[i].x][ants[i].y].food;
                 ants[i].state = 'food';
+                ants[i].memory = [];
             }
             if (isColony(ants[i].x, ants[i].y))
             {
                 ants[i].nutrition = 100;
                 ants[i].state = 'search';
+                ants[i].memory = [];
             }
 
             matrix[ants[i].x][ants[i].y].ants++;
@@ -200,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function transpirePheromones() {
         for (const cord in pheromonesHome) {
-            pheromonesHome[cord].pheromones = pheromonesHome[cord].pheromones;
+            pheromonesHome[cord].pheromones = pheromonesHome[cord].pheromones * (1 - 0.001);
             matrix[pheromonesHome[cord].x][pheromonesHome[cord].y].pheromones_home = pheromonesHome[cord].pheromones;
             updatePixel(ctx, matrix, pheromonesHome[cord].x, pheromonesHome[cord].y);
             if (pheromonesHome[cord].pheromones <= 0) {
