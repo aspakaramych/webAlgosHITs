@@ -66,7 +66,7 @@ export function buildDecisionTree(data, targetColumn) {
 }
 
 
-export function predict(tree, dataPoint) {
+function predict(tree, dataPoint) {
     let currentNode = tree;
 
     while (currentNode) {
@@ -85,4 +85,8 @@ export function predict(tree, dataPoint) {
     }
 
     throw new Error("Tree traversal ended unexpectedly.");
+}
+
+export function predictAll(tree, dataPoints) {
+    return dataPoints.map(dataPoint => predict(tree, dataPoint));
 }
