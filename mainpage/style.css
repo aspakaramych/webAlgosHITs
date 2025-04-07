@@ -23,7 +23,7 @@
 .block {
     background-color: #ededed;
     background: linear-gradient(#ededed, #ededed) padding-box,
-                linear-gradient(to top,  darkorchid, rgba(74, 74, 209, 0.738)) border-box;
+                linear-gradient(to left,  rgb(204, 82, 82), rgb(247, 214, 30)) border-box;
     border-radius: 15px;
     border: 4px solid transparent;
     padding: 10px;
@@ -39,11 +39,12 @@
     font-family: "Minecraft", sans-serif;
     font-weight: 400;
     font-size: 25px;
-    color: #5583bc;
+    color: #fd1919;
     text-align: center;
     position: absolute;
     bottom: 160px;
-    left: 45%;
+    left: 43%;
+    border: 10px 
 }
 
 #description {
