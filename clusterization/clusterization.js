@@ -323,7 +323,7 @@ function cluserizationAlgo() {
     
 
     draw(bestClusters);
-    dbscan();
+    // dbscan();
     // console.log(getDistance(points[0], points[1]));
 }
 
@@ -386,21 +386,21 @@ function dbscan() {
     console.log(noises);
 }
 
-function draw(clusters, noises) {
-    context.clearRect(1, 1, canvas.width-2, canvas.height-2);
+// function draw(clusters, noises) {
+//     context.clearRect(1, 1, canvas.width-2, canvas.height-2);
     
-    let i = 0;
+//     let i = 0;
     
-    for (let cluster of clusters) {  
-        context.fillStyle = STYLES[i++];
-        for (let point of cluster) {
-            context.fillRect(points[point].x-5, points[point].y-5, 10, 10);
-        }
-    }
+//     for (let cluster of clusters) {  
+//         context.fillStyle = STYLES[i++];
+//         for (let point of cluster) {
+//             context.fillRect(points[point].x-5, points[point].y-5, 10, 10);
+//         }
+//     }
 
-    for (let point of noises) {  
-        context.fillStyle = STYLES[i++];
-        context.fillRect(points[point].x-5, points[point].y-5, 10, 10);
-    }
+//     for (let point of noises) {  
+//         context.fillStyle = STYLES[i++];
+//         context.fillRect(points[point].x-5, points[point].y-5, 10, 10);
+//     }
 
-}
+// }
