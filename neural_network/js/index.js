@@ -38,10 +38,25 @@ function drawPixel(canvas, event) {
 }
 
 function canvasToArray(canvas) {
-    const ctx = canvas.getContext('2d');
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    return Array.from(imageData.data);
+    const resizedCanvas = document.getElementById("resizedCanvas");
+    const ctxResized = resizedCanvas.getContext('2d');
+    ctxResized.drawImage(canvas, 0, 0, 50, 50, 0, 0, 28, 28);
+
+    const imageData = ctxResized.getImageData(0, 0, 28, 28);
+
+    const grayscaleData = [];
+    for (let i = 0; i < imageData.data.length; i += 4) {
+        const r = imageData.data[i];
+        const g = imageData.data[i + 1];
+        const b = imageData.data[i + 2];
+
+        const grayscale = (r + g + b) / 3;
+        grayscaleData.push(grayscale);
+    }
+
+    return grayscaleData;
 }
+
 
 function isCanvasEmpty(canvas) {
     const ctx = canvas.getContext('2d');

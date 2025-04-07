@@ -7,16 +7,19 @@ class Linear:
         self.in_features = in_features
         self.out_features = out_features
         self.weights = np.random.randn(in_features, out_features) * np.sqrt(2 / in_features)
+        self.bias = np.zeros((1, out_features))
         self.input = None
 
     def forward(self, x):
         self.input = x
-        return np.dot(x, self.weights)
+        return np.dot(x, self.weights) + self.bias
 
     def backward(self, grad_output, learning_rate):
         grad_input = np.dot(grad_output, self.weights.T)
         grad_weights = np.dot(self.input.T, grad_output)
+        grad_bias = np.sum(grad_output, axis=0, keepdims=True)
         self.weights -= learning_rate * grad_weights
+        self.bias -= learning_rate * grad_bias
         return grad_input
 
 class Tanh:
@@ -90,15 +93,18 @@ def load_weights_from_json(model, filepath):
         weights_data = json.load(f)
         print(weights_data.keys())
 
-    model.layers[0].weights = np.array(weights_data['weight_1'])
-    model.layers[2].weights = np.array(weights_data['weight_2'])
-    model.layers[4].weights = np.array(weights_data['weight_3'])
+    model.layers[0].weights = np.array(weights_data['weight_1']["weight"])
+    model.layers[0].bias = np.array(weights_data['weight_1']["bias"])
+    model.layers[3].weights = np.array(weights_data['weight_2']["weight"])
+    model.layers[3].bias = np.array(weights_data['weight_2']["bias"])
+    model.layers[5].weights = np.array(weights_data['weight_3']["weight"])
+    model.layers[5].bias = np.array(weights_data['weight_3']["bias"])
 
 def create_model(path):
     model = Sequential()
     model.add(Linear(in_features=784, out_features=512))
     model.add(Tanh())
-    model.add(Dropout(dropout_rate=0.4))
+    model.add(Dropout(dropout_rate=0.5))
     model.add(Linear(in_features=512, out_features=256))
     model.add(Tanh())
     model.add(Linear(in_features=256, out_features=10))
@@ -106,20 +112,29 @@ def create_model(path):
     load_weights_from_json(model, path)
     return model
 
-def preprocess_image(image_array, target_size=(28, 28)):
-    image = Image.fromarray(image_array).convert('L')
-    image = image.resize(target_size)
+
+
+def preprocess_image(image_array):
+    if image_array.shape[-1] == 4:
+        image_array = image_array[..., 3]
+    elif image_array.ndim == 3:
+        image_array = np.mean(image_array[..., :3], axis=-1)
+
+    image = Image.fromarray(image_array.astype(np.uint8)).convert('L')
     image_array = np.array(image)
+
     if np.mean(image_array) > 127:
         image_array = 255 - image_array
     image_array = image_array / 255.0
     image_array = image_array.flatten().reshape(1, -1)
+
     return image_array
 
 def predict(input, path):
     processed_image = preprocess_image(input)
     model = create_model(path)
     output = model.forward(processed_image, is_training=False)
-    probabilities = np.exp(output)
+    probabilities = output
     predicted_class = np.argmax(probabilities, axis=1)[0]
+    print(probabilities)
     return int(predicted_class)

@@ -7,7 +7,8 @@ export let colors = {
     'deepgreen': [0, 255, 0, 255],
     'white': [255, 255, 255, 255],
     'pink': [255, 20, 147, 255],
-    'red': [255, 0, 0, 255]
+    'red': [255, 0, 0, 255],
+    'gray': [128, 128, 128, 255],
 }
 
 export function generateColony(colony, cnt_ants) {
@@ -16,8 +17,10 @@ export function generateColony(colony, cnt_ants) {
         let x = colony[0];
         let y = colony[1];
         let state = 'search';
-        let nutrition = 0;
-        ants.push({ x, y, state, nutrition });
+        let nutrition = 100
+        let memory = [];
+        let steps = 1;
+        ants.push({ x, y, state, nutrition, memory, steps });
     }
     return ants;
 }
@@ -28,8 +31,6 @@ export function correctPos(height, width, x, y, d) {
     if (newY < 0 || newY >= height) newY = y - d[1];
     return [newX, newY];
 }
-
-
 
 export function drawRect(ctx, x, y, color, size) {
     ctx.fillStyle = color;
@@ -52,9 +53,10 @@ export function changeColorPixel(ctx, x, y, color) {
 export function updatePixel(ctx, matrix, x, y) {
     let ceil = matrix[x][y];
     if (ceil.ants > 0) changeColorPixel(ctx, x, y, colors['black']);
+    else if (ceil.obstacle) changeColorPixel(ctx, x, y, colors['gray']);
     else if (ceil.food > 0) changeColorPixel(ctx, x, y, colors['green']);
     else if (ceil.colony === true) changeColorPixel(ctx, x, y, colors['orange']);
-    else if (ceil.pheromones_food > 0) changeColorPixel(ctx, x, y, colorIntensity(colors['deepgreen'], matrix[x][y].pheromones_food, max_pheromones));
+    else if (ceil.pheromones_food > 0 && ceil.pheromones_food > 10) changeColorPixel(ctx, x, y, colorIntensity(colors['deepgreen'], matrix[x][y].pheromones_food, max_pheromones));
     else if (ceil.pheromones_home > 0) changeColorPixel(ctx, x, y, colorIntensity(colors['red'], matrix[x][y].pheromones_home, max_pheromones));
     else changeColorPixel(ctx, x, y, colors['white']);
 }
