@@ -5,6 +5,25 @@
     justify-content: center;
 }
 
+#algo_info_container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+#algo_info {
+    font-family: 'Minecraft', sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    margin-top: 10px;
+    text-align: center;
+    padding: 15px;
+    background-color: rgb(237, 191, 106);
+    width: 400px;
+    border-radius: 10px;
+}
+
 #choose_mode {
     display: flex;
     flex-direction: row;
@@ -73,13 +92,12 @@
     background-color: rgb(2, 200, 101);
 }
 
-#mode_button {
+.mode_button {
     font-family: 'Minecraft', sans-serif;
     font-size: 14px;
     font-weight: 400;
     margin-top: 10px;
-    height: 8vh;
-    width: 20%;
+    padding: 10px;
     background-color: rgb(229, 241, 134);
     border-radius: 10px;
     transition: 0.3s;
