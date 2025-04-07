@@ -5,16 +5,28 @@
     justify-content: center;
 }
 
+#choose_mode {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-left: 35%;
+    width: 30%;
+}
+
 #info {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    width: 900px;
+    width: 800px;
     margin-top: 10px;
 }
 
 #info_description {
+    font-family: 'Minecraft', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
     border: 2px black solid;
     padding: 2%;
     margin-right: 10px;
@@ -22,8 +34,15 @@
     border-radius: 10px;
 }
 
+#field {
+    border: 2px black solid;
+    border-radius: 10px;
+    background-color: rgb(241, 245, 249);
+    margin-top: 10px;
+}
+
 #nums_k {
-    height: 8vh;
+    height: 6vh;
     width: 10%;
     line-height: 1;
     font-size: 30px;
@@ -39,8 +58,53 @@
 }
 
 #start {
-    height: 8vh;
+    font-family: 'Minecraft', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    height: 6vh;
     width: 10%;
     background-color: springgreen;
     border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#start:hover {
+    background-color: rgb(2, 200, 101);
+}
+
+#mode_button {
+    font-family: 'Minecraft', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    margin-top: 10px;
+    height: 8vh;
+    width: 20%;
+    background-color: rgb(229, 241, 134);
+    border-radius: 10px;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+#mode_button:hover {
+    background-color: rgb(178, 188, 103);
+    transition: 0.3s;
+}
+
+#clear {
+    font-family: 'Minecraft', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    margin-right: 120px;
+    height: 6vh;
+    width: 15%;
+    background-color: rgb(255, 178, 63);
+    border-radius: 10px;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+#clear:hover {
+    background-color: rgb(173, 119, 65);
+    transition: 0.3s;
 }
