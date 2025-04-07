@@ -13,12 +13,12 @@ const STYLES = [
          'green',
           'brown',
           'purple',
-            'pink',
+           'pink',
             'gray',
-            'black',
-             'magenta', // смесь розового и фиолетового :3
-              'yellow',
-               'lime'
+             'black',
+              'magenta', // смесь розового и фиолетового :3
+               'yellow',
+                'lime'
 ];
 
 let points = [];
@@ -323,4 +323,84 @@ function cluserizationAlgo() {
     
 
     draw(bestClusters);
+    dbscan();
+    // console.log(getDistance(points[0], points[1]));
+}
+
+function epsilonLocalityScan(currPointIndex) {
+    let neighbours = [];
+    for(let i = 0; i < points.length; i++) {
+        if(getDistance(points[currPointIndex], points[i]) <= epsilon) {
+            neighbours.push(i);
+        }
+    }
+    return neighbours;
+}
+
+function expandCluster(currPointIndex, neighbours, visited, clusters) {
+    let currCluster = [];
+    currCluster.push(currPointIndex);
+    visited[currPointIndex] = true;
+
+    for(let neighbourPointIndex of neighbours) {
+        if(!visited[neighbourPointIndex]) {
+            visited[neighbourPointIndex] = true;
+            let neighbourPointNeighbours = epsilonLocalityScan(neighbourPointIndex);
+            if(neighbourPointNeighbours.length >= minPoints) {
+                neighbours.push(...neighbourPointNeighbours);
+            }
+        }
+
+        if(!clusters.some(cluster => cluster.includes(neighbourPointIndex)) && !currCluster.includes(neighbourPointIndex)) {
+            currCluster.push(neighbourPointIndex);
+        }
+    }
+    return currCluster;
+}
+
+let minPoints = 2;
+let epsilon = 30;
+
+function dbscan() {
+    let clusters = [];
+    let visited = new Array(points.length).fill(false);
+    let noises = [];
+
+    for(let i = 0; i < points.length; i++) {
+        if(!visited[i]) {
+            visited[i] = true;
+            let neighbours = epsilonLocalityScan(i);
+            if(neighbours.length >= minPoints) {
+                clusters.push(expandCluster(i, neighbours, visited, clusters));          
+            }
+            else {
+                noises.push(i);
+            }
+        }
+    }
+
+
+    draw(clusters, noises);
+    console.log(points);
+    console.log(clusters);
+    console.log(noises);
+}
+
+function draw(clusters, noises) {
+    context.clearRect(1, 1, canvas.width-2, canvas.height-2);
+    
+    let i = 0;
+    
+    for (let cluster of clusters) {  
+        context.fillStyle = STYLES[i++];
+        for (let point of cluster) {
+            context.fillRect(points[point].x-5, points[point].y-5, 10, 10);
+        }
+    }
+
+    for (let point of noises) {  
+        context.fillStyle = STYLES[i++];
+        context.fillRect(points[point].x-5, points[point].y-5, 10, 10);
+    }
+
 }
