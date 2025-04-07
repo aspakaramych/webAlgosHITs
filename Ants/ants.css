@@ -13,6 +13,9 @@ body {
 }
 
 #table {
+    image-rendering: pixelated;
+    width: 500px;
+    height: 500px;
     position: relative;
     margin: 20px auto;
     background-color: #ffffff;
