@@ -12,19 +12,24 @@
     <section class="page_header">
         <h1 class = "logo">
             <a href="../mainpage/index.html" class="name">
-                <img src="../images/logo192x192.png" class="image">
+                <img src="../images/pinpng.com-redstone-dust-png-4986074.png" class="image">
                 <span class="logo_text">AlgoCrew</span>
             </a>
         </h1>
     </section>
+    <section id="choose_mode">
+        <button id="mode_button">kmeans</button>
+        <button id="mode_button">kmeans++</button>
+        <button id="mode_button">DBSCAN</button>
+    </section>
     <section id="main_section">
-        <h1>Поле</h1>
-        <canvas height="500" width="900" id='field' style="border: 2px black solid; border-radius: 10px; background-color: rgb(241, 245, 249) ; "></canvas>
+        <canvas height="500" width="800" id='field'></canvas>
         <div id="info"> 
             <div style="display: flex; flex-direction: row;">
                 <div id="info_description">Введите количество кластеров <br> (по умолчанию - авто)</div>
                 <input id="nums_k" type="number">
             </div>
+            <button id="clear">Очистить</button>
             <button id="start">Старт</button>
         </div>
         <script src="clusterization.js"></script>
