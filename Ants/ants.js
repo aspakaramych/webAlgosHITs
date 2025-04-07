@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function isColony(x, y) {
-        return matrix[x][y].colony;
+        return x === colony[0] && y === colony[1];
     }
 
     function calculateAngleHeuristic(ant, newX, newY) {
