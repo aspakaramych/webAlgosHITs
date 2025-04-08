@@ -215,14 +215,39 @@ body {
 
 .cell.wall {
     background-color: gray;
+    background-image: url(../images/wall.png);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
-.cell.main {
-    background-color: rgb(242, 238, 116);
+.cell.start {
+    /* background-color: rgb(118, 63, 247) !important; */
+    background-image: url(../images/redstone.png) !important;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 1px rgb(255, 0, 0) solid;
+}
+
+.cell.finish {
+    /* background-color: rgb(242, 238, 116); */
+    background-image: url(../images/lamp_ff.png) !important;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 1px black solid;
+}
+
+.cell.finish.reached {
+    background-image: url(../images/lamp_on.png) !important;
 }
 
 .cell.path {
-    background-color: rgb(49, 255, 8) !important;
+    background-image: url(../images/pinpng.com-redstone-dust-png-4986074.png);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .cell.show {
@@ -234,7 +259,7 @@ body {
 }
 
 .cell.curr {
-    background-color: orange;
+    /* background-color: orange; */
 }
 
 .cell.deadlock {
