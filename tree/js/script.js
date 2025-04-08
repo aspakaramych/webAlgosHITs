@@ -90,15 +90,27 @@ function buildTree(data, attributes, target) {
 }
 
 function predict(tree, row) {
-    if (tree.type === 'leaf') {
-        return tree.value;
+    const path = [];
+
+    function traverse(currentNode, rowData) {
+        if (currentNode.type === 'leaf') {
+            path.push({type: 'leaf', value: currentNode.value});
+            return currentNode.value;
+        }
+
+        const attributeValue = rowData[currentNode.attribute];
+        path.push({type: 'node', attribute: currentNode.attribute, value: attributeValue});
+
+        if (currentNode.children[attributeValue]) {
+            return traverse(currentNode.children[attributeValue], rowData);
+        }
+        return null;
     }
-    const value = row[tree.attribute];
-    if (tree.children[value]) {
-        return predict(tree.children[value], row);
-    }
-    return null;
+
+    const result = traverse(tree, row);
+    return {result, path};
 }
+
 
 function visualizeTreeWithD3(tree, containerId) {
     const width = 800;
@@ -155,12 +167,94 @@ function visualizeTreeWithD3(tree, containerId) {
         .text(d => d.data.attribute || d.data.value);
 }
 
+function visualizePredictionPath(tree, path, containerId) {
+    const width = 800;
+    const height = 600;
+
+
+    d3.select(`#${containerId}`).selectAll('*').remove();
+
+
+    const svg = d3.select(`#${containerId}`)
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height)
+        .call(d3.zoom().on("zoom", (event) => {
+            svgGroup.attr("transform", event.transform);
+        }))
+        .append('g')
+        .attr('transform', 'translate(50, 50)');
+
+    const svgGroup = svg;
+
+    const root = d3.hierarchy(tree, d => d.children ? Object.values(d.children) : null);
+
+    const treeLayout = d3.tree().size([width - 100, height - 100]);
+    treeLayout(root);
+
+
+    svg.selectAll('.link')
+        .data(root.links())
+        .enter()
+        .append('path')
+        .attr('class', 'link')
+        .attr('fill', 'none')
+        .attr('stroke', '#ccc')
+        .attr('stroke-width', 2)
+        .attr('d', d3.linkHorizontal()
+            .x(d => d.y)
+            .y(d => d.x));
+    const nodes = svg.selectAll('.node')
+        .data(root.descendants())
+        .enter()
+        .append('g')
+        .attr('class', 'node')
+        .attr('transform', d => `translate(${d.y},${d.x})`);
+
+    nodes.append('circle')
+        .attr('r', 10)
+        .attr('fill', d => d.data.type === 'leaf' ? '#4caf50' : '#007bff');
+
+    nodes.append('text')
+        .attr('dy', '.35em')
+        .attr('x', d => d.children ? -15 : 15)
+        .style('text-anchor', d => d.children ? 'end' : 'start')
+        .text(d => d.data.attribute || d.data.value);
+
+    const pathNodes = [];
+    let currentNode = root;
+    for (const step of path) {
+        debugger
+        if (step.type === 'node') {
+            const childNode = currentNode.children.find(child =>
+                child.data.attribute === step.attribute &&
+                child.data.children && child.data.children[step.value]
+            );
+            if (childNode) {
+                pathNodes.push(currentNode);
+                currentNode = childNode;
+            }
+        } else if (step.type === 'leaf') {
+            pathNodes.push(currentNode);
+        }
+    }
+
+    nodes.filter(d => pathNodes.includes(d))
+        .select('circle')
+        .attr('fill', 'orange');
+
+    svg.selectAll('.link')
+        .filter(link => pathNodes.includes(link.source) && pathNodes.includes(link.target))
+        .attr('stroke', 'orange')
+        .attr('stroke-width', 4);
+}
+
 document.getElementById('train-button').addEventListener('click', () => {
     const trainData = document.getElementById('train-data').value;
     const parsedData = parseCSV(trainData);
 
-    const attributes = Object.keys(parsedData[0]).filter(key => key !== 'Play');
-    const target = 'Play';
+    const attributes = Object.keys(parsedData[0]).filter(key => key !== 'Label');
+    const target = 'Label';
 
     decisionTree = buildTree(parsedData, attributes, target);
     console.log(decisionTree);
@@ -175,8 +269,10 @@ document.getElementById('predict-button').addEventListener('click', () => {
 
     const output = parsedData.map(row => {
         const prediction = predict(decisionTree, row);
-        return `Prediction for ${JSON.stringify(row)}: ${prediction}`;
+        console.log(prediction.path)
+        visualizePredictionPath(decisionTree, prediction.path, 'tree-container');
+        return prediction.result;
     }).join('\n');
 
-    document.getElementById('prediction-output').textContent = output;
+    document.getElementById('output').textContent = output;
 });
