@@ -4,16 +4,19 @@
 }
 
 body {
-    background: linear-gradient(to top, #2B2B2B, #5F5F5F);            background-attachment: fixed;
+    background: #252525;
 }
 
 .page_header {
     top: 0%;
-    width: 100%;
-    height: 10vh;
-    background-color: #383838;
+    width: 50%;
+    height: 5vh;
+    background-color: #e8e8c6;
     -webkit-box-align: center;
     align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    vertical-align: middle;
     display: flex;
     -webkit-box-orient: horizontal;
     -webkit-box-direction: normal;
@@ -25,10 +28,11 @@ body {
 .logo_text {
     margin-left: 10px;
     font-family: 'Minecraft', sans-serif;
-    font-size: 1.375rem;
+
+    font-size: 1.15rem;
     font-weight: 400;
-    line-height: 1.75rem;
-    color: wheat;
+    line-height: 1.15rem;
+    color: #1e1c1d;
 }
 
 .name {
@@ -42,8 +46,8 @@ body {
 }
 
 .image {
-    height: 60px;
-    width: 60px; 
+    height: 30px;
+    width: 30px;
     border-radius: 10px;
     margin-left: 10px;
 }

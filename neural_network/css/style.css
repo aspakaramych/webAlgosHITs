@@ -1,28 +1,29 @@
+@font-face {
+    font-family: 'Minecraft';
+    src: url('../fonts/minecraft.ttf') format('truetype');
+}
+
 .parent-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    background-color: #f4f4f92d;
+    height: 75vh;
+    background-color: #252525;
     border-radius: 10px ;
 }
 
-
-.container {
-    width: 500px;
-    padding: 20px;
-    background-color: #2a2839;
-    border-radius: 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    flex-direction: column;
+#menu {
+    display: flex;
+    flex-direction: row;
     align-items: center;
-    justify-content: center;
-    text-align: center;
+    justify-content: space-between;
+    width: 600px;
+    margin-top: 10px;
 }
 
 
 #myCanvas {
-    width: 75%;
+    width: 50%;
     aspect-ratio: 1 / 1;
     background-color: #e0e0e0;
     border: 2px solid #ccc;
