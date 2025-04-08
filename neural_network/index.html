@@ -11,22 +11,27 @@
 <section class="page_header">
     <h1 class="logo">
         <a href="../mainpage/index.html" class="name">
-            <img src="../images/logo192x192.png" class="image">
+            <img src="../images/pinpng.com-redstone-dust-png-4986074.png" class="image">
             <span class="logo_text">AlgoBox</span>
         </a>
     </h1>
 </section>
 
 <div id="parent-container" class="parent-container">
-    <div class="container">
-        <canvas id="myCanvas" width="50" height="50"></canvas>
-        <button id="submitButton" class="button">Предсказать</button>
-        <button id="resetButton" class="button">Стереть</button>
-        <div class="prediction-result">
-            <h3>Результат предсказания:</h3>
-            <p>Нейросеть предсказывает: <span id="result" class="result-text"></span></p>
+    <section id="main-container">
+        <div id="menu">
+            <button id="submitButton" class="button">Предсказать</button>
+            <button id="resetButton" class="button">Стереть</button>
         </div>
+        <canvas id="myCanvas" width="50" height="50"></canvas>
+
+    </section>
+
+    <div class="prediction-result">
+        <h3>Результат предсказания:</h3>
+        <p>Нейросеть предсказывает: <span id="result" class="result-text"></span></p>
     </div>
+
 </div>
 <div id="error-modal" class="modal">
     <div class="modal-content">
