@@ -3,9 +3,53 @@ import {
 } from './PriorityQueue.js'
 
 document.getElementById("generate").addEventListener("click", getGrid);
+document.getElementById("clear").addEventListener("click", clearField);
 document.getElementById("start").addEventListener("click", instantShow);
 document.getElementById("step").addEventListener("click", showAlgorhytm);
 document.getElementById("showBySteps").addEventListener("click", showBySteps);
+document.getElementById("ok").addEventListener("click", handleError);
+
+let errorContainer = document.getElementById("error_container");
+let message = document.getElementById("message");
+
+function showError(errorMessage) {
+    errorContainer.style.display = 'flex';
+    message.innerHTML = errorMessage;
+}
+
+function handleError() {
+    errorContainer.style.display = 'none';
+}
+
+function clearField() {
+    grid.children[startPoint.row * size + startPoint.col].classList.remove('start');
+    grid.children[finishPoint.row * size + finishPoint.col].classList.remove('finish');
+    grid.children[finishPoint.row * size + finishPoint.col].classList.remove('reached');
+    grid.children[finishPoint.row * size + finishPoint.col].classList.remove('mark');
+
+    for(let cell of finalPath) {
+        grid.children[cell.row * size + cell.col].classList.remove('path');
+    }
+
+    for(let ddlc of deadlocks) {
+        grid.children[ddlc.row * size + ddlc.col].classList.remove('path');
+        grid.children[ddlc.row * size + ddlc.col].classList.remove('deadlock');
+    }
+
+    if(find.has(userStep-1)) {
+        for(let i of find.get(userStep-1)) {                                                               
+            grid.children[i.row * size + i.col].classList.remove('mark');
+        }
+    }
+    
+    startPoint = null;
+    finishPoint = null;
+    path.clear();
+    choosed = [];
+    find.clear();
+    finalPath = [];
+    userStep = 0;
+}
 
 let paintedCells = [];
 let pathCells = [];
@@ -87,7 +131,7 @@ function getGrid() {
         
         grid.appendChild(cell);
     }
-    PrimAlgorhitm(); // алгоритм Прима расчиащает клетки-стены
+    PrimAlgorhitm(); // алгоритм Прима расчищает клетки-стены
 }
 
 let graph = new Map();
@@ -124,20 +168,21 @@ function evrEval(a , b) {   // эвристическая оценка - мет�
     return Math.abs(a.row - b.row) + Math.abs(a.col - b.col);
 }
 
-let path = new Map();       // клетки искомого пути
+let path = new Map();       // клетки искомого пути ключ - текущая клетка, значение - клетка, из которой пришли
 let finalPath = [];         // координаты клеток искомого пути
 let choosed = [];           // какая клетка выбиралась алгоритмом на каждой итерации
 let find = new Map();       // отображение на экране - выбор между какими точками происходил на данном шаге
+let deadlocks = [];
 
 function AstarAlgo() {
     if(startPoint === null || finishPoint === null) {
-        document.getElementById("error").textContent = "Главных точек должно быть две - начальная и конечная";
+        showError("Поставьте точки начала и конца 🙏");
         return;
     }
     clear();
     fillTheGraph();
-    finalPath.push(`${startPoint.row},${startPoint.col}`)
-    finalPath.push(`${finishPoint.row},${finishPoint.col}`)
+    finalPath.push(startPoint)
+    finalPath.push(finishPoint)
 
     let borders = new PriorityQueue();
 
@@ -174,17 +219,17 @@ function AstarAlgo() {
     }
 
     if(reached) {
-        // getPath();
+        getPath();
         // grid.children[finishPoint.row * size + finishPoint.col].classList.add('reached');
     } else {
-        alert("Путь не найден");
+        showError("Путь не найден ❌");
         document.getElementById("error").textContent = "Путь не найден";
     }
 }
 
 function instantShow() {
     AstarAlgo();
-    getPath();
+    displayPath();
     grid.children[finishPoint.row * size + finishPoint.col].classList.add('reached');
 }
 
@@ -193,17 +238,27 @@ function getPath() {
     let curr = finishPoint;
     curr = path.get(`${curr.row},${curr.col}`); 
     while(curr != startPoint) {
-        finalPath.push(`${curr.row},${curr.col}`);
+        finalPath.push(curr);
+        // grid.children[curr.row * size + curr.col].classList.toggle('path');
+        curr = path.get(`${curr.row},${curr.col}`); 
+    }
+}
+
+function displayPath() {
+    if(finalPath.length === 0) {
+        getPath();
+    }
+    let curr = finishPoint;
+    curr = path.get(`${curr.row},${curr.col}`); 
+    while(curr != startPoint) {
         grid.children[curr.row * size + curr.col].classList.toggle('path');
         curr = path.get(`${curr.row},${curr.col}`); 
     }
 }
 
-async function showAlgorhytm() {
+function showAlgorhytm() {
     if(path.size == 0) {
         AstarAlgo();
-        // AstarAlgo();
-        getPath();
         getPath();
     }
     if(userStep > 0) {
@@ -211,6 +266,7 @@ async function showAlgorhytm() {
             grid.children[choosed[userStep-1].row * size + choosed[userStep-1].col].classList.remove('curr');
             grid.children[choosed[userStep - 1].row * size + choosed[userStep - 1].col].classList.add('path');
             grid.children[finishPoint.row * size + finishPoint.col].classList.add('reached');
+            userStep++;
             return;
         }
 
@@ -219,8 +275,9 @@ async function showAlgorhytm() {
             grid.children[i.row * size + i.col].classList.remove('mark');
         }
         
-        if(!finalPath.find(el => el ==`${choosed[userStep].row},${choosed[userStep].col}`)) {
+        if(!finalPath.find(el => el.row === choosed[userStep].row && el.col === choosed[userStep].col)) {
             grid.children[choosed[userStep].row * size + choosed[userStep].col].classList.add('deadlock');
+            deadlocks.push(choosed[userStep]);
         }
     }
     grid.children[choosed[userStep].row * size + choosed[userStep].col].classList.add('path'); // клетка - главный герой
