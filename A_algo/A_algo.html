@@ -27,7 +27,8 @@
                     <button id="showBySteps">Последовательно 👣</button>
                     <label><input id="inputDelay" type="range" min="0" max="500" step="10" value="100"></label>
                 </div>
-                <div style="margin-left: 32%;">
+                <div style="margin-left: 20%;">
+                    <button id="clear">Очистить поле</button>
                     <button id="generate">Сгенерировать</button>
                     <input id="size" placeholder="Введите размер поля" value = 10 style="margin-top: 10px; margin-bottom: 10px;">
                 </div>
@@ -55,5 +56,15 @@
         </section>
     </div>
     <script src="Astar_algo.js" type="module"></script>
+
+    <div class="error_container" id="error_container">
+        <div class="modal-content">
+            <div id="message-container">
+                <div id="message"></div>
+            </div>
+            
+            <button id="ok">Закрыть</button>
+        </div>
+    </div>
 </body>
 </html>

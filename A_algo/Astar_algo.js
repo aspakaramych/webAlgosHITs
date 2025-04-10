@@ -3,16 +3,62 @@ import {
 } from './PriorityQueue.js'
 
 document.getElementById("generate").addEventListener("click", getGrid);
-document.getElementById("start").addEventListener("click", AstarAlgo);
+document.getElementById("clear").addEventListener("click", clearField);
+document.getElementById("start").addEventListener("click", instantShow);
 document.getElementById("step").addEventListener("click", showAlgorhytm);
 document.getElementById("showBySteps").addEventListener("click", showBySteps);
+document.getElementById("ok").addEventListener("click", handleError);
+
+let errorContainer = document.getElementById("error_container");
+let message = document.getElementById("message");
+
+function showError(errorMessage) {
+    errorContainer.style.display = 'flex';
+    message.innerHTML = errorMessage;
+}
+
+function handleError() {
+    errorContainer.style.display = 'none';
+}
+
+function clearField() {
+    grid.children[startPoint.row * size + startPoint.col].classList.remove('start');
+    grid.children[finishPoint.row * size + finishPoint.col].classList.remove('finish');
+    grid.children[finishPoint.row * size + finishPoint.col].classList.remove('reached');
+    grid.children[finishPoint.row * size + finishPoint.col].classList.remove('mark');
+
+    for(let cell of finalPath) {
+        grid.children[cell.row * size + cell.col].classList.remove('path');
+    }
+
+    for(let ddlc of deadlocks) {
+        grid.children[ddlc.row * size + ddlc.col].classList.remove('path');
+        grid.children[ddlc.row * size + ddlc.col].classList.remove('deadlock');
+    }
+
+    if(find.has(userStep-1)) {
+        for(let i of find.get(userStep-1)) {                                                               
+            grid.children[i.row * size + i.col].classList.remove('mark');
+        }
+    }
+    
+    startPoint = null;
+    finishPoint = null;
+    path.clear();
+    choosed = [];
+    find.clear();
+    finalPath = [];
+    userStep = 0;
+}
 
 let paintedCells = [];
 let pathCells = [];
-let mainCells = [];
 let size;
 let grid;
 let userStep = 0;
+
+let startPoint = null;
+let finishPoint = null;
 
 document.addEventListener('DOMContentLoaded', function() {
     getGrid();
@@ -22,7 +68,6 @@ document.addEventListener('DOMContentLoaded', function() {
 function getGrid() {
     clear();
     paintedCells = [];
-    mainCells = [];
     pathCells = [];
     grid = document.getElementById('grid');
     size = parseInt(document.getElementById('size').value);
@@ -54,7 +99,26 @@ function getGrid() {
         });
         
         cell.addEventListener('contextmenu', function() { // на пкм ставим/убираем начальную/конечную точку
-            cell.classList.toggle('main');
+            if(cell.classList.contains('start')) {
+                cell.classList.remove('start');
+                startPoint = null;
+            }
+            else {
+                if(startPoint === null) {
+                    cell.classList.add('start');
+                    startPoint = {row: row, col: col};
+                }
+            }
+            if(cell.classList.contains('finish')) {
+                cell.classList.remove('finish');
+                finishPoint = null;
+            }
+            else {
+                if(finishPoint === null && startPoint !== null && !cell.classList.contains('start')) {
+                    cell.classList.add('finish');
+                    finishPoint = {row: row, col: col};
+                }
+            }
 
             if(cell.classList.contains('wall')) {         // если там была стена - убираем
                 cell.classList.remove('wall');
@@ -63,26 +127,11 @@ function getGrid() {
                     paintedCells.splice(index, 1);
                 }
             }
-
-            if(cell.classList.contains('main')) {
-                if(mainCells.length < 2) {                 // если "главных" точек <= 2 - всё ок, иначе - выдаём ошибку
-                    mainCells.push({row, col});
-                    document.getElementById("error").textContent = "";
-                } else {
-                    cell.classList.toggle('main');
-                    document.getElementById("error").textContent = "Главных точек должно быть две - начальная и конечная";
-                }
-            } else {
-                const index = mainCells.findIndex(cell => cell.row === row && cell.col === col);
-                if (index > -1) {
-                    mainCells.splice(index);
-                }
-            }
         });
         
         grid.appendChild(cell);
     }
-    PrimAlgorhitm(); // алгоритм Прима расчиащает клетки-стены
+    PrimAlgorhitm(); // алгоритм Прима расчищает клетки-стены
 }
 
 let graph = new Map();
@@ -119,25 +168,26 @@ function evrEval(a , b) {   // эвристическая оценка - мет�
     return Math.abs(a.row - b.row) + Math.abs(a.col - b.col);
 }
 
-let path = new Map();       // клетки искомого пути
+let path = new Map();       // клетки искомого пути ключ - текущая клетка, значение - клетка, из которой пришли
 let finalPath = [];         // координаты клеток искомого пути
 let choosed = [];           // какая клетка выбиралась алгоритмом на каждой итерации
 let find = new Map();       // отображение на экране - выбор между какими точками происходил на данном шаге
+let deadlocks = [];
 
 function AstarAlgo() {
-    if(mainCells.length < 2) {
-        document.getElementById("error").textContent = "Главных точек должно быть две - начальная и конечная";
+    if(startPoint === null || finishPoint === null) {
+        showError("Поставьте точки начала и конца 🙏");
         return;
     }
     clear();
     fillTheGraph();
-    finalPath.push(`${mainCells[0].row},${mainCells[0].col}`)
-    finalPath.push(`${mainCells[1].row},${mainCells[1].col}`)
+    finalPath.push(startPoint)
+    finalPath.push(finishPoint)
 
     let borders = new PriorityQueue();
 
-    let start = mainCells[0];
-    let goal = mainCells[1];
+    let start = startPoint;
+    let goal = finishPoint;
     let step = 0;
     let reached = false;
     let visited = [];
@@ -154,6 +204,7 @@ function AstarAlgo() {
             reached = true;
             break;
         }
+
         let currFind = [];
         for(let next of graph.get(`${curr.row},${curr.col}`)) {
             if(!visited[`${next.row},${next.col}`]) {
@@ -168,48 +219,68 @@ function AstarAlgo() {
     }
 
     if(reached) {
-        getPath();  
+        getPath();
+        // grid.children[finishPoint.row * size + finishPoint.col].classList.add('reached');
     } else {
+        showError("Путь не найден ❌");
         document.getElementById("error").textContent = "Путь не найден";
     }
 }
 
+function instantShow() {
+    AstarAlgo();
+    displayPath();
+    grid.children[finishPoint.row * size + finishPoint.col].classList.add('reached');
+}
+
 // отображает путь
 function getPath() { 
-    let curr = mainCells[1];
+    let curr = finishPoint;
     curr = path.get(`${curr.row},${curr.col}`); 
-    while(curr != mainCells[0]) {
-        finalPath.push(`${curr.row},${curr.col}`);
+    while(curr != startPoint) {
+        finalPath.push(curr);
+        // grid.children[curr.row * size + curr.col].classList.toggle('path');
+        curr = path.get(`${curr.row},${curr.col}`); 
+    }
+}
+
+function displayPath() {
+    if(finalPath.length === 0) {
+        getPath();
+    }
+    let curr = finishPoint;
+    curr = path.get(`${curr.row},${curr.col}`); 
+    while(curr != startPoint) {
         grid.children[curr.row * size + curr.col].classList.toggle('path');
         curr = path.get(`${curr.row},${curr.col}`); 
     }
 }
 
-function isNear(x1, y1, x2, y2) {
-    return ((Math.abs(x1 - x2) <= 1 && Math.abs(y1 - y2) <= 1) && !(Math.abs(x1 - x2) == 1 && Math.abs(y1 - y2) == 1));
-}
-
-async function showAlgorhytm() {
+function showAlgorhytm() {
     if(path.size == 0) {
         AstarAlgo();
-        AstarAlgo();
+        getPath();
     }
     if(userStep > 0) {
         if(userStep >= find.size) {
+            grid.children[choosed[userStep-1].row * size + choosed[userStep-1].col].classList.remove('curr');
+            grid.children[choosed[userStep - 1].row * size + choosed[userStep - 1].col].classList.add('path');
+            grid.children[finishPoint.row * size + finishPoint.col].classList.add('reached');
+            userStep++;
             return;
         }
-        grid.children[choosed[userStep-1].row * size + choosed[userStep-1].col].classList.remove('curr');  // снимаем полномочия лидирующей клетки с предыдущей
-        grid.children[choosed[userStep - 1].row * size + choosed[userStep - 1].col].classList.add('show'); // текущие пройденные клетки (это
-        for(let i of find.get(userStep-1)) {                                                               // при выборе последовательной анимации)
-            grid.children[i.row * size + i.col].classList.remove('mark'); // помечаем точки, между готорыми происхожит выбор
+
+        grid.children[choosed[userStep - 1].row * size + choosed[userStep - 1].col].classList.add('path'); 
+        for(let i of find.get(userStep-1)) {                                                               
+            grid.children[i.row * size + i.col].classList.remove('mark');
         }
-        // если прошлая клетка не рядом с текущей - она считается тупиком, или "невыгодной точке на текущем шагу" - 
-        // может быть, к ней ещё вернёмся
-        if(!finalPath.find(el => el ==`${choosed[userStep - 1].row},${choosed[userStep - 1].col}`)) {
-            grid.children[choosed[userStep-1].row * size + choosed[userStep-1].col].classList.add('deadlock');
+        
+        if(!finalPath.find(el => el.row === choosed[userStep].row && el.col === choosed[userStep].col)) {
+            grid.children[choosed[userStep].row * size + choosed[userStep].col].classList.add('deadlock');
+            deadlocks.push(choosed[userStep]);
         }
     }
-    grid.children[choosed[userStep].row * size + choosed[userStep].col].classList.add('curr'); // клетка - главный герой
+    grid.children[choosed[userStep].row * size + choosed[userStep].col].classList.add('path'); // клетка - главный герой
 
     for(let i of find.get(userStep)) {
         grid.children[i.row * size + i.col].classList.add('mark');
@@ -229,10 +300,11 @@ async function showBySteps() {
     let delay = document.getElementById("inputDelay").value;
     if(path.size == 0) {
         AstarAlgo();
-        AstarAlgo();
+        getPath();
+        getPath();
     }
 
-    while(userStep < find.size) {
+    while(userStep <= find.size) {
         await new Promise(resolve => {      // устанавливаем пользовательскую задержку 
             setTimeout(() => {              // await ждёт вызова resolve() 
                 showAlgorhytm();        
