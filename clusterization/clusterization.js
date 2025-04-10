@@ -1,7 +1,7 @@
 // k-means++ + silhouette coefficient
 
 const canvas = document.getElementById('field');
-document.getElementById('kmeans').addEventListener('click', kmeans);
+document.getElementById('kmeans').addEventListener('click', kMeans);
 document.getElementById('kmeans++').addEventListener('click', kmeansPlusPlus);
 document.getElementById('DBSCAN').addEventListener('click', dbscan);
 
@@ -298,6 +298,9 @@ function kmeansPlusPlus() {
         maxK = nums_k + 1;
         flag = true;
     }
+    if(points.length === 1) {
+        maxK = 2;
+    }
     for (; k < maxK; k++) {
         let centroids = getCentroids(k);
         let prevCentroids = null;
@@ -315,7 +318,7 @@ function kmeansPlusPlus() {
         
         let silhouetteScore = silhouetteCoef(clusters, centroids);
         
-        if (silhouetteScore > bestScore || ( flag && maxK - k === 1)) {
+        if (silhouetteScore > bestScore || ( flag && maxK - k === 1) || points.length === 1) {
             bestScore = silhouetteScore;
             bestK = k;
             bestClusters = clusters;
