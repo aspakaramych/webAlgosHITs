@@ -87,6 +87,34 @@ class Sequential:
                 else:
                     grad_output = layer.backward(grad_output)
 
+def cross_entropy_loss(y_pred, y_true):
+    epsilon = 1e-15
+    y_pred = np.clip(y_pred, epsilon, 1 - epsilon)
+    loss = -np.mean(np.sum(y_true * np.log(y_pred), axis=1))
+    grad = (y_pred - y_true) / y_true.shape[0]
+    return loss, grad
+
+
+def save_weights(model, path):
+    weights_data = {
+        "weight_1": {
+            "weight": model.layers[0].weights.tolist(),
+            "bias": model.layers[0].bias.tolist()
+        },
+        "weight_2": {
+            "weight": model.layers[2].weights.tolist(),
+            "bias": model.layers[2].bias.tolist()
+        },
+        "weight_3": {
+            "weight": model.layers[4].weights.tolist(),
+            "bias": model.layers[4].bias.tolist()
+        }
+    }
+
+    with open(path, 'w') as f:
+        json.dump(weights_data, f, indent=4)
+
+    print("Веса успешно сохранены в файл")
 
 def load_weights_from_json(model, filepath):
     with open(filepath, 'r') as f:
@@ -95,19 +123,18 @@ def load_weights_from_json(model, filepath):
 
     model.layers[0].weights = np.array(weights_data['weight_1']["weight"])
     model.layers[0].bias = np.array(weights_data['weight_1']["bias"])
-    model.layers[3].weights = np.array(weights_data['weight_2']["weight"])
-    model.layers[3].bias = np.array(weights_data['weight_2']["bias"])
-    model.layers[5].weights = np.array(weights_data['weight_3']["weight"])
-    model.layers[5].bias = np.array(weights_data['weight_3']["bias"])
+    model.layers[2].weights = np.array(weights_data['weight_2']["weight"])
+    model.layers[2].bias = np.array(weights_data['weight_2']["bias"])
+    model.layers[4].weights = np.array(weights_data['weight_3']["weight"])
+    model.layers[4].bias = np.array(weights_data['weight_3']["bias"])
 
 def create_model(path):
     model = Sequential()
-    model.add(Linear(in_features=784, out_features=512))
+    model.add(Linear(in_features=784, out_features=256))
     model.add(Tanh())
-    model.add(Dropout(dropout_rate=0.5))
-    model.add(Linear(in_features=512, out_features=256))
+    model.add(Linear(in_features=256, out_features=128))
     model.add(Tanh())
-    model.add(Linear(in_features=256, out_features=10))
+    model.add(Linear(in_features=128, out_features=10))
     model.add(Softmax())
     load_weights_from_json(model, path)
     return model
@@ -130,9 +157,8 @@ def preprocess_image(image_array):
 
     return image_array
 
-def predict(input, path):
+def predict(input, model):
     processed_image = preprocess_image(input)
-    model = create_model(path)
     output = model.forward(processed_image, is_training=False)
     probabilities = output
     predicted_class = np.argmax(probabilities, axis=1)[0]
