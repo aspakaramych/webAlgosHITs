@@ -8,12 +8,12 @@ function setupCanvas(canvas) {
 
     canvas.addEventListener('mousedown', (event) => {
         isDrawing = true;
-        drawPixel(canvas, event);
+        drawSpray(canvas, event);
     });
 
     canvas.addEventListener('mousemove', (event) => {
         if (!isDrawing) return;
-        drawPixel(canvas, event);
+        drawSpray(canvas, event);
     });
 
     canvas.addEventListener('mouseup', () => {
@@ -25,7 +25,7 @@ function setupCanvas(canvas) {
     });
 }
 
-function drawPixel(canvas, event) {
+function drawSpray(canvas, event) {
     const ctx = canvas.getContext('2d');
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;
@@ -33,8 +33,17 @@ function drawPixel(canvas, event) {
 
     const x = Math.floor((event.clientX - rect.left) * scaleX);
     const y = Math.floor((event.clientY - rect.top) * scaleY);
+    const sprayRadius = 2;
+    const density = 7;
 
-    ctx.fillRect(x, y, 1, 1);
+    for (let i = 0; i < density; i++) {
+        const angle = Math.random() * 2 * Math.PI;
+        const radius = Math.sqrt(Math.random()) * sprayRadius;
+        const offsetX = Math.cos(angle) * radius;
+        const offsetY = Math.sin(angle) * radius;
+        
+        ctx.fillRect(x + offsetX, y + offsetY, 1, 1);
+    }
 }
 
 function canvasToArray(canvas) {
