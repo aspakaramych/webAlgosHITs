@@ -11,13 +11,26 @@ body {
 .page_header {
     width: 100%;
     height: 10vh;
-    background-color: black;
     display: flex;
     flex-direction: row;
-    background-color: #1e1e1e; /* Цвет близкий к фону */
+    background-color: #1e1e1e; 
     box-shadow:
-            0 8px 12px rgba(0, 0, 0, 0.8), /* Темная внешняя тень внизу */
-            0 -4px 6px rgba(255, 255, 255, 0.1); /* Легкая светлая тень сверху */
+            0 8px 12px rgba(0, 0, 0, 0.8),
+            0 -4px 6px rgba(255, 255, 255, 0.1);
+}
+
+footer {
+    clear: both;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3vh;
+    background-color: #171717;
+    color: #fff;
+    padding: 20px;
+    text-align: left;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .logo_text {
