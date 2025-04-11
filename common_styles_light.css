@@ -1,10 +1,10 @@
 @font-face {
     font-family: 'Minecraft';
-    src: url('../fonts/minecraft.ttf') format('truetype');
+    src: url('fonts/minecraft.ttf') format('truetype');
 }
 
 body {
-    background: #252525;
+    background: #F8FAFF;
     margin: 0;
 }
 
@@ -19,11 +19,11 @@ a {
     height: 10vh;
     display: flex;
     flex-direction: row;
-    background-color: #1e1e1e;
+    background-color: #E5E9F0;
     align-items: center;
     box-shadow:
-            0 8px 12px rgba(0, 0, 0, 0.8),
-            0 -4px 6px rgba(255, 255, 255, 0.1);
+            0 8px 12px #BEC4D6,
+            0 -4px 6px #FFFFFF;
 }
 
 .footer {
@@ -33,11 +33,11 @@ a {
     left: 0;
     width: 100%;
     height: 3vh;
-    background-color: #171717;
+    background-color: #E5E9F0;
     color: #fff;
     padding: 20px;
     text-align: left;
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 -4px 6px #BEC4D6;
 }
 
 .logo {
@@ -50,9 +50,9 @@ a {
     margin-left: 15px;
     font-family: 'Minecraft', sans-serif;
     font-size: 2rem;
-    font-weight: 550;
+    font-weight: 600;
     line-height: 2rem;
-    color: white;
+    color: #1A1A1A;
     margin-right: 30px;
 }
 
@@ -64,7 +64,7 @@ a {
 
 .name_algorithm {
     font-family: 'Minecraft', sans-serif;
-    color: white;
+    color: #1A1A1A;
     font-size: 1.5rem;
     font-weight: 100;
     margin-bottom: 15px;
