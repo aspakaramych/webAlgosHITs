@@ -24,7 +24,7 @@
 .block {
     display: flex;
     align-items: center;
-    background-color: #1e1e1e;
+    background-color: #E5E9F0;
     /*background: linear-gradient(#ededed, #ededed) padding-box,
                 linear-gradient(to bottom, rgb(0, 0, 0), rgb(255, 255, 255)) border-box;*/
     border-radius: 15px;
@@ -34,8 +34,8 @@
     height: 170px;
     margin: 10px;
     box-shadow:
-            4px 4px 6px rgba(0, 0, 0, 0.8),
-            -4px -4px 6px rgba(255, 255, 255, 0.1);
+            0 8px 12px #BEC4D6,
+            0 -4px 6px #FFFFFF;
     overflow: hidden;
     /* box-sizing: border-box; */
 }
@@ -79,7 +79,7 @@
     font-family: "Minecraft", sans-serif;
     font-weight: 400;
     font-size: 17px;
-    color: #f5f1f1;
+    color: #1A1A1A;
 }
 
 #email_block {
