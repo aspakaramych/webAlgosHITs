@@ -10,11 +10,10 @@
     width: 70vh;
     height: 70vh;
     background-color: #E5E9F0;
-    box-shadow:
-            0 8px 12px #BEC4D6,
-            0 -4px 6px #FFFFFF,
-            inset -5px -5px 10px #FFFFFF,
-            inset 5px 5px 10px #BEC4D6;
+    box-shadow: 0 8px 12px #BEC4D6,
+    0 -4px 6px #FFFFFF,
+    inset -5px -5px 10px #FFFFFF,
+    inset 5px 5px 10px #BEC4D6;
     border-radius: 15px;
     cursor: crosshair;
     flex-shrink: 0;
@@ -26,6 +25,7 @@
     font-weight: 400;
     height: 5vh;
     background-color: springgreen;
+    transition: background-color 0.3s ease;
     border: white 2px solid;
     border-radius: 10px;
     cursor: pointer;
