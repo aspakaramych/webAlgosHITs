@@ -87,10 +87,7 @@ async function predict(input) {
         })
     });
     if (response.ok) {
-        const predictedClass = await response.json();
-
-        const resultElement = document.getElementById('result');
-        resultElement.textContent = `${predictedClass}`;
+        return await response.json();
     } else {
         console.log(response);
     }
@@ -105,23 +102,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeErrorModal = document.getElementById('close-error-modal');
     const parentContainer = document.getElementById('parent-container');
     const result = document.getElementById('result');
+    const resultText = result.textContent;
     let input = [];
 
     if (!canvas || !submitButton) {
         console.error('Canvas or Submit button not found!');
         return;
     }
-
     setupCanvas(canvas);
-
-
     submitButton.addEventListener('click', async () => {
         if (isCanvasEmpty(canvas)) {
             errorModal.style.display = 'flex';
             parentContainer.classList.add('blur');
         } else {
             input = canvasToArray(canvas);
-            await predict(input);
+            const predictedClass = await predict(input);
+            result.textContent = resultText + " " + predictedClass;
         }
     });
 
@@ -132,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.fillStyle = 'white';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = 'black';
-        result.textContent = "";
+        result.textContent = resultText;
 
     });
     closeErrorModal.addEventListener('click', () => {
