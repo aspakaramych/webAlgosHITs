@@ -19,7 +19,7 @@
     </h1>
 </section>
 <section class="algorithm">
-    <div class="content-wrapper">
+    <div class="content-wrapper" id="parent-container">
         <div class="tree" id="tree-container"></div>
         <div class="input-and-button">
             <p class="text">
@@ -51,12 +51,20 @@
         </div>
     </div>
 </section>
-<script src="https://d3js.org/d3.v7.min.js"></script>
-<script src="js/script.js"></script>
+<div id="error-modal" class="modal">
+    <div class="modal-content">
+        <p id="error-text" class="text">
+
+        </p>
+        <button id="error-close-button">Закрыть</button>
+    </div>
+</div>
 <footer>
     <div class="footer">
         здесь будет подвал
     </div>
 </footer>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="js/script.js"></script>
 </body>
 </html>

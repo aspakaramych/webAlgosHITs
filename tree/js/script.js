@@ -248,31 +248,93 @@ function visualizePredictionPath(tree, path, containerId) {
         .attr('stroke-width', 4);
 }
 
-document.getElementById('train-button').addEventListener('click', () => {
-    const trainData = document.getElementById('train-data').value;
-    const parsedData = parseCSV(trainData);
+document.addEventListener('DOMContentLoaded', () => {
+    const trainContainer = document.getElementById('train-data');
+    const testContainer = document.getElementById('test-data');
+    const parentContainer = document.getElementById('parent-container')
+    const errorModal = document.getElementById('error-modal');
+    const result = document.getElementById('result');
+    const errorText = document.getElementById('error-text');
 
-    const attributes = Object.keys(parsedData[0]).filter(key => key !== 'Label');
-    const target = 'Label';
+    document.getElementById('train-button').addEventListener('click', () => {
+        const trainData = trainContainer.value;
+        if (trainData.trim() === '') {
+            errorText.textContent = 'Вы не ввели данные';
+            errorModal.style.display = 'flex';
+            parentContainer.classList.add('blur');
+            return;
+        }
+        const parsedData = parseCSV(trainData);
+        if (!Array.isArray(parsedData) || parsedData.length === 0) {
+            errorText.value = 'Вы не ввели данные';
+            errorModal.style.display = 'flex';
+            parentContainer.classList.add('blur');
+            return;
+        }
+        if (!parsedData[0].hasOwnProperty('Label')) {
+            errorText.textContent = 'У вас нет колонки Label';
+            errorModal.style.display = 'flex';
+            parentContainer.classList.add('blur');
+            return;
+        }
+        const attributes = Object.keys(parsedData[0]).filter(key => key !== 'Label');
+        const target = 'Label';
+        if (attributes.length === 0) {
+            errorText.textContent = 'Вы не ввели атрибуты';
+            errorModal.style.display = 'flex';
+            parentContainer.classList.add('blur');
+            return;
+        }
+        decisionTree = buildTree(parsedData, attributes, target);
+        console.log(decisionTree);
+        visualizeTreeWithD3(decisionTree, 'tree-container');
+    });
 
-    decisionTree = buildTree(parsedData, attributes, target);
-    console.log(decisionTree);
+    document.getElementById('predict-button').addEventListener('click', () => {
+        if (!decisionTree){
+            errorText.textContent = 'Вы не ввели тренировочные данные';
+            errorModal.style.display = 'flex';
+            parentContainer.classList.add('blur');
+            return;
+        }
+        const testData = testContainer.value;
+        if (testData.trim() === '') {
+            errorText.textContent = 'Вы не ввели данные';
+            errorModal.style.display = 'flex';
+            parentContainer.classList.add('blur');
+            return;
+        }
+        const parsedData = parseCSV(testData);
+        if (!Array.isArray(parsedData) || parsedData.length === 0) {
+            errorText.textContent = 'Вы не ввели данные';
+            errorModal.style.display = 'flex';
+            parentContainer.classList.add('blur');
+            return;
+        }
+        if (parsedData.length > 2){
+            errorText.textContent = 'Вы ввели много данных';
+            errorModal.style.display = 'flex';
+            parentContainer.classList.add('blur');
+            return;
+        }
+        if (parsedData[0].hasOwnProperty('Label')) {
+            errorText.textContent = 'У вас есть колонка Label';
+            errorModal.style.display = 'flex';
+            parentContainer.classList.add('blur');
+            return;
+        }
+        const output = parsedData.map(row => {
+            const prediction = predict(decisionTree, row);
+            console.log(prediction.path)
+            visualizePredictionPath(decisionTree, prediction.path, 'tree-container');
+            return prediction.result;
+        }).join('\n');
 
-    visualizeTreeWithD3(decisionTree, 'tree-container');
-});
+        result.textContent = result.innerText + ' ' + output;
+    });
 
-
-document.getElementById('predict-button').addEventListener('click', () => {
-    const testData = document.getElementById('test-data').value;
-    const parsedData = parseCSV(testData);
-    const text = document.getElementById('result').innerText;
-
-    const output = parsedData.map(row => {
-        const prediction = predict(decisionTree, row);
-        console.log(prediction.path)
-        visualizePredictionPath(decisionTree, prediction.path, 'tree-container');
-        return prediction.result;
-    }).join('\n');
-
-    document.getElementById('result').textContent = text + ' ' + output;
+    document.getElementById('error-close-button').addEventListener('click', () => {
+        errorModal.style.display = 'none';
+        parentContainer.classList.remove('blur');
+    });
 });

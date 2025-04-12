@@ -8,38 +8,34 @@
     <link rel="stylesheet" href="../common_styles_dark.css">
 </head>
 <body>
-    <section class="page_header">
-        <h1 class="logo">
-            <a href="../mainpage/index.html" class="name">
-                <img src="../images/pinpng.com-redstone-dust-png-4986074.png" class="image">
-                <span class="logo_text">AlgoBox</span>
-            </a>
-        </h1>
+<section class="page_header">
+    <h1 class="logo">
+        <a href="../mainpage/index.html" class="name">
+            <img src="../images/pinpng.com-redstone-dust-png-4986074.png" class="image">
+            <span class="logo_text">AlgoBox</span>
+        </a>
+    </h1>
+</section>
+<div id="parent-container" class="parent-container">
+    <section id="main-container">
+        <div id="menu">
+            <button id="submitButton" class="button">Предсказать</button>
+            <button id="resetButton" class="button">Стереть</button>
+        </div>
+        <canvas id="myCanvas" width="50" height="50"></canvas>
     </section>
-
-    <div id="parent-container" class="parent-container">
-        <section id="main-container">
-            <div id="menu">
-                <button id="submitButton" class="button">Предсказать</button>
-                <button id="resetButton" class="button">Стереть</button>
-            </div>
-            <canvas id="myCanvas" width="50" height="50"></canvas>
-
-        </section>
-
-        <div class="prediction-result">
-            <h3>Результат предсказания:</h3>
-            <p>Нейросеть предсказывает: <span id="result" class="result-text"></span></p>
-        </div>
-
+    <div class="prediction-result">
+        <h3>Результат предсказания:</h3>
+        <p>Нейросеть предсказывает: <span id="result" class="result-text"></span></p>
     </div>
-    <div id="error-modal" class="modal">
-        <div class="modal-content">
-            <p>Вы не нарисовали ничего на холсте!</p>
-            <button id="close-error-modal">Закрыть</button>
-        </div>
+</div>
+<div id="error-modal" class="modal">
+    <div class="modal-content">
+        <p>Вы не нарисовали ничего на холсте!</p>
+        <button id="close-error-modal">Закрыть</button>
     </div>
-    <canvas id="resizedCanvas" width="28" height="28" style="display: none"></canvas>
-    <script type="module" src="js/index.js"></script>
+</div>
+<canvas id="resizedCanvas" width="28" height="28" style="display: none"></canvas>
+<script type="module" src="js/index.js"></script>
 </body>
 </html>
