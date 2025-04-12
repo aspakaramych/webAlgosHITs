@@ -31,7 +31,7 @@
     cursor: pointer;
 }
 
-#button:hover {
+#startButton:hover {
     background-color: limegreen;
 }
 
