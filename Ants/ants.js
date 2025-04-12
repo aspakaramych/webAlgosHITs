@@ -9,7 +9,7 @@ let d = [[-1, 0], [0, -1], [1, 0], [0, 1], [-1, -1], [1, -1], [1, 1], [-1, 1]];
 
 let coef_transpire = 0.001;
 
-let alpha = 5;
+let alpha = 1.8;
 let beta = 1;
 
 document.addEventListener('DOMContentLoaded', () => {
