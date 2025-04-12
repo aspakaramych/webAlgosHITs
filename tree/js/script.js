@@ -111,10 +111,9 @@ function predict(tree, row) {
     return {result, path};
 }
 
-
 function visualizeTreeWithD3(tree, containerId) {
-    const width = 800;
-    const height = 600;
+    const width = 630;
+    const height = 630;
 
     d3.select(`#${containerId}`).selectAll('*').remove();
 
@@ -168,8 +167,8 @@ function visualizeTreeWithD3(tree, containerId) {
 }
 
 function visualizePredictionPath(tree, path, containerId) {
-    const width = 800;
-    const height = 600;
+    const width = 630;
+    const height = 630;
 
 
     d3.select(`#${containerId}`).selectAll('*').remove();
@@ -266,6 +265,7 @@ document.getElementById('train-button').addEventListener('click', () => {
 document.getElementById('predict-button').addEventListener('click', () => {
     const testData = document.getElementById('test-data').value;
     const parsedData = parseCSV(testData);
+    const text = document.getElementById('result').innerText;
 
     const output = parsedData.map(row => {
         const prediction = predict(decisionTree, row);
@@ -274,5 +274,5 @@ document.getElementById('predict-button').addEventListener('click', () => {
         return prediction.result;
     }).join('\n');
 
-    document.getElementById('output').textContent = output;
+    document.getElementById('result').textContent = text + ' ' + output;
 });
