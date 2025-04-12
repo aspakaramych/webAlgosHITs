@@ -5,40 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Decision Tree App</title>
     <link rel="stylesheet" href="./css/style.css">
-    <link rel="stylesheet" href="../common_styles_dark.css">
+    <link rel="stylesheet" href="../common_styles_light.css">
 </head>
 <body>
-    <section class="page_header">
-        <h1 class="logo">
-            <a href="../mainpage/index.html" class="name">
-                <img src="../images/pinpng.com-redstone-dust-png-4986074.png" class="image">
-                <span class="logo_text">AlgoCrew</span>
-            </a>
-        </h1>
-    </section>
-<div class="container">
-    <h1>Decision Tree Builder</h1>
-    <div class="section">
-        <h2>Train the Model</h2>
-        <textarea id="train-data" placeholder="Enter training data in CSV format..."></textarea>
-        <button id="train-button">Train</button>
+<section class="page_header">
+    <h1 class="logo">
+        <a href="../mainpage/index.html" class="name">
+            <img src="../images/pinpng.com-redstone-dust-png-4986074.png" class="image">
+            <span class="logo_text">AlgoCrew</span>
+        </a>
+        <img src="../images/Powered_Wall_Lever_.png" class="image" id="lever">
+        <h1 class="name_algorithm">Decision Tree</h1>
+    </h1>
+</section>
+<section class="algorithm">
+    <div class="content-wrapper">
+        <div class="tree" id="tree-container"></div>
+        <div class="input-and-button">
+            <p class="text">
+                Дерево решений — это алгоритм машинного обучения, который разбивает данные на подмножества, используя
+                последовательность условий, и строит древовидную структуру для прогнозирования целевой переменной на
+                основе входных признаков. Каждый узел дерева представляет проверку условия, а ветви ведут к следующим
+                узлам или конечным решениям (листьям).
+            </p>
+            <p class="text">
+                Напишите ваши данные в формате csv (разделённые ";"). Обязательно должна быть колонка Label. После
+                нажмите "Обучить".
+            </p>
+            <div class="section">
+                <textarea class="textarea" id="train-data"
+                          placeholder="Введите данные"></textarea>
+                <button class="button" id="train-button">Обучить</button>
+            </div>
+            <p class="text">
+                Далее введите данные, для которых вы хотите предсказать значение целевой переменной, и нажмите кнопку
+                "Предсказать", чтобы получить результат на основе обученного дерева решений.
+            </p>
+            <div class="section">
+                <textarea class="textarea" id="test-data" placeholder="Введите данные"></textarea>
+                <button class="button" id="predict-button">Предсказать</button>
+            </div>
+            <p id="result" class="text">
+                Результат:
+            </p>
+        </div>
     </div>
-
-    <div class="section">
-        <h2>Decision Tree Visualization</h2>
-        <div id="tree-container" style="width: 800px; height: 600px;"></div>
-    </div>
-
-    <div class="section">
-        <h2>Predict</h2>
-        <textarea id="test-data" placeholder="Enter test data in CSV format..."></textarea>
-        <button id="predict-button">Predict</button>
-    </div>
-    <div class="prediction-result">
-        <h3 id="output"></h3>
-    </div>
-</div>
+</section>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="js/script.js"></script>
+<footer>
+    <div class="footer">
+        здесь будет подвал
+    </div>
+</footer>
 </body>
 </html>
