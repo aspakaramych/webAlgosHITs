@@ -3,18 +3,11 @@
     src: url('../fonts/minecraft.ttf') format('truetype');
 }
 
-body {
-    /* background: linear-gradient(to top, rgb(108, 168, 246), rgb(41, 116, 246)) !important;
-    background-attachment: fixed; */
-    /* background-color: rgb(132, 132, 132) !important; */
-    /* background-image: url(../images/2025-04-05_17.20.46.png) !important; */
-}
-
 #field {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-left: 30%;
+    margin-left: 5%;
     margin-top: 30px;
     /* width: 1000px; */
 }
@@ -34,11 +27,15 @@ body {
 }
 
 #description_block {
-    margin-left: 100px;
-    margin-top: 150px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 20px;
+    gap: 15px;
+    margin-left: 3%;
     background-color: rgb(251, 251, 251);
-    width: 350px;
-    height: 400px;
+    min-height: 70vh;
+    height: auto;
     border-radius: 10px;
 }
 
@@ -48,40 +45,53 @@ body {
     background-color: bisque;
     border-radius: 10px;
     margin-top: 15px;
-    margin-left: 23%;
+    /* margin-left: 23%; */
     font-family: 'Minecraft', sans-serif;
     text-align: center;
 }
 
 #description {
-    
+    /* margin: 10px; */
+    line-height: 1.5;
 }
 
 #text_description {
     font-family: 'Minecraft', sans-serif;
-    font-size: 15px;
+    font-size: 1rem;
+    line-height: 1.5;
 }
 
 #grid {
+    width: 500px;
+    height: 500px;
+    max-width: 500px;
+    max-height: 500px;
+    margin-top: 5%;
     display: grid;
-    margin-top: 10px;
-    grid-template-columns: repeat(var(--size), 50px);
-    grid-template-rows: repeat(var(--size), 50px);
+    grid-template-columns: repeat(var(--size),  minmax(0, 1fr));
+    grid-template-rows: repeat(var(--size),  minmax(0, 1fr));
     border: 1px black solid;
     background: linear-gradient(#ededed, #ededed) padding-box,
-    linear-gradient(to bottom,  rgb(245, 246, 233), rgba(211, 168, 39, 0.738)) border-box;
-    border: 3px solid transparent;
+    linear-gradient(to bottom,  rgb(170, 100, 19), rgb(242, 84, 16)) border-box;
+    border: 4px solid transparent;
     border-radius: 6px;
+    box-sizing: border-box;
     box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.3); 
 }
 
 #menu {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    width: 600px;
+    justify-content: center;
+    justify-items: center;
     margin-top: 10px;
+}
+
+#menu-container {
+    align-items: center;
+    justify-items: center;
+    background-color: rgb(207, 207, 207);
+    border-radius: 10px;
+    /* overflow: auto; */
+    padding: 10px;
 }
 
 #generate {
@@ -181,7 +191,7 @@ body {
     font-family: 'Minecraft', sans-serif;;
     font-size: 14px;
     font-weight: 400;
-    height: 5vh;
+    height: auto;
     width: 100px;
     background-color: rgb(255, 255, 0);
     border-radius: 10px;
@@ -237,8 +247,8 @@ body {
 }
 
 .cell {
-    width: 50px; 
-    height: 50px;
+    /* width: 50px; 
+    height: 50px; */
     background-color: lightgray;
     border: 1px solid #6f6f6f50;
     box-sizing: border-box;

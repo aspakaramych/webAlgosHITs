@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="../common_styles_dark.css">
+    <link rel="stylesheet" href="../common_styles_light.css">
     <title>A* algorhytm</title>
     <link rel="icon" href="../images/favicon-32x32.png">
 </head>
@@ -15,48 +15,63 @@
                 <img src="../images/pinpng.com-redstone-dust-png-4986074.png" class="image">
                 <span class="logo_text">AlgoBox</span>
             </a>
+            <img src="../images/Powered_Wall_Lever_.png" class="image" id="lever">
+            <h1 class="name_algorithm">Алгоритм A-Star</h1>
         </h1>
     </section>
 
     <div id="main_container">
         <section id="field">
-            <div style="background-color: rgba(245, 245, 245, 0.323); border-radius: 10px; padding: 10px;">
+            <div id="grid"></div>
+        </section>
+
+        <section id="description_block">
+            <div id="description_header" style="margin-bottom: -10px;">Описание алгоритма 📖</div>
+            <div id="description">
+                <div id="text_description">
+                    A* (A star) - Алгоритм поиска по первому наилучшему совпадению на графе,
+                     который находит маршрут с наименьшей стоимостью от одной вершины (начальной) к другой (целевой, конечной).
+                </div>
+            </div>
+            <div id="description_header" style="margin-top: -10px;">Инструкция 📚</div>
+            <div id="description">
+                <div id="text_description">
+                    <div>
+                        ЛКМ - разместить/убрать стену <br>
+                        ПКМ - разместить/убрать начальную/конечную точку
+                    </div>
+                    <div>
+                        <button id="start-mock">Старт ✅</button>
+                        - найти путь между точками
+                    </div>
+                    <div>
+                        <button id="step-mock">Сделать шаг 🦶</button>
+                        - выполнить шаг алгоритма (показываются варианты выбора следующих клеток)
+                    </div>
+                    <button id="showBySteps-mock">Последовательно 👣</button>
+                    - анимация поиска пути (задайте скорость в мс при помощи ползунка)
+                </div>
+            </div>
+            <div id="menu-container">
                 <div id="menu">
                     <button id="start">Старт ✅</button>
                     <button id="step">Сделать шаг 🦶</button>
                     <button id="showBySteps">Последовательно 👣</button>
                     <label><input id="inputDelay" type="range" min="0" max="500" step="10" value="100"></label>
                 </div>
-                <div style="margin-left: 20%;">
+                <div>
                     <button id="clear">Очистить поле</button>
                     <button id="generate">Сгенерировать</button>
                     <input id="size" placeholder="Введите размер поля" value = 10 style="margin-top: 10px; margin-bottom: 10px;">
                 </div>
             </div>
-
-            <div id="grid"></div>
         </section>
-
-        <section id="description_block">
-            <div id="description_header">Инструкция 📚</div>
-            <div id="description">
-                <div id="text_description">
-                    <button id="start-mock">Старт</button>
-                    - найти путь между
-                    <div style="margin-left: 126px; margin-top: -10px;">точками</div>
-                    <button id="step-mock">Сделать шаг 🦶</button>
-                    - шаг алгоритма
-                    <div style="margin-left: 10px; margin-top: 5px;">показывает варианты выбора следующих клеток</div>
-                    <button id="showBySteps-mock">Последовательно 👣</button>
-                    - анимация
-                    <div style="margin-left: 230px; margin-top: -10px;">поиска пути</div>
-                    <div style="margin-left: 10px; margin-top: 5px;"></div>
-                </div>
-            </div>
-        </section>
-    </div>
     <script src="Astar_algo.js" type="module"></script>
-
+    <footer>
+        <div class="footer">
+            здесь будет подвал
+        </div>
+    </footer>
     <div class="error_container" id="error_container">
         <div class="modal-content">
             <div id="message-container">
