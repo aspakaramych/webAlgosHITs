@@ -220,7 +220,6 @@ function AstarAlgo() {
 
     if(reached) {
         getPath();
-        // grid.children[finishPoint.row * size + finishPoint.col].classList.add('reached');
     } else {
         showError("Путь не найден ❌");
         document.getElementById("error").textContent = "Путь не найден";
