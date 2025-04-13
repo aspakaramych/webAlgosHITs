@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="ants.css">
-    <link rel="stylesheet" href="../common_styles_dark.css">
+    <link rel="stylesheet" href="../common_styles_light.css">
     <title>Муравьиный алгоритм</title>
 </head>
 <body>
@@ -14,15 +14,29 @@
                 <img src="../images/logo192x192.png" class="image">
                 <span class="logo_text">AlgoBox</span>
             </a>
+            <img src="../images/Powered_Wall_Lever_.png" class="image" id="lever">
+            <h1 class="name_algorithm">Муравьиный алгоритм</h1>
         </h1>
     </section>
-    <h1>Поставьте муравьиную колонию</h1>
-    <canvas id="table" width="100px" height="100px"></canvas>
-    <div id="mainField">
-        <button id="startButton">Поиск путей</button>
-        <button id="foodButton">Разместить еду</button>
-        <button id="obstacleButton">Разместить препятствия</button>
-    </div>
+    <section class="algorithm">
+        <div class="content-wrapper">
+            <canvas id="table" width="100px" height="100px"></canvas>
+            <div class="text-and-button">
+                <p class="text">
+                    Муравьиный алгоритм (Ant Colony Optimization, ACO) — это метаэвристический метод оптимизации, вдохновленный поведением муравьев при поиске пищи.
+                    Алгоритм был предложен Марко Дориго в 1992 году и успешно применяется для решения задач комбинаторной оптимизации, таких как задача коммивояжера, раскраска графов, маршрутизация в сетях и другие.
+                </p>
+                <button id="startButton">Поиск путей</button>
+                <button id="foodButton">Разместить еду</button>
+                <button id="obstacleButton">Разместить препятствия</button>
+            </div>
+        </div>
+    </section>
     <script src="ants.js" type="module"></script>
+    <footer>
+        <div class="footer">
+            здесь будет подвал
+        </div>
+    </footer>
 </body>
 </html>
