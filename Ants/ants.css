@@ -1,8 +1,19 @@
 body {
     touch-action: none;
-    text-align: center;
     margin: 0;
     padding: 0;
+}
+
+button {
+    font-family: 'Minecraft', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    height: 5vh;
+    background-color: springgreen;
+    transition: background-color 0.3s ease;
+    border: white 2px solid;
+    border-radius: 10px;
+    cursor: pointer;
 }
 
 #mainField {
@@ -19,8 +30,12 @@ body {
     position: relative;
     margin: 20px auto;
     background-color: #ffffff;
-    border: 2px solid #ccc;
     cursor: crosshair;
+    border: none;
+    border-radius: 15px;
+    box-shadow:
+            0 8px 12px #BEC4D6,
+            0 -4px 6px #FFFFFF;
 }
 
 #startButton {
@@ -38,6 +53,33 @@ body {
     background-color: #ffffff;
     border-radius: 50%;
     transform: translate(-50%, -50%);
+}
+
+.algorithm {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2%;
+}
+
+.content-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    max-width: 90%;
+}
+
+.text-and-button {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.text {
+    font-family: 'Minecraft', sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #1A1A1A;
 }
 
 .ant {
