@@ -3,18 +3,6 @@ let isProcessing = false;
 let controller = new AbortController();
 
 let cnt_population = 1000;
-<<<<<<< HEAD
-let cnt_epoch = 10000;
-let mutation_rate = 0.3;
-let tournament_size = 10;
-let cnt_pairs = cnt_population / 2;
-let threshold_stagnation = 50;
-
-let render = 1;
-
-//реализуем алгоритм Эшелмана (CHC (Cross-generational Selection, Heterogeneous Recombination, and Cataclysmic Mutation))
-
-=======
 let cnt_epoch = 50000;
 let mutation_rate = 0.6;
 let tournament_size = 20;
@@ -24,7 +12,6 @@ let inbreeding = 0.5;
 
 let render = 1;
 
->>>>>>> f23e25e3afd6ddb8a7f9b7bafaa1802e6a1be12e
 function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -58,21 +45,6 @@ function fitness(dist, way) {
     for (let i = 1; i < way.length; i++) {
         cnt += dist[way[i - 1]][way[i]];
     }
-<<<<<<< HEAD
-    return cnt + dist[way.length - 1][way[0]];
-}
-
-function mutation(array) {
-    const i = Math.floor(Math.random() * (array.length - 1));
-    const j = Math.floor(Math.random() * (array.length - 1));
-    [array[i], array[j]] = [array[j], array[i]];
-}
-
-// алгоритм кроссовера по Эшелману, берём по половине генов от обоих родителей
-function halfUniformCrossover(parent1, parent2) {
-    const length = parent1.length;
-    const lengthPar1 = Math.floor(parent1.length / 2);
-=======
     cnt += dist[way[way.length - 1]][way[0]]
     return cnt;
 }
@@ -95,7 +67,6 @@ function otherMutation(array) {
 function halfUniformCrossover(parent1, parent2) {
     const length = parent1.length;
     const lengthPar1 = Math.floor(parent1.length * Math.random());
->>>>>>> f23e25e3afd6ddb8a7f9b7bafaa1802e6a1be12e
     let child = Array(length).fill(null);
     let used = new Set();
 
@@ -103,11 +74,7 @@ function halfUniformCrossover(parent1, parent2) {
     const end = start + Math.floor(Math.random() * (lengthPar1 - 1 - start));
 
     for (let i = start; i < end; i++) {
-<<<<<<< HEAD
-        child[i]  = parent1[i];
-=======
         child[i - start]  = parent1[i];
->>>>>>> f23e25e3afd6ddb8a7f9b7bafaa1802e6a1be12e
         used.add(parent1[i]);
     }
 
@@ -122,8 +89,6 @@ function halfUniformCrossover(parent1, parent2) {
         }
     }
 
-<<<<<<< HEAD
-=======
     if (Math.random() < mutation_rate){
         let index1 = Math.floor(Math.random() * length);
         let index2 = Math.floor(Math.random() * length);
@@ -133,7 +98,6 @@ function halfUniformCrossover(parent1, parent2) {
         }
     }
 
->>>>>>> f23e25e3afd6ddb8a7f9b7bafaa1802e6a1be12e
     return child;
 }
 
@@ -203,15 +167,9 @@ function generatePopulation(cntIndivid, numTowns) {
 
 function cataclysmicMutation(population) {
     for (let i = 1; i < 10; i++) {
-<<<<<<< HEAD
-        population[i] = halfUniformCrossover(population[0], population[i])
-    }
-    for (let i = 10; i < population.length; i++) {
-=======
         population[i] = halfUniformCrossover(population[0], population[i]);
     }
     for (let i = 1; i < population.length; i++) {
->>>>>>> f23e25e3afd6ddb8a7f9b7bafaa1802e6a1be12e
         shuffleArray(population[i]);
     }
 }
@@ -246,10 +204,6 @@ function localSearch(dist, route) {
 document.addEventListener('DOMContentLoaded', () => {
     const table = document.getElementById('table');
     const startButton = document.getElementById('startButton');
-<<<<<<< HEAD
-    const output = document.getElementById('output');
-=======
->>>>>>> f23e25e3afd6ddb8a7f9b7bafaa1802e6a1be12e
     const linesSvg = document.getElementById('lines');
 
     table.addEventListener('click', (event) => {
@@ -272,28 +226,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     })
 
-<<<<<<< HEAD
-    startButton.addEventListener('click', (event) => {
-=======
     startButton.addEventListener('click', () => {
->>>>>>> f23e25e3afd6ddb8a7f9b7bafaa1802e6a1be12e
         if (isProcessing) {
             startButton.textContent = 'Поиск оптимального пути';
             stopAlgorithm();
             isProcessing = false;
         }
         else {
-<<<<<<< HEAD
-=======
             //generateRandomDots(40, 600, 600);
->>>>>>> f23e25e3afd6ddb8a7f9b7bafaa1802e6a1be12e
             geneticAlgorithm();
             startButton.textContent = 'Остановить процесс поиска';
         }
     })
 
-<<<<<<< HEAD
-=======
     function generateRandomDots(count, width, height) {
         dots = [];
         for (let i = 0; i < count; i++) {
@@ -310,7 +255,6 @@ document.addEventListener('DOMContentLoaded', () => {
         drawLines();
     }
 
->>>>>>> f23e25e3afd6ddb8a7f9b7bafaa1802e6a1be12e
     function addLine(dot1, dot2) {
         const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
         line.setAttribute('x1', dot1.x);
@@ -338,18 +282,10 @@ document.addEventListener('DOMContentLoaded', () => {
         let dist = countDistances(dots);
         let population = generatePopulation(cnt_population, dots.length);
         for (let i = 0; i < dist.length; i++) {
-<<<<<<< HEAD
-            population[i] = greedyAlgorithm(dist, i);
-        }
-        drawLines(population[0]);
-        controller = new AbortController();
-        let alpha = greedyAlgorithm(dist, 0);
-=======
             population.push(greedyAlgorithm(dist, i));
         }
         drawLines(population[0]);
         controller = new AbortController();
->>>>>>> f23e25e3afd6ddb8a7f9b7bafaa1802e6a1be12e
 
         async function alghorythm() {
             let stagnation = 0;
@@ -360,21 +296,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.log("Алгоритм остановлен");
                     return;
                 }
-<<<<<<< HEAD
-                population.push(alpha);
-=======
->>>>>>> f23e25e3afd6ddb8a7f9b7bafaa1802e6a1be12e
                 population.sort((a, b) => fitness(dist, a) - fitness(dist, b));
 
                 population = population.slice(0, cnt_population);
                 if (population[0] === elite) stagnation++;
                 elite = population[0];
 
-<<<<<<< HEAD
-                elite = localSearch(dist, elite);
-=======
                 //elite = localSearch(dist, elite);
->>>>>>> f23e25e3afd6ddb8a7f9b7bafaa1802e6a1be12e
 
                 if (stagnation > threshold_stagnation) {
                     stagnation = 0;
@@ -387,28 +315,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                         let parent1 = selectParent(population, dist);
                         let parent2 = selectParent(population, dist);
-<<<<<<< HEAD
-                        if (distHamming(parent1, parent2) > Math.floor(Math.random() * (parent1.length - 1) * 0.5)) {
-                            population.push(halfUniformCrossover(parent1, parent2));
-                            population.push(halfUniformCrossover(parent1, parent2));
-                            mutation(population[population.length - 1]);
-                            mutation(population[population.length - 2]);
-=======
                         if (distHamming(parent1, parent2) > Math.floor((parent1.length - 1) * inbreeding)) {
                             population.push(halfUniformCrossover(parent1, parent2));
                             population.push(halfUniformCrossover(parent2, parent1));
->>>>>>> f23e25e3afd6ddb8a7f9b7bafaa1802e6a1be12e
                         }
                     }
                 }
 
-<<<<<<< HEAD
-                for (let j = 1; j < 1 + Math.floor(mutation_rate * cnt_population); j++) {
-                    mutation(population[j]);
-=======
                 for (let j = 10; j < 10 + Math.floor(mutation_rate * cnt_population); j++) {
                     otherMutation(population[j]);
->>>>>>> f23e25e3afd6ddb8a7f9b7bafaa1802e6a1be12e
                     if (controller.signal.aborted) {
                         console.log("Алгоритм остановлен");
                         return;
