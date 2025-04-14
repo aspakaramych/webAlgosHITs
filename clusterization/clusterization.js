@@ -18,10 +18,19 @@ const STYLES = [
            'pink',
             'gray',
              'black',
-              'magenta', // смесь розового и фиолетового :3
+              'magenta',
                'yellow',
-                'lime'
+                'lime',
 ];
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
 
 let points = [];
 
@@ -64,10 +73,10 @@ function getNormalizedCentroids(centroids, clusters) {
 
 // kMeans++
 function getCentroids(k) {
-    let centroids = [points[Math.floor(Math.random() * points.length)]]; // начинаем плясать от любой рандомной точки
+    let centroids = [points[Math.floor(Math.random() * points.length)]]; // начинаем плясать от рандомной точки
     
     for (let i = 1; i < k; i++) {
-        let distances = [];
+        let distancesBetweenPointsAndCentroids = [];
         for (let point of points) {
             let minDist = Infinity;
             for (let centr = 0; centr < centroids.length; centr++) {   // находим ближайший центроид к данной точке
@@ -76,11 +85,11 @@ function getCentroids(k) {
                     minDist = dist;
                 }
             }
-            distances.push(minDist * minDist);
+            distancesBetweenPointsAndCentroids.push(minDist * minDist);
         }
         
         let sum = 0;
-        for (let dist of distances) {
+        for (let dist of distancesBetweenPointsAndCentroids) {
             sum += dist;
         }
         
@@ -88,7 +97,7 @@ function getCentroids(k) {
         let currSum = 0;
         
         for (let j = 0; j < points.length; j++) {               // находится точка: если текущее расстояние дало перевал через порог - 
-            currSum += distances[j];                            // берем эту точку в качестве центроида (вероятность того, что эта точка
+            currSum += distancesBetweenPointsAndCentroids[j];   // берем эту точку в качестве центроида (вероятность того, что эта точка
             if (currSum >= threshold) {                         // подходит в качестве центроида (достаточно удалена от уже существующих
                 centroids.push(points[j]);                      // центроидов) велика из-за удалённости, но не 100%)
                 break;
@@ -102,11 +111,11 @@ function getCentroids(k) {
 function centralize(centroids) {    // группируем точки в кластеры по соотв. центроидам
     let clusters = new Map();
     
-    for(let centr of centroids) {
+    for(const centr of centroids) {
         clusters.set(`${centr.x},${centr.y}`, []);
     }
     
-    for(let point of points) {
+    for(const point of points) {
         let min = Infinity;
         let nearestCentr = null;
         for(const centr of centroids) {
@@ -138,9 +147,9 @@ function updateCentroids(centroids, clusters) {
         }
     }
     
-    // обработка пустых кластеров (перераспределяем)
+    // находим кластер с наибольшим разбросом точек
     if (emptyClusters.length > 0) {
-        let maxVariance = 0;                                
+        let maxDispersion = 0;                                
         let targetClusterKey = null;
         let clusterEntries = Array.from(clusters.entries());
         
@@ -149,48 +158,35 @@ function updateCentroids(centroids, clusters) {
             
             if (clusterPoints.length <= 1) continue;
             
-            const [x, y] = key.split(',').map(Number);      // берём непустой кластер
-            let currCentroid = {x: x, y: y};                // достаём его центроид
-            let variance = 0;
+            const [x, y] = key.split(',').map(Number);
+            let currCentroid = {x: x, y: y};
+            let dispersion = 0;
             
             for (let k = 0; k < clusterPoints.length; k++) {
                 let currPoint = clusterPoints[k];
-                variance += Math.pow(getDistance(currPoint, currCentroid), 2);  // считаем внутрикластерный разброс точек
-            }                                                                   // квадрат - чтобы увеличить веса "выбросов" 
+                dispersion += Math.pow(getDistance(currPoint, currCentroid), 2);    // считаем внутрикластерный разброс точек
+            }                                                                       // квадрат, чтобы увеличить веса "выбросов" 
             
-            if (variance > maxVariance) {                   // находим кластер с наибольшим разбросом точек
-                maxVariance = variance;
+            if (dispersion > maxDispersion) {
+                maxDispersion = dispersion;
                 targetClusterKey = key;
             }
         }
         
         // перераспределяем точки в пустые центроиды
         if (targetClusterKey) {
-            let targetCluster = clusters.get(targetClusterKey);     // берём кластер
+            let targetCluster = clusters.get(targetClusterKey);
             let [x, y] = targetClusterKey.split(',').map(Number);
             let centroid = {x: x, y: y};
             
-            let maxDist = 0;
-            let farthestPoint = null;
+            // cортируем все точки кластера по удалённости от текущего центроида
+            let sortedPoints = targetCluster.sort((a, b) => {
+                return getDistance(b, centroid) - getDistance(a, centroid);
+            });
             
-            for (let m = 0; m < targetCluster.length; m++) {    // находим его самую удаленную точку
-                let point = targetCluster[m];
-                let dist = getDistance(point, centroid);
-                if (dist > maxDist) {
-                    maxDist = dist;
-                    farthestPoint = point;
-                }
-            }
-            
-            if (farthestPoint) {
-                newCentroids.push(farthestPoint);   // делаем из самой отдалённой точки центроид
-                for (let n = 1; n < emptyClusters.length; n++) {
-                    let currPoints = points;       // добавляем случайные точки из других кластеров
-                    if (currPoints && currPoints.length > 0) { // случайные, чтобы центроиды не смещались в сторону выбросов при их наличии              
-                        let randomIndex = Math.floor(Math.random() * currPoints.length);
-                        newCentroids.push(currPoints[randomIndex]);
-                    }
-                }
+            // берём n самых удалённых точек (т = количество пустых центроидов)
+            for (let n = 0; n < emptyClusters.length; n++) {
+                newCentroids.push(sortedPoints[n]);
             }
         }
     }
@@ -217,10 +213,26 @@ function draw(clusters) {
     let i = 0;
     
     for (const [key, value] of clusters) {        
-        context.fillStyle = STYLES[i];
+        context.fillStyle = getRandomColor();
         for (let point of value) {
             context.fillRect(point.x-5, point.y-5, 10, 10);
         }
+        i++;
+    }
+}
+
+function drawWithCentroids(clusters, centroids) {
+    context.clearRect(1, 1, canvas.width-2, canvas.height-2);
+    
+    let i = 0;
+    for (const [key, value] of clusters) {        
+        context.fillStyle = getRandomColor();
+        for (let point of value) {
+            context.fillRect(point.x-5, point.y-5, 10, 10);
+        }
+        context.beginPath();
+        context.arc(centroids[i].x, centroids[i].y, 10, 0, 2 * Math.PI);
+        context.fill();
         i++;
     }
 }
@@ -231,7 +243,6 @@ function draw(clusters) {
 // высокий результат - значит, точка в нужном кластере, иначе - надо бы перераспределить её в другой
 function silhouetteCoef(clusters, centroids) {
     let totalScore = 0;
-    let totalPoints = 0;
     
     for (let centr of centroids) {
         let clusterKey = `${centr.x},${centr.y}`;
@@ -276,16 +287,14 @@ function silhouetteCoef(clusters, centroids) {
             let b = minAvgDist === Infinity ? 0 : minAvgDist;   // вычисляем силуэт
             let res = Math.max(a, b) !== 0 ? (b - a) / Math.max(a, b) : 0; 
             
-            totalScore += isNaN(res) ? 0 : res;
-            totalPoints++;
+            totalScore += res;
         }
     }
     
-    return totalPoints > 0 ? totalScore / totalPoints : -1;
+    return totalScore;
 }
 
 function kmeansPlusPlus() {
-    let bestK = 1;
     let bestScore = 0;
     let maxK = Math.min(10, points.length);
     let bestClusters = null;
@@ -301,8 +310,8 @@ function kmeansPlusPlus() {
     if(points.length === 1) {
         maxK = 2;
     }
-    for (; k < maxK; k++) {
-        let centroids = getCentroids(k);
+    for (let i = k; i < maxK; i++) {
+        let centroids = getCentroids(i);
         let prevCentroids = null;
         let clusters = null;
         let iterations = 0;
@@ -317,19 +326,17 @@ function kmeansPlusPlus() {
         }
         
         let silhouetteScore = silhouetteCoef(clusters, centroids);
-        
-        if (silhouetteScore > bestScore || ( flag && maxK - k === 1) || points.length === 1) {
+        if (silhouetteScore > bestScore || maxK - k === 1) {
             bestScore = silhouetteScore;
-            bestK = k;
             bestClusters = clusters;
             bestCentroids = centroids;
         }
     }
     
-    draw(bestClusters);
+    drawWithCentroids(bestClusters, bestCentroids);
 }
 
-function epsilonLocalityScan(currPointIndex) {
+function epsilonLocalityScan(currPointIndex, epsilon) {
     let neighbours = [];
     for(let i = 0; i < points.length; i++) {
         if(getDistance(points[currPointIndex], points[i]) <= epsilon) {
@@ -339,14 +346,14 @@ function epsilonLocalityScan(currPointIndex) {
     return neighbours;
 }
 
-function expandCluster(currPointIndex, neighbours, visited) {
+function expandCluster(currPointIndex, neighbours, visited, epsilon) {
     let currCluster = [];
     currCluster.push(currPointIndex);
 
-    for(let neighbourPointIndex of neighbours) {
+    for(const neighbourPointIndex of neighbours) {
         if(!visited[neighbourPointIndex]) {
             visited[neighbourPointIndex] = true;
-            let neighbourPointNeighbours = epsilonLocalityScan(neighbourPointIndex);
+            let neighbourPointNeighbours = epsilonLocalityScan(neighbourPointIndex, epsilon);
             if(neighbourPointNeighbours.length >= minPoints) {
                 for(let index of neighbourPointNeighbours) {
                     if(!visited[index]) {
@@ -361,19 +368,20 @@ function expandCluster(currPointIndex, neighbours, visited) {
 }
 
 let minPoints = 2;
-let epsilon = 30;
 
 function dbscan() {
     let clusters = [];
     let visited = new Array(points.length).fill(false);
     let noises = [];
 
+    let epsilon = document.getElementById("epsilon-value").value;
+
     for(let i = 0; i < points.length; i++) {
         if(!visited[i]) {
             visited[i] = true;
-            let neighbours = epsilonLocalityScan(i);
+            let neighbours = epsilonLocalityScan(i, epsilon);
             if(neighbours.length >= minPoints) {
-                clusters.push(expandCluster(i, neighbours, visited));          
+                clusters.push(expandCluster(i, neighbours, visited, epsilon));          
             }
             else {
                 noises.push(i);
@@ -390,17 +398,16 @@ function dbscan() {
 
 function draw_dbscan(clusters, noises) {
     context.clearRect(1, 1, canvas.width-2, canvas.height-2);
-    
-    let i = 0;
+
     for (let cluster of clusters) {  
-        context.fillStyle = STYLES[i++];
+        context.fillStyle = getRandomColor();
         for (let point of cluster) {
             context.fillRect(points[point].x-5, points[point].y-5, 10, 10);
         }
     }
 
     for (let point of noises) {  
-        context.fillStyle = STYLES[i++];
+        context.fillStyle = getRandomColor();
         context.fillRect(points[point].x-5, points[point].y-5, 10, 10);
     }
 
@@ -467,7 +474,7 @@ function kMeans() {
     let cluster = null;
     let wcssHistory = new Map();
     let wcssValues = []
-    
+    let centroidsHistory = new Map();
     for(let k = 1; k < 15; k++) {
         currCentroids = getRandomCentroids(k);
         let currCluster = centralize(currCentroids);
@@ -479,7 +486,7 @@ function kMeans() {
         let currWcss = getWcss(currCluster, currCentroids);
         wcssValues.push(currWcss);
         wcssHistory.set(currWcss, currCluster);
-        // console.log(currWcss);
+        centroidsHistory.set(currWcss, currCentroids);
 
         cluster = null;
     }
@@ -494,10 +501,10 @@ function kMeans() {
         }
     }
 
-    let result = wcssHistory.get(wcssValues[index]);
-
+    let resultPoints = wcssHistory.get(wcssValues[index]);
+    let resultCentroids = centroidsHistory.get(wcssValues[index]);
     console.log(wcssHistory);
 
-    draw(result);
+    drawWithCentroids(resultPoints, resultCentroids);
 
 }

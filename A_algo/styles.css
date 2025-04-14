@@ -20,12 +20,12 @@
     color: orange;
 }
 
-#main_container {
+#main-container {
     display: flex;
     align-items: center;
 }
 
-#description_block {
+#description-block {
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -38,7 +38,7 @@
     border-radius: 10px;
 }
 
-#description_header {
+#description-header {
     width: 50%;
     padding: 5px;
     background-color: bisque;
@@ -52,7 +52,7 @@
     line-height: 1.5;
 }
 
-#text_description {
+#text-description {
     font-family: 'Minecraft', sans-serif;
     font-size: 1rem;
     line-height: 1.5;

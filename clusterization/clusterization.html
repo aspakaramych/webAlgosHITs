@@ -19,28 +19,55 @@
             <h1 class="name_algorithm">Алгоритм кластеризации</h1>
         </h1>
     </section>
-    <section id="algo_info_container">
+    <!-- <section id="algo_info_container">
         <div id="algo_info">
             Алгоритм кластеризации точек
         </div>
-    </section>
-    <section id="choose_mode">
-        <button class="mode_button" id="kmeans">kmeans</button>
-        <button class="mode_button" id="kmeans++">kmeans++</button>
-        <button class="mode_button" id="DBSCAN">DBSCAN</button>
-    </section>
-    <section id="main_section">
-        <canvas height="500" width="800" id='field'></canvas>
-        <div id="info"> 
-            <div style="display: flex; flex-direction: row;">
-                <div id="info_description">Введите количество кластеров <br> (по умолчанию - авто)</div>
-                <input id="nums_k" type="number">
-            </div>
-            <button id="clear">Очистить</button>
-            <button id="start">Старт</button>
+    </section> -->
+
+    <div id="wrapper">
+        <div id="main-container">
+            <section id="main_section">
+                <section id="choose-mode">
+                    <button class="mode_button" id="kmeans">kmeans</button>
+                    <button class="mode_button" id="kmeans++">kmeans++</button>
+                    <button class="mode_button" id="DBSCAN">DBSCAN</button>
+                </section>
+                <canvas height="500" width="800" id='field'></canvas>
+                <div id="info"> 
+                    <div style="display: flex; flex-direction: row;">
+                        <div id="info_description">Введите количество кластеров <br> (по умолчанию - авто)</div>
+                        <input id="nums_k" type="number">
+                    </div>
+                    <button id="clear">Очистить</button>
+                    <button id="start">Старт</button>
+                </div>
+                <script src="clusterization.js"></script>
+            </section>
         </div>
-        <script src="clusterization.js"></script>
-        
-    </section>
+        <div id="description-container">
+            <div id="description-header">Описание алгоритма 📖</div>
+            <div id="description">
+                <div id="description-text">
+                    Алгоритм кластеризации разбивает большую группу точек на группы
+                    несколько поменьше (кластероы) на основе их положения в пространстве и относительно друг друга. 
+                </div>
+            </div>
+            <div id="description-header">Инструкция 📚</div>
+            <div id="description">
+                <div id="description-text">
+                    Расставьте точки на поле правой кнопкой мыши и запустите одну из предложенных реализаций алгоритма,
+                    чтобы увидеть распределение точек по кластерам или посмотреть отличия работы каждой
+                </div>
+            </div>
+            <div id="description-header">Параметры для DBSCAN 🔧</div>
+            <div id="description-text">
+                <div><label>Размер епсилон-окрестности поиска<input type="range" min="0" max="600" value="50" id="epsilon-value"></label></div>
+            </div>
+
+        </div>
+
+    </div>
+
 </body>
 </html>

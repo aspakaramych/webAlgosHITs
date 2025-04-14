@@ -24,13 +24,12 @@
     border-radius: 10px;
 }
 
-#choose_mode {
+#choose-mode {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
-    margin-left: 35%;
-    width: 30%;
+    justify-content: space-around;
+    width: 800px;
 }
 
 #info {
@@ -58,6 +57,10 @@
     border-radius: 10px;
     background-color: rgb(241, 245, 249);
     margin-top: 10px;
+    box-shadow: 0 8px 12px #BEC4D6,
+    0 -4px 6px #FFFFFF,
+    inset -5px -5px 10px #FFFFFF,
+    inset 5px 5px 10px #BEC4D6;
 }
 
 #nums_k {
@@ -125,4 +128,58 @@
 #clear:hover {
     background-color: rgb(173, 119, 65);
     transition: 0.3s;
+}
+
+#main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 4%;
+    margin-top: 1%;
+    width: 60%;
+    box-sizing: border-box;
+    min-width: 800px;
+}
+
+#description-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 2%;
+    margin-top: 5%;
+    width: auto;
+    min-height: 40vh;
+    height: auto;
+    background-color: rgb(251, 251, 251);
+    border-radius: 10px;
+    margin-left: 20px;
+}
+
+#wrapper {
+    display: flex;
+    justify-content: space-between;
+    width: 98%;
+    margin: 1%;
+    gap: 20px;
+}
+
+#description-header {
+    width: 50%;
+    padding: 5px;
+    background-color: bisque;
+    border-radius: 10px;
+    margin-top: 15px;
+    font-family: 'Minecraft', sans-serif;
+    text-align: center;
+}
+
+#description {
+    line-height: 1.5;
+}
+
+#description-text {
+    font-family: 'Minecraft', sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    padding: 10px;
 }
