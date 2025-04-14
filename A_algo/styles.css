@@ -32,10 +32,11 @@
     margin-top: 20px;
     gap: 15px;
     margin-left: 3%;
-    background-color: rgb(251, 251, 251);
     min-height: 70vh;
+    width: auto;
     height: auto;
     border-radius: 10px;
+    margin-right: 2%;
 }
 
 #description-header {
@@ -56,6 +57,7 @@
     font-family: 'Minecraft', sans-serif;
     font-size: 1rem;
     line-height: 1.5;
+    padding: 10px;
 }
 
 #grid {
@@ -88,6 +90,7 @@
     background-color: rgb(207, 207, 207);
     border-radius: 10px;
     padding: 10px;
+    margin-bottom: 10px;
 }
 
 #generate {

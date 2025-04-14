@@ -5,30 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Decision Tree App</title>
     <link rel="stylesheet" href="./css/style.css">
-    <link rel="stylesheet" href="../common_styles_light.css">
+    <link id="theme-link" rel="stylesheet" href="../common_styles_light.css">
+    <link rel="icon" href="../images/pinpng.com-redstone-dust-png-4986074.png">
 </head>
 <body>
-<section class="page_header">
-    <h1 class="logo">
-        <a href="../mainpage/index.html" class="name">
-            <img src="../images/pinpng.com-redstone-dust-png-4986074.png" class="image">
-            <span class="logo_text">AlgoCrew</span>
-        </a>
-        <img src="../images/Powered_Wall_Lever_.png" class="image" id="lever">
-        <h1 class="name_algorithm">Decision Tree</h1>
-    </h1>
-</section>
+    <section class="page_header">
+        <h1 class = "logo">
+            <a href="../mainpage/index.html" class="name">
+                <img src="../images/pinpng.com-redstone-dust-png-4986074.png" class="image">
+                <span class="logo_text">AlgoBox</span>
+            </a>
+            <img src="../images/Powered_Wall_Lever_.png" class="image" id="lever">
+            <div class="name_algorithm">Дерево решений</div>
+        </h1>
+        <button id="theme-changer-button">
+            <img id="theme-changer-button-icon" src="../images/brightness.png">
+        </button>
+    </section>
 <section class="algorithm">
     <div class="content-wrapper" id="parent-container">
         <div class="tree" id="tree-container"></div>
         <div class="input-and-button">
-            <p class="text">
+            <p class="text-description">
                 Дерево решений — это алгоритм машинного обучения, который разбивает данные на подмножества, используя
                 последовательность условий, и строит древовидную структуру для прогнозирования целевой переменной на
                 основе входных признаков. Каждый узел дерева представляет проверку условия, а ветви ведут к следующим
                 узлам или конечным решениям (листьям).
             </p>
-            <p class="text">
+            <p class="text-description">
                 Напишите ваши данные в формате csv (разделённые ";"). Обязательно должна быть колонка Label. После
                 нажмите "Обучить".
             </p>
@@ -37,7 +41,7 @@
                           placeholder="Введите данные"></textarea>
                 <button class="button" id="train-button">Обучить</button>
             </div>
-            <p class="text">
+            <p class="text-description">
                 Далее введите данные, для которых вы хотите предсказать значение целевой переменной, и нажмите кнопку
                 "Предсказать", чтобы получить результат на основе обученного дерева решений.
             </p>
@@ -45,7 +49,7 @@
                 <textarea class="textarea" id="test-data" placeholder="Введите данные"></textarea>
                 <button class="button" id="predict-button">Предсказать</button>
             </div>
-            <p id="result" class="text">
+            <p id="result" class="text-description">
                 Результат:
             </p>
         </div>
@@ -66,5 +70,6 @@
 </footer>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="js/script.js"></script>
+<script src="../themeChanger.js"></script>
 </body>
 </html>

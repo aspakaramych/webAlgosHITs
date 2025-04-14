@@ -1,8 +1,8 @@
-const switchTheme = document.getElementById("theme-changer").addEventListener("click", changeTheme)
+const switchTheme = document.getElementById("theme-changer-button").addEventListener("click", changeTheme)
 const themeLink = document.getElementById("theme-link");
 
 function applyTheme(theme) {
-    if(theme === "../common_styles_light.css") {
+    if(theme === "dark") {
         themeLink.setAttribute("href", "../common_styles_dark.css");
     } else {
         themeLink.setAttribute("href", "../common_styles_light.css");
@@ -10,6 +10,7 @@ function applyTheme(theme) {
 }
 
 function changeTheme() {
+    console.log(1);
     const currTheme = themeLink.getAttribute("href").includes("dark") ? "dark" : "light";
     const newTheme = currTheme === "dark" ? "light" : "dark";
 

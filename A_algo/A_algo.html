@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="../common_styles_light.css">
+    <link id="theme-link" rel="stylesheet" href="../common_styles_light.css">
     <title>A* algorhytm</title>
-    <link rel="icon" href="../images/favicon-32x32.png">
+    <link rel="icon" href="../images/pinpng.com-redstone-dust-png-4986074.png">
 </head>
 <body oncontextmenu="return false;">
     <section class="page_header">
@@ -16,8 +16,11 @@
                 <span class="logo_text">AlgoBox</span>
             </a>
             <img src="../images/Powered_Wall_Lever_.png" class="image" id="lever">
-            <h1 class="name_algorithm">Алгоритм A-Star</h1>
+            <div class="name_algorithm">Алгоритм A-Star</div>
         </h1>
+        <button id="theme-changer-button">
+            <img id="theme-changer-button-icon" src="../images/brightness.png">
+        </button>
     </section>
 
     <div id="main-container">
@@ -28,14 +31,14 @@
         <section id="description-block">
             <div id="description-header" style="margin-bottom: -10px;">Описание алгоритма 📖</div>
             <div id="description">
-                <div id="text-description">
+                <div class="text-description">
                     A* (A star) - Алгоритм поиска по первому наилучшему совпадению на графе,
                      который находит маршрут с наименьшей стоимостью от одной вершины (начальной) к другой (целевой, конечной).
                 </div>
             </div>
             <div id="description-header" style="margin-top: -10px;">Инструкция 📚</div>
             <div id="description">
-                <div id="text-description">
+                <div class="text-description">
                     <div>
                         ЛКМ - разместить/убрать стену <br>
                         ПКМ - разместить/убрать начальную/конечную точку
@@ -81,5 +84,7 @@
             <button id="ok">Закрыть</button>
         </div>
     </div>
+    <script src="../themeChanger.js"></script>
+
 </body>
 </html>

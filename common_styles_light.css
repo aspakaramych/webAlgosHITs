@@ -21,9 +21,30 @@ a {
     flex-direction: row;
     background-color: #E5E9F0;
     align-items: center;
+    justify-content: space-between;
     box-shadow:
             0 8px 12px #BEC4D6,
             0 -4px 6px #FFFFFF;
+}
+
+#theme-changer-button {
+    align-items: flex-end;
+    justify-content: flex-end;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    width: 40px;
+    height: 40px;
+    margin-right: 5%;
+    cursor: pointer;
+}
+
+#theme-changer-button-icon {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    width: 40px;
+    height: 40px;
 }
 
 .footer {
@@ -43,7 +64,6 @@ a {
 .logo {
     display: flex;
     align-items: center;
-    justify-content: space-between;
 }
 
 .logo_text {
@@ -67,9 +87,8 @@ a {
     color: #1A1A1A;
     font-size: 1.5rem;
     font-weight: 100;
-    margin-bottom: 15px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 .name {
@@ -113,4 +132,12 @@ a {
     padding: 20px;
     border-radius: 10px;
     text-align: center;
+}
+
+.text-description {
+    color: black;
+    font-family: 'Minecraft', sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    padding: 10px;
 }

@@ -5,29 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Neural Network</title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="../common_styles_light.css">
+    <link id="theme-link" rel="stylesheet" href="../common_styles_light.css">
 </head>
 <body>
-<section class="page_header">
-    <h1 class="logo">
-        <a href="../mainpage/index.html" class="name">
-            <img src="../images/pinpng.com-redstone-dust-png-4986074.png" class="image">
-            <span class="logo_text">AlgoCrew</span>
-        </a>
-        <img src="../images/Powered_Wall_Lever_.png" class="image" id="lever">
-        <h1 class="name_algorithm">Neural network</h1>
-    </h1>
-</section>
+    <section class="page_header">
+        <h1 class = "logo">
+            <a href="../mainpage/index.html" class="name">
+                <img src="../images/pinpng.com-redstone-dust-png-4986074.png" class="image">
+                <span class="logo_text">AlgoBox</span>
+            </a>
+            <img src="../images/Powered_Wall_Lever_.png" class="image" id="lever">
+            <div class="name_algorithm">Нейронная сеть</div>
+        </h1>
+        <button id="theme-changer-button">
+            <img id="theme-changer-button-icon" src="../images/brightness.png">
+        </button>
+    </section>
 
 <section class="algorithm">
     <div class="content-wrapper" id="parent-container">
         <canvas class="canvas" id="myCanvas" width="50" height="50"></canvas>
         <div class="input-and-button">
-            <p class="text">
+            <p class="text-description">
                 Нейронная сеть — это алгоритм машинного обучения, который моделирует работу человеческого мозга.
                 Она состоит из слоев нейронов, которые обрабатывают входные данные и выдают предсказания.
             </p>
-            <p class="text">
+            <p class="text-description">
                 Нарисуйте цифру на холсте и нажмите "Предсказать", чтобы получить результат. Используйте кнопку "Стереть",
                 чтобы очистить холст.
             </p>
@@ -36,7 +39,7 @@
                 <button class="button" id="resetButton">Стереть</button>
             </div>
             <div class="section">
-                <p id="result" class="text">
+                <p id="result" class="text-description">
                     Нейросеть предсказывает: <span id="result-text"></span>
                 </p>
             </div>
@@ -60,5 +63,6 @@
 
 <canvas id="resizedCanvas" width="28" height="28" style="display: none"></canvas>
 <script type="module" src="js/index.js"></script>
+<script src="../themeChanger.js"></script>
 </body>
 </html>

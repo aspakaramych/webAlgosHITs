@@ -4,25 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="ants.css">
-    <link rel="stylesheet" href="../common_styles_light.css">
+    <link id="theme-link" rel="stylesheet" href="../common_styles_light.css">
     <title>Муравьиный алгоритм</title>
 </head>
 <body>
     <section class="page_header">
         <h1 class = "logo">
             <a href="../mainpage/index.html" class="name">
-                <img src="../images/logo192x192.png" class="image">
+                <img src="../images/pinpng.com-redstone-dust-png-4986074.png" class="image">
                 <span class="logo_text">AlgoBox</span>
             </a>
             <img src="../images/Powered_Wall_Lever_.png" class="image" id="lever">
-            <h1 class="name_algorithm">Муравьиный алгоритм</h1>
+            <div class="name_algorithm">Муравьиный алгоритм</div>
         </h1>
+        <button id="theme-changer-button">
+            <img id="theme-changer-button-icon" src="../images/brightness.png">
+        </button>
     </section>
     <section class="algorithm">
         <div class="content-wrapper">
             <canvas id="table" width="100px" height="100px"></canvas>
             <div class="text-and-button">
-                <p class="text">
+                <p class="text-description">
                     Муравьиный алгоритм (Ant Colony Optimization, ACO) — это метаэвристический метод оптимизации, вдохновленный поведением муравьев при поиске пищи.
                     Алгоритм был предложен Марко Дориго в 1992 году и успешно применяется для решения задач комбинаторной оптимизации, таких как задача коммивояжера, раскраска графов, маршрутизация в сетях и другие.
                 </p>
@@ -38,5 +41,6 @@
             здесь будет подвал
         </div>
     </footer>
+    <script src="../themeChanger.js"></script>
 </body>
 </html>

@@ -21,9 +21,30 @@ a {
     flex-direction: row;
     background-color: #1e1e1e;
     align-items: center;
+    justify-content: space-between;
     box-shadow:
             0 8px 12px rgba(0, 0, 0, 0.8),
             0 -4px 6px rgba(255, 255, 255, 0.1);
+}
+
+#theme-changer-button {
+    align-items: flex-end;
+    justify-content: flex-end;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    width: 40px;
+    height: 40px;
+    margin-right: 5%;
+    cursor: pointer;
+}
+
+#theme-changer-button-icon {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    width: 40px;
+    height: 40px;
 }
 
 .footer {
@@ -67,9 +88,8 @@ a {
     color: white;
     font-size: 1.5rem;
     font-weight: 100;
-    margin-bottom: 15px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 .name {
@@ -113,4 +133,12 @@ a {
     padding: 20px;
     border-radius: 10px;
     text-align: center;
+}
+
+.text-description {
+    color: white;
+    font-family: 'Minecraft', sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    padding: 10px;
 }
