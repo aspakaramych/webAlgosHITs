@@ -19,6 +19,7 @@
             <h1 class="name_algorithm">Алгоритм кластеризации</h1>
         </h1>
     </section>
+<<<<<<< HEAD
     <!-- <section id="algo_info_container">
         <div id="algo_info">
             Алгоритм кластеризации точек
@@ -69,5 +70,30 @@
 
     </div>
 
+=======
+    <section id="algo_info_container">
+        <div id="algo_info">
+            Алгоритм кластеризации точек
+        </div>
+    </section>
+    <section id="choose_mode">
+        <button class="mode_button" id="kmeans">kmeans</button>
+        <button class="mode_button" id="kmeans++">kmeans++</button>
+        <button class="mode_button" id="DBSCAN">DBSCAN</button>
+    </section>
+    <section id="main_section">
+        <canvas height="500" width="800" id='field'></canvas>
+        <div id="info"> 
+            <div style="display: flex; flex-direction: row;">
+                <div id="info_description">Введите количество кластеров <br> (по умолчанию - авто)</div>
+                <input id="nums_k" type="number">
+            </div>
+            <button id="clear">Очистить</button>
+            <button id="start">Старт</button>
+        </div>
+        <script src="clusterization.js"></script>
+        
+    </section>
+>>>>>>> f23e25e3afd6ddb8a7f9b7bafaa1802e6a1be12e
 </body>
 </html>

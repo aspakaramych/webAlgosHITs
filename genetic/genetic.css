@@ -20,7 +20,19 @@
 }
 
 #startButton {
+<<<<<<< HEAD
 
+=======
+    font-family: 'Minecraft', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    height: 5vh;
+    background-color: springgreen;
+    transition: background-color 0.3s ease;
+    border: white 2px solid;
+    border-radius: 10px;
+    cursor: pointer;
+>>>>>>> f23e25e3afd6ddb8a7f9b7bafaa1802e6a1be12e
 }
 
 #startButton:hover {
