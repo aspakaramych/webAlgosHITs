@@ -80,7 +80,7 @@ function isCanvasEmpty(canvas) {
 
 async function predict(input) {
     console.log(input);
-    const response = await fetch("http://localhost:80/predict", {
+    const response = await fetch("http://localhost:5000/predict", {
         method: "POST",
         body: JSON.stringify({
             'data': input
