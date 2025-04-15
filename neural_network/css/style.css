@@ -20,17 +20,11 @@
 }
 
 
-.canvas {
+#myCanvas {
     width: 60vh;
     height: 60vh;
     background-color: #E5E9F0;
-    border: none;
     border-radius: 15px;
-    box-shadow:
-        0 8px 12px #BEC4D6,
-        0 -4px 6px #FFFFFF,
-        inset -5px -5px 10px #FFFFFF,
-        inset 5px 5px 10px #BEC4D6;
     cursor: crosshair;
 }
 

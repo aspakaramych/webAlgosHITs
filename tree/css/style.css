@@ -17,6 +17,8 @@
     max-width: 90%;
 }
 
+<<<<<<< HEAD
+=======
 .tree {
     position: relative;
     width: 70vh;
@@ -42,6 +44,7 @@
     text-align: center;
 }
 
+>>>>>>> 9c256de83fd9d0a9a82eb8a1ff314203e49ab486
 .text {
     font-family: 'Minecraft', sans-serif;
     font-size: 1rem;
@@ -124,8 +127,14 @@
 }
 
 #tree-container {
-    border: 1px solid #ddd;
     margin-top: 20px;
+    position: relative;
+    width: 70vh;
+    height: 70vh;
+    background-color: #E5E9F0;
+    border-radius: 15px;
+    cursor: default;
+    flex-shrink: 0;
 }
 
 .modal {
