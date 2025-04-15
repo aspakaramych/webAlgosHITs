@@ -306,7 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const parsedData = parseCSV(testData);
         if (!Array.isArray(parsedData) || parsedData.length === 0) {
-            errorText.textContent = 'Вы не ввели данные';
+            errorText.textContent = 'Вы ввели некорректные данные';
             errorModal.style.display = 'flex';
             parentContainer.classList.add('blur');
             return;
