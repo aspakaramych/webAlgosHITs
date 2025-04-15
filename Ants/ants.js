@@ -12,6 +12,8 @@ let coef_transpire = 0.001;
 let alpha = 1.8;
 let beta = 1;
 
+let foodZones = [];
+
 document.addEventListener('DOMContentLoaded', () => {
     let canvas = document.getElementById('table');
     let ctx = canvas.getContext('2d');
@@ -74,6 +76,73 @@ document.addEventListener('DOMContentLoaded', () => {
         ants_algorithm();
     })
 
+    let activeInputField = null;
+    canvas.addEventListener('mousemove', (event) => {
+        let scaleX = canvas.width / canvas.clientWidth;
+        let scaleY = canvas.height / canvas.clientHeight;
+        let x = Math.floor(event.offsetX * scaleX);
+        let y = Math.floor(event.offsetY * scaleY);
+
+        let isFoodZone = foodZones.find(zone => {
+            return (
+                x >= zone.centerX - zone.width / 2 &&
+                x < zone.centerX + zone.width / 2 &&
+                y >= zone.centerY - zone.height / 2 &&
+                y < zone.centerY + zone.height / 2
+            );
+        });
+
+        if (isFoodZone) {
+            if (activeInputField) {
+                activeInputField.value = isFoodZone.nutrition;
+                activeInputField.style.left = `${event.pageX + 10}px`;
+                activeInputField.style.top = `${event.pageY + 10}px`;
+            } else {
+                const inputField = document.createElement('input');
+                inputField.type = 'number';
+                inputField.value = isFoodZone.nutrition;
+                inputField.style.position = 'absolute';
+                inputField.style.left = `${event.pageX + 10}px`;
+                inputField.style.top = `${event.pageY + 10}px`;
+                inputField.style.width = '50px';
+
+                document.body.appendChild(inputField);
+
+                activeInputField = inputField;
+
+                inputField.addEventListener('change', () => {
+                    const newNutrition = parseFloat(inputField.value) || 1;
+                    isFoodZone.nutrition = newNutrition;
+
+                    for (let dy = -Math.ceil(isFoodZone.height / 2); dy < Math.ceil(isFoodZone.height / 2); dy++) {
+                        for (let dx = -Math.ceil(isFoodZone.width / 2); dx < Math.ceil(isFoodZone.width / 2); dx++) {
+                            const currentX = isFoodZone.centerX + dx;
+                            const currentY = isFoodZone.centerY + dy;
+                            if (matrix[currentX] && matrix[currentX][currentY]) {
+                                matrix[currentX][currentY].food = newNutrition;
+                                updatePixel(ctx, matrix, currentX, currentY);
+                            }
+                        }
+                    }
+                });
+
+                canvas.addEventListener('mouseout', () => {
+                    setTimeout(() => {
+                        if (!inputField.matches(':hover')) {
+                            inputField.remove();
+                            activeInputField = null;
+                        }
+                    }, 100);
+                });
+
+                inputField.addEventListener('blur', () => {
+                    inputField.remove();
+                    activeInputField = null;
+                });
+            }
+        }
+    });
+
     function addColony(event) {
         if (colony.length > 0) {
             return;
@@ -131,6 +200,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         }
+
+        foodZones.push({
+            centerX: x,
+            centerY: y,
+            width: foodWidth,
+            height: foodHeight,
+            nutrition: nutrition
+        });
     }
 
     function addObstacle(event) {
