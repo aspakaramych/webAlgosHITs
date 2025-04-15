@@ -17,21 +17,6 @@
     max-width: 90%;
 }
 
-.tree {
-    position: relative;
-    width: 70vh;
-    height: 70vh;
-    background-color: #E5E9F0;
-    box-shadow:
-        0 8px 12px #BEC4D6,
-        0 -4px 6px #FFFFFF,
-        inset -5px -5px 10px #FFFFFF,
-        inset 5px 5px 10px #BEC4D6;
-    border-radius: 15px;
-    cursor: default;
-    flex-shrink: 0;
-}
-
 .text {
     font-family: 'Minecraft', sans-serif;
     font-size: 1rem;
@@ -114,8 +99,14 @@
 }
 
 #tree-container {
-    border: 1px solid #ddd;
     margin-top: 20px;
+    position: relative;
+    width: 70vh;
+    height: 70vh;
+    background-color: #E5E9F0;
+    border-radius: 15px;
+    cursor: default;
+    flex-shrink: 0;
 }
 
 .modal {

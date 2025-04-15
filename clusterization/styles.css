@@ -57,10 +57,6 @@
     border-radius: 10px;
     background-color: rgb(241, 245, 249);
     margin-top: 10px;
-    box-shadow: 0 8px 12px #BEC4D6,
-    0 -4px 6px #FFFFFF,
-    inset -5px -5px 10px #FFFFFF,
-    inset 5px 5px 10px #BEC4D6;
 }
 
 #nums_k {
