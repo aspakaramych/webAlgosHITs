@@ -19,7 +19,7 @@
     flex-shrink: 0;
 }
 
-#startButton {
+button {
     font-family: 'Minecraft', sans-serif;
     font-size: 14px;
     font-weight: 400;
