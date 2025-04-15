@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let ctx = canvas.getContext('2d');
     let startButton = document.getElementById('startButton');
     let foodButton = document.getElementById('foodButton');
+    let clearButton = document.getElementById('clearButton');
     let obstacleButton = document.getElementById('obstacleButton');
 
     let mode = 'colony';
@@ -142,6 +143,31 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+
+    clearButton.addEventListener('click', clearCanvas);
+
+    function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        matrix = Array.from({ length: canvasHeight }, () =>
+            Array.from({ length: canvasWidth }, () => ({
+                pheromones_food: 0,
+                pheromones_home: 0,
+                food: 0,
+                ants: 0,
+                colony: false,
+                obstacle: false
+            }))
+        );
+
+        colony = [];
+        ants = [];
+        pheromonesHome = {};
+        pheromonesFood = {};
+        foodZones = [];
+
+        console.log("Canvas cleared and reset.");
+    }
 
     function addColony(event) {
         if (colony.length > 0) {
