@@ -1,3 +1,8 @@
+@font-face {
+    font-family: 'Minecraft';
+    src: url('../../fonts/minecraft.ttf') format('truetype');
+}
+
 .name_algorithm {
     font-size: 1.5rem;
     color: #1A1A1A;
@@ -17,8 +22,6 @@
     max-width: 90%;
 }
 
-<<<<<<< HEAD
-=======
 .tree {
     position: relative;
     width: 70vh;
@@ -44,7 +47,6 @@
     text-align: center;
 }
 
->>>>>>> 9c256de83fd9d0a9a82eb8a1ff314203e49ab486
 .text {
     font-family: 'Minecraft', sans-serif;
     font-size: 1rem;
