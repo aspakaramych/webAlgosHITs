@@ -16,7 +16,7 @@
     display: flex;
     align-items: flex-start;
     gap: 20px;
-    max-width: 90%;
+    max-width: 100%;
 }
 
 
@@ -26,6 +26,14 @@
     background-color: #E5E9F0;
     border-radius: 15px;
     cursor: crosshair;
+}
+
+.result-container{
+    display: flex;
+    width: 100%;
+    justify-content: left;
+    border: springgreen 2px solid;
+    border-radius: 10px;
 }
 
 .description-header {

@@ -56,13 +56,21 @@
 
 .textarea {
     width: 450px;
-    height: 130px;
+    height: 50px;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     resize: none;
     font-family: 'Minecraft', sans-serif;
     font-size: 1rem;
+}
+
+.result-container{
+    display: flex;
+    width: 50%;
+    justify-content: left;
+    border: springgreen 2px solid;
+    border-radius: 10px;
 }
 
 .button {
