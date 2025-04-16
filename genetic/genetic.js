@@ -204,6 +204,7 @@ function localSearch(dist, route) {
 document.addEventListener('DOMContentLoaded', () => {
     const table = document.getElementById('table');
     const startButton = document.getElementById('startButton');
+    const resetButton = document.getElementById('resetButton');
     const linesSvg = document.getElementById('lines');
 
     table.addEventListener('click', (event) => {
@@ -233,11 +234,29 @@ document.addEventListener('DOMContentLoaded', () => {
             isProcessing = false;
         }
         else {
-            //generateRandomDots(40, 600, 600);
+            //generateRandomDots(100, 600, 600);
             geneticAlgorithm();
             startButton.textContent = 'Остановить процесс поиска';
         }
     })
+
+    resetButton.addEventListener('click', () => {
+        resetField();
+    });
+
+    function resetField() {
+        if (isProcessing) {
+            stopAlgorithm();
+        }
+        dots = [];
+
+        const existingDots = document.querySelectorAll('.dot');
+        existingDots.forEach(dot => dot.remove());
+
+        linesSvg.innerHTML = '';
+        isProcessing = false;
+        startButton.textContent = 'Поиск оптимального пути';
+    }
 
     function generateRandomDots(count, width, height) {
         dots = [];

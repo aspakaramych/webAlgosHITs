@@ -9,8 +9,8 @@ let d = [[-1, 0], [0, -1], [1, 0], [0, 1], [-1, -1], [1, -1], [1, 1], [-1, 1]];
 
 let coef_transpire = 0.001;
 
-let alpha = 1.8;
-let beta = 1;
+let alpha = 9;
+let beta = 2;
 
 let foodZones = [];
 
@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let ctx = canvas.getContext('2d');
     let startButton = document.getElementById('startButton');
     let foodButton = document.getElementById('foodButton');
+    let clearButton = document.getElementById('clearButton');
     let obstacleButton = document.getElementById('obstacleButton');
 
     let mode = 'colony';
@@ -143,6 +144,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    clearButton.addEventListener('click', clearCanvas);
+
+    function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        matrix = Array.from({ length: canvasHeight }, () =>
+            Array.from({ length: canvasWidth }, () => ({
+                pheromones_food: 0,
+                pheromones_home: 0,
+                food: 0,
+                ants: 0,
+                colony: false,
+                obstacle: false
+            }))
+        );
+
+        colony = [];
+        ants = [];
+        pheromonesHome = {};
+        pheromonesFood = {};
+        foodZones = [];
+
+        console.log("Canvas cleared and reset.");
+    }
+
     function addColony(event) {
         if (colony.length > 0) {
             return;
@@ -240,24 +266,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return x === colony[0] && y === colony[1];
     }
 
-    function calculateAngleHeuristic(ant, newX, newY) {
-        let currentDirection = [newX - ant.x, newY - ant.y];
-        let targetDirection = [colony[0] - ant.x, colony[1] - ant.y];
-
-        let dotProduct = currentDirection[0] * targetDirection[0] + currentDirection[1] * targetDirection[1];
-        let magnitudeCurrent = Math.sqrt(currentDirection[0] * currentDirection[0] + currentDirection[1] * currentDirection[1]);
-        let magnitudeTarget = Math.sqrt(targetDirection[0] * targetDirection[0] + targetDirection[1] * targetDirection[1]);
-
-        let cosineAngle = dotProduct / (magnitudeCurrent * magnitudeTarget);
-
-        return Math.max(cosineAngle, 0);
-    }
-
     function nextCeil(ant) {
         let probabilities = Array.from({ length: 8 }, () => ({
             direction: 0,
             value: 0
         }));
+
         let total = 0;
         for (let i = 0; i < d.length; i++) {
             let newX = ant.x + d[i][0];
@@ -272,10 +286,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 if (ant.state === 'search') {
+                    //if (Math.random() < 0.01) return Math.floor(Math.random() * d.length);
                     pheromones = matrix[newX][newY].pheromones_food;
                     ant.steps += 1;
-                    heuristic = 1;
+                    heuristic = 1 / (matrix[newX][newY].pheromones_home + 1);
                 } else if (ant.state === 'food') {
+                    //if (Math.random() < 0.005) return Math.floor(Math.random() * d.length);
                     pheromones = matrix[newX][newY].pheromones_home;
                     ant.steps += 1;
                     // let distanceToColony = Math.abs(newX - colony[0]) + Math.abs(newY - colony[1]);
@@ -286,7 +302,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     heuristic = 1;
                 }
 
-                let probability = Math.pow(pheromones, alpha) * Math.pow(heuristic, beta);
+                let noise = Math.random() * 0.01;
+                let probability = Math.pow(pheromones + noise, alpha) * Math.pow(heuristic, beta);
                 probabilities[i] = { direction: i, value: probability };
                 total += probability;
             }
@@ -340,7 +357,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             ants[i].memory.push({ x: ants[i].x, y: ants[i].y });
 
-            if (ants[i].memory.length > 20) {
+            if (ants[i].memory.length > 5) {
                 ants[i].memory.shift();
             }
 
@@ -352,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             if (isColony(ants[i].x, ants[i].y))
             {
-                ants[i].nutrition = 100;
+                ants[i].nutrition = 10000;
                 ants[i].state = 'search';
                 ants[i].memory = [];
                 ants[i].steps = 1;
@@ -391,8 +408,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const key = `${x},${y}`;
         if (matrix[x][y].pheromones_home === 0) pheromonesHome[key] = {pheromones, x, y};
         else pheromonesHome[key].pheromones += pheromones;
-        ant.nutrition = 100 / ant.steps;
-        matrix[x][y].pheromones_home += pheromones;
+        ant.nutrition = 1000 / ant.steps;
+        matrix[x][y].pheromones_home = Math.max(matrix[x][y].pheromones_home, ant.nutrition);
     }
 
     function leavePheromoneFood(ant) {
@@ -400,7 +417,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const key = `${x},${y}`;
         if (matrix[x][y].pheromones_food === 0) pheromonesFood[key] = {pheromones, x, y};
         else pheromonesFood[key].pheromones += pheromones;
-        matrix[x][y].pheromones_food = Math.max(pheromones, matrix[x][y].pheromones_food);
+        matrix[x][y].pheromones_food += pheromones;
     }
 
     async function ants_algorithm() {
