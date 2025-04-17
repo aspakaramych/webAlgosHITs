@@ -161,6 +161,14 @@ a {
     /* box-sizing: border-box; */
 }
 
+.description {
+    /* padding: 5px; */
+    font-family: "Minecraft", sans-serif;
+    font-weight: 400;
+    font-size: 17px;
+    color: #1A1A1A;
+}
+
 .shadowable {
     box-shadow: 0 8px 12px #BEC4D6,
     0 -4px 6px #FFFFFF,

@@ -55,14 +55,6 @@
     margin-bottom: 10px;   /* Отступ между названием и описанием */
 }
 
-.description {
-    /* padding: 5px; */
-    font-family: "Minecraft", sans-serif;
-    font-weight: 400;
-    font-size: 17px;
-    color: #1A1A1A;
-}
-
 #email_block {
     display: flex;
     align-items: center;
