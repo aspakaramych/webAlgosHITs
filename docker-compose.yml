@@ -23,3 +23,14 @@ services:
       - "5000:80"
     volumes:
       - ./neural_network/backend:/app
+
+  emailservice:
+    build:
+      context: ./email
+      dockerfile: Dockerfile
+    image: email-service
+    container_name: webalgoshits-emailservice
+    ports:
+      - "8081:8081"
+    env_file:
+      - ./email/.env
