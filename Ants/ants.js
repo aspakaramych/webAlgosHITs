@@ -198,6 +198,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     updatePixel(ctx, matrix, currentX, currentY);
                 }
             }
+            for (const cord in pheromonesHome) {
+                matrix[pheromonesHome[cord].x][pheromonesHome[cord].y].pheromones_home = 0;
+                updatePixel(ctx, matrix, pheromonesHome[cord].x, pheromonesHome[cord].y);
+                delete pheromonesHome[cord];
+            }
             colony = [];
         }
         let scaleX = canvas.width / canvas.clientWidth;
@@ -407,7 +412,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function transpirePheromones() {
         // for (const cord in pheromonesHome) {
-        //     pheromonesHome[cord].pheromones = pheromonesHome[cord].pheromones * (1 - 0.001);
+        //     pheromonesHome[cord].pheromones = pheromonesHome[cord].pheromones * (1 - 0.01);
         //     matrix[pheromonesHome[cord].x][pheromonesHome[cord].y].pheromones_home = pheromonesHome[cord].pheromones;
         //     updatePixel(ctx, matrix, pheromonesHome[cord].x, pheromonesHome[cord].y);
         //     if (pheromonesHome[cord].pheromones <= 0) {
