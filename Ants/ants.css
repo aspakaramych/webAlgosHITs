@@ -6,14 +6,16 @@ body {
 
 button {
     font-family: 'Minecraft', sans-serif;
-    font-size: 14px;
-    font-weight: 400;
+    font-size: 15px;
+    font-weight: 500;
     height: 5vh;
-    background-color: springgreen;
+    background-color: lightgray;
     transition: background-color 0.3s ease;
     border: white 2px solid;
     border-radius: 10px;
     cursor: pointer;
+    width: 200px;
+    margin: auto;
 }
 
 #mainField {
@@ -25,10 +27,11 @@ button {
 
 #table {
     image-rendering: pixelated;
-    width: 500px;
-    height: 500px;
+    width: 60vh;
+    height: 60vh;
     position: relative;
     margin: 20px auto;
+    margin-bottom: 10px;
     background-color: #ffffff;
     cursor: crosshair;
     border: none;
@@ -41,6 +44,10 @@ button {
 
 #foodButton {
     position: relative;
+}
+
+#colonyButton {
+    background-color: springgreen;
 }
 
 #colony {
@@ -79,25 +86,17 @@ button {
     color: #1A1A1A;
 }
 
-.ant {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    background-color: black;
-    transform: translate(-50%, -50%);
+.buttons_and_table {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    justify-content: center;
+    flex-direction: column;
 }
 
-.food {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background-color: green;
-    transform: translate(-50%, -50%);
-}
-
-.pheromone {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    background-color: deeppink;
+.buttons {
+    display: flex;
+    flex-direction: row;
+    width: 60vh;
+    margin: 0;
 }
