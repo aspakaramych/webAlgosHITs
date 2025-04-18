@@ -19,7 +19,7 @@
             <div class="name_algorithm">Генетический алгоритм</div>
         </h1>
         <button id="theme-changer-button">
-            <img id="theme-changer-button-icon" src="../images/brightness.png">
+            <img id="theme-changer-button-icon" src="../images/brightnessDay.png">
         </button>
     </section>
     <section class="algorithm">
@@ -44,6 +44,14 @@
     <script src="staticWindow.js"></script>
     <pre id='output'></pre>
     <script src="genetic.js"></script>
+    <div id="error-modal" class="modal">
+        <div class="modal-content">
+            <p id="error-text" class="text">
+                Вы не разместили ни одного города!
+            </p>
+            <button id="close-error-modal">Закрыть</button>
+        </div>
+    </div>
     <footer>
         <div class="footer">
             здесь будет подвал

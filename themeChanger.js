@@ -1,10 +1,13 @@
 const switchTheme = document.getElementById("theme-changer-button").addEventListener("click", changeTheme)
 const themeLink = document.getElementById("theme-link");
+const themeImg = document.getElementById("theme-changer-button-icon");
 
 function applyTheme(theme) {
     if(theme === "dark") {
+        themeImg.src = "../images/brightnessNight.png"
         themeLink.setAttribute("href", "../common_styles_dark.css");
     } else {
+        themeImg.src = "../images/brightnessDay.png"
         themeLink.setAttribute("href", "../common_styles_light.css");
     }
 }
