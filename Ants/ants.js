@@ -9,7 +9,7 @@ let d = [[-1, 0], [0, -1], [1, 0], [0, 1], [-1, -1], [1, -1], [1, 1], [-1, 1]];
 
 let coef_transpire = 0.001;
 
-let alpha = 9;
+let alpha = 11;
 let beta = 2;
 
 let foodZones = [];
@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let foodButton = document.getElementById('foodButton');
     let clearButton = document.getElementById('clearButton');
     let obstacleButton = document.getElementById('obstacleButton');
+    let colonyButton = document.getElementById('colonyButton');
 
     let mode = 'colony';
     let isDrawingObstacle = false;
@@ -39,18 +40,34 @@ document.addEventListener('DOMContentLoaded', () => {
     let pheromonesHome = {};
     let pheromonesFood = {};
 
+    function deactivateButtons() {
+        colonyButton.style.background = 'lightgray';
+        foodButton.style.background = 'lightgray';
+        obstacleButton.style.background = 'lightgray';
+    }
+
     canvas.addEventListener('click', (event) => {
         if (mode === 'colony') addColony(event);
         if (mode === 'food') addFood(event);
         if (mode === 'obstacle') addObstacle(event);
     })
 
+    colonyButton.addEventListener('click', () => {
+        mode = 'colony';
+        deactivateButtons();
+        colonyButton.style.background = 'springgreen';
+    })
+
     foodButton.addEventListener('click', () => {
         mode = 'food';
+        deactivateButtons();
+        foodButton.style.background = 'springgreen';
     })
 
     obstacleButton.addEventListener('click', () => {
         mode = 'obstacle';
+        deactivateButtons();
+        obstacleButton.style.background = 'springgreen';
     })
 
     canvas.addEventListener('mousedown', (event) => {
@@ -170,16 +187,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function addColony(event) {
+        let colony_size = 4;
+        let ch = 2;
         if (colony.length > 0) {
-            return;
+            for (let dy = -ch; dy < ch; dy++) {
+                for (let dx = -ch; dx < ch; dx++) {
+                    const currentX = colony[0] + dx;
+                    const currentY = colony[1] + dy;
+                    matrix[currentX][currentY].colony = false;
+                    updatePixel(ctx, matrix, currentX, currentY);
+                }
+            }
+            colony = [];
         }
         let scaleX = canvas.width / canvas.clientWidth;
         let scaleY = canvas.height / canvas.clientHeight;
 
         let x = Math.floor(event.offsetX * scaleX);
         let y = Math.floor(event.offsetY * scaleY);
-        let colony_size = 4;
-        let ch = 2;
 
         if (
             x >= colony_size / 2  && x + colony_size / 2 <= canvasWidth &&
@@ -243,10 +268,10 @@ document.addEventListener('DOMContentLoaded', () => {
         let x = Math.floor(event.offsetX * scaleX);
         let y = Math.floor(event.offsetY * scaleY);
 
-        let ch = 1;
+        let ch = 2;
 
         if (x >= 0 && x < canvasWidth && y >= 0 && y < canvasHeight) {
-            drawRect(ctx, x, y, 'gray', 1);
+            drawRect(ctx, x, y, 'gray', ch * 2);
             for (let dy = -ch; dy < ch; dy++) {
                 for (let dx =  - ch; dx < ch; dx++) {
                     const currentX = x + dx;
