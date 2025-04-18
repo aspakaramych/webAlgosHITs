@@ -1,9 +1,8 @@
-// k-means++ + silhouette coefficient
-
 const canvas = document.getElementById('field');
 document.getElementById('kmeans').addEventListener('click', kMeans);
 document.getElementById('kmeans++').addEventListener('click', kmeansPlusPlus);
 document.getElementById('DBSCAN').addEventListener('click', dbscan);
+document.getElementById('clear').addEventListener('click', clear);
 
 const context = canvas.getContext('2d');
 context.strokeRect(0, 0, canvas.width, canvas.height);
@@ -23,6 +22,12 @@ const STYLES = [
                 'lime',
 ];
 
+function clear() {
+    points = [];
+    const context = canvas.getContext('2d');
+    context.clearRect(0, 0, canvas.width, canvas.height);
+}
+
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';
@@ -30,7 +35,7 @@ function getRandomColor() {
       color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
-  }
+}
 
 let points = [];
 
@@ -336,6 +341,8 @@ function kmeansPlusPlus() {
     drawWithCentroids(bestClusters, bestCentroids);
 }
 
+
+// DBSCAN
 function epsilonLocalityScan(currPointIndex, epsilon) {
     let neighbours = [];
     for(let i = 0; i < points.length; i++) {
@@ -413,7 +420,7 @@ function draw_dbscan(clusters, noises) {
 
 }
 
-
+// kMeans standart
 function getNormalizedCentroids(centroids, clusters) {
     for(let i = 0; i < clusters.size; i++) {
         if(!clusters.has(`${centroids[i].x},${centroids[i].y}`)) {
@@ -475,7 +482,19 @@ function kMeans() {
     let wcssHistory = new Map();
     let wcssValues = []
     let centroidsHistory = new Map();
-    for(let k = 1; k < 15; k++) {
+    let k = 1;
+    let maxK = 15;
+    let nums_k = parseInt(document.getElementById('nums_k').value)
+    let flag = false;
+    if(!isNaN(nums_k)) {
+        k = nums_k;
+        maxK = nums_k + 1;
+        flag = true;
+    }
+    if(points.length === 1) {
+        maxK = 2;
+    }
+    for(; k < maxK; k++) {
         currCentroids = getRandomCentroids(k);
         let currCluster = centralize(currCentroids);
         while(!mapEquation(cluster, currCluster)) {
@@ -492,19 +511,19 @@ function kMeans() {
     }
 
     let index = 0;
-    let maxDiff = 0;
-    for(let i = 1; i < wcssValues.length - 1; i++) {
-        let currDiff = wcssValues[i-1] - wcssValues[i] + (wcssValues[i] - wcssValues[i]);
-        if(currDiff > maxDiff) {
-            index = i;
-            maxDiff = currDiff;
+    if(!flag) {
+        let maxDiff = 0;
+        for(let i = 1; i < wcssValues.length - 1; i++) {
+            let currDiff = wcssValues[i-1] - wcssValues[i] + (wcssValues[i] - wcssValues[i]);
+            if(currDiff > maxDiff) {
+                index = i;
+                maxDiff = currDiff;
+            }
         }
     }
 
     let resultPoints = wcssHistory.get(wcssValues[index]);
     let resultCentroids = centroidsHistory.get(wcssValues[index]);
-    console.log(wcssHistory);
 
     drawWithCentroids(resultPoints, resultCentroids);
-
 }

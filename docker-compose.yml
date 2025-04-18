@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   frontend:
+    build: .
     image: frontend
     container_name: webalgoshits-frontend
     ports:
@@ -13,6 +14,9 @@ services:
       - backend
 
   backend:
+    build: 
+      context: ./neural_network/backend
+      dockerfile: Dockerfile
     image: backend
     container_name: webalgoshits-backend
     ports:
