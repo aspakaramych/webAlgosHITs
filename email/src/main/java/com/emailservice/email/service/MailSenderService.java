@@ -19,7 +19,7 @@ public class MailSenderService {
     public void send(EmailPayload emailPayload) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo("gxkurro@yandex.ru");
-        mailMessage.setSubject("New algorithm suggestion");
+        mailMessage.setSubject(emailPayload.subject());
         mailMessage.setText(emailPayload.text());
         mailMessage.setFrom("gxkurro@yandex.ru");
 

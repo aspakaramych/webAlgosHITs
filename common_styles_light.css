@@ -48,6 +48,20 @@ a {
     height: 40px;
 }
 
+.contact-link-block {
+    margin: auto;
+    margin-left: 50%;
+}
+
+.contact-link-text {
+    margin: 10px;
+    font-family: 'Minecraft', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 2rem;
+    color: #1A1A1A;
+}
+
 .footer {
     clear: both;
     position: fixed;
@@ -171,6 +185,13 @@ a {
 }
 
 .shadowable {
+    box-shadow: 0 8px 12px #BEC4D6,
+    0 -4px 6px #FFFFFF,
+    inset -5px -5px 10px #FFFFFF,
+    inset 5px 5px 10px #BEC4D6;
+}
+
+.text-holder {
     box-shadow: 0 8px 12px #BEC4D6,
     0 -4px 6px #FFFFFF,
     inset -5px -5px 10px #FFFFFF,

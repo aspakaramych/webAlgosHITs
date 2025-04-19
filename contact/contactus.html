@@ -1,13 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link id="theme-link" rel="stylesheet" href="../common_styles_light.css">
+        <link rel="stylesheet" href="style.css">
+        <link rel="icon" href="../images/pinpng.com-redstone-dust-png-4986074.png">
+        <title>Algobox - главная</title>
+    </head>
 <body>
-    <input id="email-text" type="text">
-    <button id="send">send</button>
+    <section class="page_header">
+        <h1 class = "logo">
+            <a href="../mainpage/index.html" class="name">
+                <img src="../images/pinpng.com-redstone-dust-png-4986074.png" class="image">
+                <span class="logo_text">AlgoBox</span>
+            </a>
+        </h1>
+        <h1 class="contact-link-block">
+            <h1 style="width: 300px;">
+                <a href="../contact/contactus.html" class="contact-link-text">Обратная связь</a>
+            </h1>
+            <h1 style="width: 200px;">
+                <a href="../about-us/about-us.html" class="contact-link-text">О нас</a>
+            </h1>
+        </h1>
+        <button id="theme-changer-button">
+            <img id="theme-changer-button-icon" src="../images/brightnessDay.png">
+        </button>
+    </section>
+
+    <div>
+        <section class="main-container">
+            <div class="text-description">
+                Пожалуйста, поделитесь с нами своими мыслями и предложениями!
+            </div>
+            <div class="text-description">
+                Например, Вы можете предложить новые алгоритмы для реализации и их визуализации, а мы получим Ваше письмо и учтём это
+            </div>
+            <div class="text-description">
+                Тема письма
+            </div>
+            <input id="email-subject" type="text" class="text-holder">
+            <div class="text-description">
+                Ваши предложения
+            </div>
+            <textarea id="email-text" type="text" class="text-holder"></textarea>
+            <button id="send" class="send-button">Отправить</button>
+        </section>
+    </div>
     <script src="sender-script.js"></script>
+    <script src="../themeChanger.js"></script>
 </body>
 </html>
