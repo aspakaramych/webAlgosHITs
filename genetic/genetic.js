@@ -206,6 +206,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const startButton = document.getElementById('startButton');
     const resetButton = document.getElementById('resetButton');
     const linesSvg = document.getElementById('lines');
+    const errorModal = document.getElementById('error-modal');
+    const closeErrorModal = document.getElementById('close-error-modal');
+    const parentContainer = document.getElementById('parent-container');
 
     table.addEventListener('click', (event) => {
         const x = event.offsetX;
@@ -234,14 +237,24 @@ document.addEventListener('DOMContentLoaded', () => {
             isProcessing = false;
         }
         else {
-            //generateRandomDots(100, 600, 600);
-            geneticAlgorithm();
-            startButton.textContent = 'Остановить процесс поиска';
+            if (dots.length < 2) {
+                errorModal.style.display = 'flex';
+                parentContainer.classList.add('blur');
+            } else {
+                //generateRandomDots(200, 600, 600);
+                geneticAlgorithm();
+                startButton.textContent = 'Остановить процесс поиска';
+            }
         }
     })
 
     resetButton.addEventListener('click', () => {
         resetField();
+    });
+
+    closeErrorModal.addEventListener('click', () => {
+        errorModal.style.display = 'none';
+        parentContainer.classList.remove('blur');
     });
 
     function resetField() {

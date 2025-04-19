@@ -10,7 +10,7 @@ let d = [[-1, 0], [0, -1], [1, 0], [0, 1], [-1, -1], [1, -1], [1, 1], [-1, 1]];
 let coef_transpire = 0.001;
 
 let alpha = 11;
-let beta = 2;
+let beta = 5;
 
 let foodZones = [];
 
@@ -22,6 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let clearButton = document.getElementById('clearButton');
     let obstacleButton = document.getElementById('obstacleButton');
     let colonyButton = document.getElementById('colonyButton');
+    const errorModal = document.getElementById('error-modal');
+    const closeErrorModal = document.getElementById('close-error-modal');
+    const parentContainer = document.getElementById('parent-container');
 
     let mode = 'colony';
     let isDrawingObstacle = false;
@@ -88,11 +91,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     startButton.addEventListener('click', () => {
-        if (colony.length === 0) return;
-        ants = generateColony(colony, cnt_ants);
-        matrix[colony[0]][colony[1]].ants = cnt_ants;
-        ants_algorithm();
+        if (colony.length === 0) {
+            errorModal.style.display = 'flex';
+            parentContainer.classList.add('blur');
+        } else {
+            ants = generateColony(colony, cnt_ants);
+            matrix[colony[0]][colony[1]].ants = cnt_ants;
+            ants_algorithm();
+        }
     })
+
+    closeErrorModal.addEventListener('click', () => {
+        errorModal.style.display = 'none';
+        parentContainer.classList.remove('blur');
+    });
 
     let activeInputField = null;
     canvas.addEventListener('mousemove', (event) => {
