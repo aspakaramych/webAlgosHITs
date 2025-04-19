@@ -1,4 +1,4 @@
-let max_pheromones = 1000;
+let max_pheromones = 10000;
 
 export let colors = {
     'orange': [255, 165, 0, 255],

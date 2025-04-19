@@ -9,10 +9,12 @@ let d = [[-1, 0], [0, -1], [1, 0], [0, 1], [-1, -1], [1, -1], [1, 1], [-1, 1]];
 
 let coef_transpire = 0.001;
 
-let alpha = 11;
+let alpha = 7;
 let beta = 5;
 
 let foodZones = [];
+
+let MAX_STEPS = 3000;
 
 document.addEventListener('DOMContentLoaded', () => {
     let canvas = document.getElementById('table');
@@ -314,6 +316,13 @@ document.addEventListener('DOMContentLoaded', () => {
             value: 0
         }));
 
+        if (ant.steps > MAX_STEPS && ant.state === "search") {
+            ant.state = 'food';
+            ant.memory = [];
+            ant.steps = 1;
+            ant.nutrition = 0;
+        }
+
         let total = 0;
         for (let i = 0; i < d.length; i++) {
             let newX = ant.x + d[i][0];
@@ -399,7 +408,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             ants[i].memory.push({ x: ants[i].x, y: ants[i].y });
 
-            if (ants[i].memory.length > 5) {
+            if (ants[i].memory.length > 20) {
                 ants[i].memory.shift();
             }
 
@@ -423,25 +432,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function transpirePheromones() {
-        // for (const cord in pheromonesHome) {
-        //     pheromonesHome[cord].pheromones = pheromonesHome[cord].pheromones * (1 - 0.01);
-        //     matrix[pheromonesHome[cord].x][pheromonesHome[cord].y].pheromones_home = pheromonesHome[cord].pheromones;
-        //     updatePixel(ctx, matrix, pheromonesHome[cord].x, pheromonesHome[cord].y);
-        //     if (pheromonesHome[cord].pheromones <= 0) {
-        //         matrix[pheromonesHome[cord].x][pheromonesHome[cord].y].pheromones_home = 0;
-        //         updatePixel(ctx, matrix, pheromonesHome[cord].x, pheromonesHome[cord].y);
-        //         delete pheromonesHome[cord];
-        //     }
-        // }
-        for (const cord in pheromonesFood) {
-            pheromonesFood[cord].pheromones = pheromonesFood[cord].pheromones * (1 - 0.01);
-            matrix[pheromonesFood[cord].x][pheromonesFood[cord].y].pheromones_food = pheromonesFood[cord].pheromones;
-            updatePixel(ctx, matrix, pheromonesFood[cord].x, pheromonesFood[cord].y);
-            if (pheromonesFood[cord].pheromones <= 0) {
-                matrix[pheromonesFood[cord].x][pheromonesFood[cord].y].pheromones_food = 0;
-                updatePixel(ctx, matrix, pheromonesFood[cord].x, pheromonesFood[cord].y);
-                delete pheromonesFood[cord];
+        for (const cord in pheromonesHome) {
+            pheromonesHome[cord].pheromones = pheromonesHome[cord].pheromones * (1 - 0.001);
+            matrix[pheromonesHome[cord].x][pheromonesHome[cord].y].pheromones_home = pheromonesHome[cord].pheromones;
+            // updatePixel(ctx, matrix, pheromonesHome[cord].x, pheromonesHome[cord].y);
+            if (pheromonesHome[cord].pheromones <= 0) {
+                matrix[pheromonesHome[cord].x][pheromonesHome[cord].y].pheromones_home = 0;
+                // updatePixel(ctx, matrix, pheromonesHome[cord].x, pheromonesHome[cord].y);
+                delete pheromonesHome[cord];
             }
+        }
+        for (const cord in pheromonesFood) {
+            pheromonesFood[cord].pheromones = pheromonesFood[cord].pheromones * (1 - 0.005);
+            matrix[pheromonesFood[cord].x][pheromonesFood[cord].y].pheromones_food = pheromonesFood[cord].pheromones;
+            //updatePixel(ctx, matrix, pheromonesFood[cord].x, pheromonesFood[cord].y);
+            // if (pheromonesFood[cord].pheromones <= 0) {
+            //     matrix[pheromonesFood[cord].x][pheromonesFood[cord].y].pheromones_food = 0;
+            //     // updatePixel(ctx, matrix, pheromonesFood[cord].x, pheromonesFood[cord].y);
+            //     delete pheromonesFood[cord];
+            // }
         }
     }
 
@@ -450,8 +459,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const key = `${x},${y}`;
         if (matrix[x][y].pheromones_home === 0) pheromonesHome[key] = {pheromones, x, y};
         else pheromonesHome[key].pheromones += pheromones;
-        ant.nutrition = 1000 / ant.steps;
-        matrix[x][y].pheromones_home = Math.max(matrix[x][y].pheromones_home, ant.nutrition);
+        ant.nutrition = 10000 / ant.steps;
+        matrix[x][y].pheromones_home += ant.nutrition;
     }
 
     function leavePheromoneFood(ant) {
