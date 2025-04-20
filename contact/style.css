@@ -36,3 +36,15 @@
     border-radius: 10px;
     border: 3px black solid;
 }
+
+.ok-button {
+    font-family: 'Minecraft', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    height: 5vh;
+    width: 100px;
+    background-color: springgreen;
+    border: white 2px solid;
+    border-radius: 10px;
+    cursor: pointer;
+}
