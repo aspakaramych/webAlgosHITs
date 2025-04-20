@@ -99,6 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const submitButton = document.getElementById('submitButton');
     const resetButtom = document.getElementById('resetButton');
     const errorModal = document.getElementById('error-modal');
+    const errorText = document.getElementById('error-text');
     const closeErrorModal = document.getElementById('close-error-modal');
     const parentContainer = document.getElementById('parent-container');
     const result = document.getElementById('result');
@@ -112,6 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupCanvas(canvas);
     submitButton.addEventListener('click', async () => {
         if (isCanvasEmpty(canvas)) {
+            errorText.textContent = "Вы не нарисовали ничего на холсте!";
             errorModal.style.display = 'flex';
             parentContainer.classList.add('blur');
         } else {
