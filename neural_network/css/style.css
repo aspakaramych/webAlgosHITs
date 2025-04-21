@@ -21,6 +21,7 @@
 
 
 #myCanvas {
+    image-rendering: pixelated;
     width: 60vh;
     height: 60vh;
     background-color: #E5E9F0;

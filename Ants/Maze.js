@@ -1,20 +1,3 @@
-export function drawGrid(ctx, matrix, cellSize) {
-    const rows = matrix.length;
-    const cols = matrix[0].length;
-
-    for (let i = 0; i < rows; i++) {
-        for (let j = 0; j < cols; j++) {
-            if (matrix[i][j] === 1) {
-                ctx.fillStyle = 'black'; // Препятствие
-            } else {
-                ctx.fillStyle = 'white'; // Проход
-            }
-            ctx.fillRect(j * cellSize, i * cellSize, cellSize, cellSize);
-            ctx.strokeRect(j * cellSize, i * cellSize, cellSize, cellSize);
-        }
-    }
-}
-
 export function generatePerlinMaze(rows, cols, scale, threshold) {
     const maze = [];
 
