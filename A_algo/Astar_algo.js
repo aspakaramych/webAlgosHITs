@@ -7,10 +7,10 @@ document.getElementById("clear").addEventListener("click", clearField);
 document.getElementById("start").addEventListener("click", instantShow);
 document.getElementById("step").addEventListener("click", showAlgorhytm);
 document.getElementById("showBySteps").addEventListener("click", showBySteps);
-document.getElementById("ok").addEventListener("click", handleError);
+document.getElementById("close-error-modal").addEventListener("click", handleError);
 
-let errorContainer = document.getElementById("error_container");
-let message = document.getElementById("message");
+let errorContainer = document.getElementById("error-modal");
+let message = document.getElementById("error-text");
 
 function showError(errorMessage) {
     errorContainer.style.display = 'flex';
