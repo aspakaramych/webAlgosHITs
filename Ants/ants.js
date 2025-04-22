@@ -1,20 +1,21 @@
 import {colors, correctPos, delay, drawRect, generateColony, updatePixel} from './help.js'
+import {generatePerlinMaze} from './Maze.js'
 
 let canvasHeight = 100;
 let canvasWidth = 100;
 
-let cnt_ants = 1000;
+let cnt_ants = 500;
 
 let d = [[-1, 0], [0, -1], [1, 0], [0, 1], [-1, -1], [1, -1], [1, 1], [-1, 1]];
 
 let coef_transpire = 0.001;
 
 let alpha = 7;
-let beta = 5;
+let beta = 7;
 
 let foodZones = [];
 
-let MAX_STEPS = 3000;
+let MAX_STEPS = 50000;
 
 document.addEventListener('DOMContentLoaded', () => {
     let canvas = document.getElementById('table');
@@ -27,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorModal = document.getElementById('error-modal');
     const closeErrorModal = document.getElementById('close-error-modal');
     const parentContainer = document.getElementById('parent-container');
+    let generateMazeButton = document.getElementById('generateMazeButton');
 
     let mode = 'colony';
     let isDrawingObstacle = false;
@@ -100,6 +102,17 @@ document.addEventListener('DOMContentLoaded', () => {
             ants = generateColony(colony, cnt_ants);
             matrix[colony[0]][colony[1]].ants = cnt_ants;
             ants_algorithm();
+        }
+    })
+
+    generateMazeButton.addEventListener('click', () => {
+
+        const maze = generatePerlinMaze(canvasHeight, canvasWidth, 15, 0.2);
+        for (let i = 0; i < maze.length; i++) {
+            for (let j = 0; j < maze[i].length; j++) {
+                matrix[i][j].obstacle = maze[i][j];
+                updatePixel(ctx, matrix, i, j);
+            }
         }
     })
 
@@ -337,7 +350,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 if (ant.state === 'search') {
-                    //if (Math.random() < 0.01) return Math.floor(Math.random() * d.length);
                     pheromones = matrix[newX][newY].pheromones_food;
                     ant.steps += 1;
                     heuristic = 1 / (matrix[newX][newY].pheromones_home + 1);

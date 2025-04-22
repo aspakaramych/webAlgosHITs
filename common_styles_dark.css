@@ -236,11 +236,3 @@ a {
 .modal-content button:hover {
     background-color: #818080;
 }
-
-.text-holder {
-    background-color: #1e1e1e;
-    color: white;
-    box-shadow:
-    4px 4px 6px rgba(0, 0, 0, 0.8),
-    -4px -4px 6px rgba(255, 255, 255, 0.1);
-}

@@ -1,4 +1,5 @@
 let dots = [];
+let divs_dots = [];
 let isProcessing = false;
 let controller = new AbortController();
 
@@ -8,7 +9,7 @@ let mutation_rate = 0.6;
 let tournament_size = 20;
 let cnt_pairs = 500;
 let threshold_stagnation = 200;
-let inbreeding = 0.5;
+let inbreeding = 0.1;
 
 let render = 1;
 
@@ -70,8 +71,11 @@ function halfUniformCrossover(parent1, parent2) {
     let child = Array(length).fill(null);
     let used = new Set();
 
-    const start = Math.floor(Math.random() * (lengthPar1 - 1));
-    const end = start + Math.floor(Math.random() * (lengthPar1 - 1 - start));
+    // const start = Math.floor(Math.random() * (lengthPar1 - 1));
+    // const end = start + Math.floor(Math.random() * (lengthPar1 - 1 - start));
+
+    const start = Math.floor(Math.random() * (lengthPar1 / 2));
+    const end = start + lengthPar1 / 2;
 
     for (let i = start; i < end; i++) {
         child[i - start]  = parent1[i];
@@ -90,12 +94,7 @@ function halfUniformCrossover(parent1, parent2) {
     }
 
     if (Math.random() < mutation_rate){
-        let index1 = Math.floor(Math.random() * length);
-        let index2 = Math.floor(Math.random() * length);
-
-        if (index1 !== index2) {
-            [child[index1], child[index2]] = [child[index2], child[index1]];
-        }
+        mutation(child);
     }
 
     return child;
@@ -174,33 +173,6 @@ function cataclysmicMutation(population) {
     }
 }
 
-function twoOptSwap(route, i, k) {
-    return route.slice(0, i)
-        .concat(route.slice(i, k + 1).reverse())
-        .concat(route.slice(k + 1));
-}
-
-function localSearch(dist, route) {
-    let improved = true;
-
-    while (improved) {
-        improved = false;
-
-        for (let i = 1; i < route.length; i++) {
-            for (let k = i + 1; k < route.length; k++) {
-                const newRoute = twoOptSwap(route, i, k);
-
-                if (fitness(dist, newRoute) < fitness(dist, route)) {
-                    route = newRoute;
-                    improved = true;
-                }
-            }
-        }
-    }
-
-    return route;
-}
-
 document.addEventListener('DOMContentLoaded', () => {
     const table = document.getElementById('table');
     const startButton = document.getElementById('startButton');
@@ -211,8 +183,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const parentContainer = document.getElementById('parent-container');
 
     table.addEventListener('click', (event) => {
-        const x = event.offsetX;
-        const y = event.offsetY;
+        const rect = table.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        for (let i = 0; i < dots.length; i++) {
+            if (Math.abs(dots[i].x - x) <= 8 && Math.abs(dots[i].y - y) <= 8) {
+                divs_dots[i].remove();
+                divs_dots.splice(i, 1);
+                dots.splice(i, 1);
+                if (isProcessing) {
+                    stopAlgorithm();
+                    setTimeout(() => {
+                        geneticAlgorithm();
+                    }, render * 10);
+                }
+                return;
+            }
+        }
 
         const dot = document.createElement('div');
         dot.className = 'dot';
@@ -220,6 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dot.style.top = `${y}px`;
 
         table.appendChild(dot);
+        divs_dots.push(dot);
 
         dots.push({x, y});
         if (isProcessing) {
@@ -332,9 +320,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 population = population.slice(0, cnt_population);
                 if (population[0] === elite) stagnation++;
-                elite = population[0];
+                else stagnation = 0;
 
-                //elite = localSearch(dist, elite);
+                elite = population[0];
 
                 if (stagnation > threshold_stagnation) {
                     stagnation = 0;
@@ -389,4 +377,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
 //TODO:
 //add deletion dots
-//scale the table in process
