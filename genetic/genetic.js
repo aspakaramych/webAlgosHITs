@@ -250,6 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
             stopAlgorithm();
         }
         dots = [];
+        divs_dots = [];
 
         const existingDots = document.querySelectorAll('.dot');
         existingDots.forEach(dot => dot.remove());

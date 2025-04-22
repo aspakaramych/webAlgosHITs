@@ -10,12 +10,12 @@ let d = [[-1, 0], [0, -1], [1, 0], [0, 1], [-1, -1], [1, -1], [1, 1], [-1, 1]];
 
 let coef_transpire = 0.001;
 
-let alpha = 7;
+let alpha = 6;
 let beta = 7;
 
 let foodZones = [];
 
-let MAX_STEPS = 50000;
+let MAX_STEPS = 25000;
 
 document.addEventListener('DOMContentLoaded', () => {
     let canvas = document.getElementById('table');
@@ -387,7 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return availableDirections[Math.floor(Math.random() * availableDirections.length)];
             }
 
-            return -1;
+            return Math.floor(Math.random() * d.length);
         }
 
         let cumulativeProbability = 0;
@@ -445,7 +445,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function transpirePheromones() {
         for (const cord in pheromonesHome) {
-            pheromonesHome[cord].pheromones = pheromonesHome[cord].pheromones * (1 - 0.001);
+            pheromonesHome[cord].pheromones = pheromonesHome[cord].pheromones * (1 - 0.01);
             matrix[pheromonesHome[cord].x][pheromonesHome[cord].y].pheromones_home = pheromonesHome[cord].pheromones;
             // updatePixel(ctx, matrix, pheromonesHome[cord].x, pheromonesHome[cord].y);
             if (pheromonesHome[cord].pheromones <= 0) {
