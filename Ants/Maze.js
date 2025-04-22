@@ -10,9 +10,5 @@ export function generatePerlinMaze(rows, cols, scale, threshold) {
         maze.push(row);
     }
 
-
-    maze[0][0] = 0;
-    maze[rows - 1][cols - 1] = 0;
-
     return maze;
 }

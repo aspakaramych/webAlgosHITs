@@ -4,7 +4,7 @@ import {generatePerlinMaze} from './Maze.js'
 let canvasHeight = 100;
 let canvasWidth = 100;
 
-let cnt_ants = 1000;
+let cnt_ants = 500;
 
 let d = [[-1, 0], [0, -1], [1, 0], [0, 1], [-1, -1], [1, -1], [1, 1], [-1, 1]];
 
@@ -350,7 +350,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 if (ant.state === 'search') {
-                    //if (Math.random() < 0.01) return Math.floor(Math.random() * d.length);
                     pheromones = matrix[newX][newY].pheromones_food;
                     ant.steps += 1;
                     heuristic = 1 / (matrix[newX][newY].pheromones_home + 1);
