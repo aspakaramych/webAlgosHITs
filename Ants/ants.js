@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeErrorModal = document.getElementById('close-error-modal');
     const parentContainer = document.getElementById('parent-container');
     let generateMazeButton = document.getElementById('generateMazeButton');
+    let cleanButton = document.getElementById('cleanButton');
 
     let mode = 'colony';
     let isDrawingObstacle = false;
@@ -51,12 +52,14 @@ document.addEventListener('DOMContentLoaded', () => {
         colonyButton.style.background = 'lightgray';
         foodButton.style.background = 'lightgray';
         obstacleButton.style.background = 'lightgray';
+        cleanButton.style.background = 'lightgray';
     }
 
     canvas.addEventListener('click', (event) => {
         if (mode === 'colony') addColony(event);
         if (mode === 'food') addFood(event);
         if (mode === 'obstacle') addObstacle(event);
+        if (mode === 'clean') cleanCanvas(event);
     })
 
     colonyButton.addEventListener('click', () => {
@@ -82,11 +85,18 @@ document.addEventListener('DOMContentLoaded', () => {
             isDrawingObstacle = true;
             addObstacle(event);
         }
+        if (mode === 'clean') {
+            isDrawingObstacle = true;
+            cleanCanvas(event);
+        }
     });
 
     canvas.addEventListener('mousemove', (event) => {
         if (isDrawingObstacle && mode === 'obstacle') {
             addObstacle(event);
+        }
+        if (isDrawingObstacle && mode === 'clean') {
+            cleanCanvas(event);
         }
     });
 
@@ -114,6 +124,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 updatePixel(ctx, matrix, i, j);
             }
         }
+    })
+
+    cleanButton.addEventListener('click', () => {
+        mode = 'clean';
+        deactivateButtons();
+        cleanButton.style.background = 'springgreen';
     })
 
     closeErrorModal.addEventListener('click', () => {
@@ -310,6 +326,35 @@ document.addEventListener('DOMContentLoaded', () => {
                     const currentY = y + dy;
                     updatePixel(ctx, matrix, x, y);
                     matrix[currentX][currentY].obstacle = true;
+                }
+            }
+        }
+    }
+
+    function cleanCanvas(event) {
+        let scaleX = canvas.width / canvas.clientWidth;
+        let scaleY = canvas.height / canvas.clientHeight;
+
+        let x = Math.floor(event.offsetX * scaleX);
+        let y = Math.floor(event.offsetY * scaleY);
+
+        let ch = 2;
+
+        if (x >= 0 && x < canvasWidth && y >= 0 && y < canvasHeight) {
+            drawRect(ctx, x, y, 'white', ch * 2);
+            for (let dy = -ch; dy < ch; dy++) {
+                for (let dx =  - ch; dx < ch; dx++) {
+                    const currentX = x + dx;
+                    const currentY = y + dy;
+                    matrix[currentX][currentY] = {
+                        pheromones_food: 0,
+                        pheromones_home: 0,
+                        food: 0,
+                        ants: 0,
+                        colony: false,
+                        obstacle: false
+                    };
+                    updatePixel(ctx, matrix, x, y);
                 }
             }
         }
