@@ -21,12 +21,7 @@ function handleError() {
     errorContainer.style.display = 'none';
 }
 
-function clearField() {
-    grid.children[startPoint.row * size + startPoint.col].classList.remove('start');
-    grid.children[finishPoint.row * size + finishPoint.col].classList.remove('finish');
-    grid.children[finishPoint.row * size + finishPoint.col].classList.remove('reached');
-    grid.children[finishPoint.row * size + finishPoint.col].classList.remove('mark');
-
+function clearPreviousPath() {
     for(let cell of finalPath) {
         grid.children[cell.row * size + cell.col].classList.remove('path');
     }
@@ -41,7 +36,16 @@ function clearField() {
             grid.children[i.row * size + i.col].classList.remove('mark');
         }
     }
+}
+
+function clearField() {
+    grid.children[startPoint.row * size + startPoint.col].classList.remove('start');
+    grid.children[finishPoint.row * size + finishPoint.col].classList.remove('finish');
+    grid.children[finishPoint.row * size + finishPoint.col].classList.remove('reached');
+    grid.children[finishPoint.row * size + finishPoint.col].classList.remove('mark');
     
+    clearPreviousPath();
+
     startPoint = null;
     finishPoint = null;
     path.clear();
@@ -67,6 +71,8 @@ document.addEventListener('DOMContentLoaded', function() {
 // генерируем поле (все клетки закрашены - это для алгоритма Прима)
 function getGrid() {
     clear();
+    startPoint = null;
+    finishPoint = null;
     paintedCells = [];
     pathCells = [];
     grid = document.getElementById('grid');
@@ -227,6 +233,8 @@ function AstarAlgo() {
 }
 
 function instantShow() {
+    grid.children[finishPoint.row * size + finishPoint.col].classList.remove('reached');
+    clearPreviousPath();
     AstarAlgo();
     displayPath();
     grid.children[finishPoint.row * size + finishPoint.col].classList.add('reached');
