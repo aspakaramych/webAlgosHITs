@@ -15,7 +15,7 @@ let beta = 7;
 
 let foodZones = [];
 
-let MAX_STEPS = 25000;
+let MAX_STEPS = 1000000;
 
 document.addEventListener('DOMContentLoaded', () => {
     let canvas = document.getElementById('table');
@@ -30,6 +30,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const parentContainer = document.getElementById('parent-container');
     let generateMazeButton = document.getElementById('generateMazeButton');
     let cleanButton = document.getElementById('cleanButton');
+    const slider = document.getElementById('alpha');
+    const sliderValue = document.getElementById('labelInput');
+    const counter_ants = document.getElementById('counter');
+    counter_ants.value = 500;
 
     let mode = 'colony';
     let isDrawingObstacle = false;
@@ -54,6 +58,11 @@ document.addEventListener('DOMContentLoaded', () => {
         obstacleButton.style.background = 'lightgray';
         cleanButton.style.background = 'lightgray';
     }
+
+    slider.addEventListener('input', () => {
+        sliderValue.textContent = slider.value;
+        alpha = slider.value;
+    });
 
     canvas.addEventListener('click', (event) => {
         if (mode === 'colony') addColony(event);
@@ -108,7 +117,29 @@ document.addEventListener('DOMContentLoaded', () => {
         if (colony.length === 0) {
             errorModal.style.display = 'flex';
             parentContainer.classList.add('blur');
-        } else {
+        } else if (ants.length === 0) {
+            cnt_ants = parseInt(counter_ants.value);
+            ants = generateColony(colony, cnt_ants);
+            matrix[colony[0]][colony[1]].ants = cnt_ants;
+            ants_algorithm();
+        } else if (ants.length > 0) {
+            for (let i = 0; i < ants.length; i++) {
+                matrix[ants[i].x][ants[i].y].ants = 0;
+            }
+            ants = [];
+            setTimeout(() => {
+                console.log("Новый запуск");
+            }, 2000);
+            for (let i = 0; i < canvasHeight; i++) {
+                for (let j = 0; j < canvasWidth; j++) {
+                    matrix[i][j].pheromones_home = 0;
+                    matrix[i][j].pheromones_food = 0;
+                    updatePixel(ctx, matrix, i, j);
+                }
+            }
+            pheromonesHome = {};
+            pheromonesFood = {};
+            cnt_ants = parseInt(counter_ants.value);
             ants = generateColony(colony, cnt_ants);
             matrix[colony[0]][colony[1]].ants = cnt_ants;
             ants_algorithm();
@@ -116,8 +147,8 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     generateMazeButton.addEventListener('click', () => {
-
-        const maze = generatePerlinMaze(canvasHeight, canvasWidth, 15, 0.2);
+        clearCanvas();
+        const maze = generatePerlinMaze(canvasHeight, canvasWidth, 10, 0.15);
         for (let i = 0; i < maze.length; i++) {
             for (let j = 0; j < maze[i].length; j++) {
                 matrix[i][j].obstacle = maze[i][j];
@@ -158,6 +189,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 activeInputField.value = isFoodZone.nutrition;
                 activeInputField.style.left = `${event.pageX + 10}px`;
                 activeInputField.style.top = `${event.pageY + 10}px`;
+
+                const descriptionElement = document.getElementById(`description-${activeInputField.id}`);
+                if (descriptionElement) {
+                    descriptionElement.style.left = `${event.pageX + 10}px`;
+                    descriptionElement.style.top = `${event.pageY - 10}px`;
+                }
             } else {
                 const inputField = document.createElement('input');
                 inputField.type = 'number';
@@ -166,7 +203,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 inputField.style.left = `${event.pageX + 10}px`;
                 inputField.style.top = `${event.pageY + 10}px`;
                 inputField.style.width = '50px';
+                inputField.className = 'input-food';
 
+                inputField.id = `nutrition-input-${Date.now()}`;
+                const descriptionElement = document.createElement('div');
+                descriptionElement.textContent = `Питательность источника:`;
+                descriptionElement.style.position = 'absolute';
+                descriptionElement.style.left = `${event.pageX + 10}px`;
+                descriptionElement.style.top = `${event.pageY - 10}px`;
+                descriptionElement.style.color = 'black';
+                descriptionElement.style.fontSize = '12px';
+                descriptionElement.style.pointerEvents = 'none';
+                descriptionElement.id = `description-${inputField.id}`;
+                descriptionElement.className = 'description-food';
+
+                document.body.appendChild(descriptionElement);
                 document.body.appendChild(inputField);
 
                 activeInputField = inputField;
@@ -191,6 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     setTimeout(() => {
                         if (!inputField.matches(':hover')) {
                             inputField.remove();
+                            descriptionElement.remove();
                             activeInputField = null;
                         }
                     }, 100);
@@ -198,6 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 inputField.addEventListener('blur', () => {
                     inputField.remove();
+                    descriptionElement.remove();
                     activeInputField = null;
                 });
             }
@@ -530,6 +583,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function ants_algorithm() {
         while (true) {
+            if (ants.length === 0) return;
             updatePos();
             transpirePheromones();
             await delay(1);

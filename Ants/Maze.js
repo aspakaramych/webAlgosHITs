@@ -1,4 +1,5 @@
 export function generatePerlinMaze(rows, cols, scale, threshold) {
+    perlin.seed();
     const maze = [];
 
     for (let i = 0; i < rows; i++) {

@@ -39,17 +39,41 @@
                     <button class="button" id="colonyButton">Колония</button>
                     <button class="button" id="foodButton">Еда</button>
                     <button class="button" id="obstacleButton">Препятствия</button>
+                    <button class="button" id="cleanButton">Ластик</button>
+                </div>
+                <div class="buttons">
                     <button class="button" id="clearButton">Очистка поля</button>
                     <button class="button" id="startButton">Поиск путей</button>
                     <button class="button" id="generateMazeButton">Генерация лабиринта</button>
-                    <button class="button" id="cleanButton">Ластик</button>
                 </div>
             </div>
             <div class="text-and-button">
+                <div class="description-header" style="margin-bottom: -10px;">Описание алгоритма</div>
+                <div class="description">
+                    <p class="text-description">
+                        Муравьиный алгоритм (Ant Colony Optimization, ACO) — это метаэвристический метод оптимизации, вдохновленный поведением муравьев при поиске пищи.
+                        Алгоритм был предложен Марко Дориго в 1992 году и успешно применяется для решения задач комбинаторной оптимизации, таких как задача коммивояжера, раскраска графов, маршрутизация в сетях и другие.
+                    </p>
+                </div>
+                <div class="description-header" style="margin-bottom: -10px;">Инструкция</div>
+                <div class="description">
+                    <p class="text-description">
+                        1. Разместите муравьиную колонию
+                    </p>
+                    <p class="text-description">
+                        2. Сгенерируйте лабиринт или нарисуйте его.
+                    </p>
+                    <p class="text-description">
+                        3. Разместите еду и запустите поиск.
+                    </p>
+                </div>
                 <p class="text-description">
-                    Муравьиный алгоритм (Ant Colony Optimization, ACO) — это метаэвристический метод оптимизации, вдохновленный поведением муравьев при поиске пищи.
-                    Алгоритм был предложен Марко Дориго в 1992 году и успешно применяется для решения задач комбинаторной оптимизации, таких как задача коммивояжера, раскраска графов, маршрутизация в сетях и другие.
+                    Количество муравьёв <input id="counter" class="inputField" placeholder="500"></input>
                 </p>
+                <p class="text-description">
+                    Коэффициент alpha: <label id="labelInput" for="alpha">7</label>
+                </p>
+                <input id="alpha" class="alpha" type="range" min="0" max="20" step="0.5" value="7"></input>
             </div>
         </div>
     </section>
