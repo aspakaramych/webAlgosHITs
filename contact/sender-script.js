@@ -6,7 +6,10 @@ document.getElementById("send").addEventListener("click", function() {
         subject: emailSubject,
         text: emailText
     };
-    console.log(data);
+    
+    if(data.subject === '' || data.text === '') {
+        showError("Пожалуйста, заполните все поля");
+    }
     fetch("/contact/contact_us", {
         method: 'POST',
         headers: {
@@ -15,7 +18,7 @@ document.getElementById("send").addEventListener("click", function() {
         body: JSON.stringify(data)
     })
     .then(response => response.json())
-    .then(result => showMessage(result))
+    .then(result => showMessage(result, data))
     .catch(error => console.error('Error:', error));
 });
 
@@ -23,11 +26,17 @@ let messageContainer = document.getElementById("message-container");
 document.getElementById("ok").addEventListener("click", handleMessage);
 let message = document.getElementById("message");
 
+function showError(error) {
+    messageContainer.style.display = 'flex';
+    message.innerHTML = error;
+}
+
 function showMessage(result) {
     messageContainer.style.display = 'flex';
     let messageForDisplay = "";
-    if(result.message === "success")
+    if(result.message === "success") {
         messageForDisplay = "Письмо отправлено";
+    }
     else {
         messageForDisplay = result.error;
     }
