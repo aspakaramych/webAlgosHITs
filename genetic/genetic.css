@@ -33,7 +33,7 @@ button {
     cursor: pointer;
 }
 
-#startButton:hover {
+button:hover {
     background-color: limegreen;
 }
 
@@ -89,5 +89,52 @@ svg {
     width: 100%;
     height: 100%;
     pointer-events: none;
+}
+
+.description-header {
+    width: 50%;
+    padding: 5px;
+    background-color: lightgray;
+    border-radius: 10px;
+    margin-top: 15px;
+    font-family: 'Minecraft', sans-serif;
+    text-align: center;
+    align-self: center;
+}
+
+.description {
+    align-self: flex-start;
+}
+
+p {
+    text-align: left;
+    margin: 0;
+    align-self: flex-start;
+}
+
+.inputField {
+    width: 70px;
+    height: 20px;
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    resize: none;
+    font-family: 'Minecraft', sans-serif;
+    font-size: 1rem;
+    align-self: flex-start;
+}
+
+.alpha {
+    align-self: flex-start;
+    margin: 0;
+}
+
+input[type="range"] {
+    width: 300px;
+    height: 10px;
+    background: transparent; /* Убираем фон */
+    outline: none; /* Убираем обводку при фокусе */
+    /*-webkit-appearance: none; !* Отключаем стандартный вид для WebKit *!*/
+    /*appearance: none;*/
 }
 

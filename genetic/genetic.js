@@ -4,11 +4,11 @@ let isProcessing = false;
 let controller = new AbortController();
 
 let cnt_population = 1000;
-let cnt_epoch = 50000;
-let mutation_rate = 0.6;
+let cnt_epoch = 10000;
+let mutation_rate = 0.5;
 let tournament_size = 20;
 let cnt_pairs = 500;
-let threshold_stagnation = 200;
+let threshold_stagnation = 100;
 let inbreeding = 0.1;
 
 let render = 1;
@@ -70,9 +70,6 @@ function halfUniformCrossover(parent1, parent2) {
     const lengthPar1 = Math.floor(parent1.length * Math.random());
     let child = Array(length).fill(null);
     let used = new Set();
-
-    // const start = Math.floor(Math.random() * (lengthPar1 - 1));
-    // const end = start + Math.floor(Math.random() * (lengthPar1 - 1 - start));
 
     const start = Math.floor(Math.random() * (lengthPar1 / 2));
     const end = start + lengthPar1 / 2;
@@ -223,6 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
             startButton.textContent = 'Поиск оптимального пути';
             stopAlgorithm();
             isProcessing = false;
+            startButton.style.backgroundColor = 'springgreen';
         }
         else {
             if (dots.length < 2) {
@@ -232,6 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 //generateRandomDots(200, 600, 600);
                 geneticAlgorithm();
                 startButton.textContent = 'Остановить процесс поиска';
+                startButton.style.backgroundColor = '#e46262';
             }
         }
     })
@@ -258,6 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
         linesSvg.innerHTML = '';
         isProcessing = false;
         startButton.textContent = 'Поиск оптимального пути';
+        startButton.style.backgroundColor = 'springgreen';
     }
 
     function generateRandomDots(count, width, height) {
@@ -370,11 +370,10 @@ document.addEventListener('DOMContentLoaded', () => {
             await alghorythm();
         } catch (error) {
             console.log("Алгоритм остановлен:", error.message);
+            startButton.style.backgroundColor = 'springgreen';
+            startButton.textContent = 'Поиск оптимального пути';
         } finally {
             isProcessing = false;
         }
     }
 })
-
-//TODO:
-//add deletion dots
