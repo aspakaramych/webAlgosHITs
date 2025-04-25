@@ -11,6 +11,10 @@
     margin-top: 30px;
 }
 
+.text {
+    
+}
+
 #error {
     color: red;
 }
@@ -21,6 +25,7 @@
 }
 
 #main-container {
+    margin-top: -3%;
     display: flex;
     align-items: center;
 }
@@ -47,10 +52,6 @@
     margin-top: 15px;
     font-family: 'Minecraft', sans-serif;
     text-align: center;
-}
-
-#description {
-    line-height: 1.5;
 }
 
 #text-description {
@@ -106,7 +107,7 @@
 }
 
 #generate:active {
-    background-color: rgba(255, 255, 255, 0.786);
+    background-color: rgb(163, 128, 0) !important;
 }
 
 #generate:hover {
@@ -125,6 +126,10 @@
     cursor: pointer;
 }
 
+#clear:active {
+    background-color: rgb(100, 100, 100) !important;
+}
+
 #clear:hover {
     background-color: rgb(137, 137, 137);
 }
@@ -139,10 +144,11 @@
     border: white 2px solid;
     border-radius: 10px;
     cursor: pointer;
+    transition: 0.1s;
 }
 
 #start:active{
-    background-color: rgba(255, 255, 255, 0.786);
+    background-color: rgb(2, 194, 9) !important;
 }
 
 #start:hover {
@@ -174,7 +180,7 @@
 }
 
 #step:active{
-    background-color: rgba(255, 255, 255, 0.786);
+    background-color: rgb(204, 171, 41) !important;
 }
 
 #step:hover{
@@ -205,6 +211,14 @@
     cursor: pointer;
 }
 
+#showBySteps:active{
+    background-color: rgb(188, 74, 9) !important;
+}
+
+#showBySteps:hover{
+    background-color: rgb(255, 100, 10);
+}
+
 #showBySteps-mock {
     margin-top: 20px;
     margin-left: 10px;
@@ -217,17 +231,9 @@
     border-radius: 10px;
 }
 
-#showBySteps:active{
-    background-color: rgba(255, 255, 255, 0.786);
-}
-
-#showBySteps:hover{
-    background-color: rgb(255, 100, 10);
-}
-
 #size {
     height: 4vh;
-    width: 30px;
+    width: 40px;
     border-radius: 10px;
     transition: 0.3s;
     padding: 3px;
@@ -237,7 +243,7 @@
 #size:focus {
     background-color: rgb(253, 232, 156);
     transition: 0.3s;
-    width: 40px;
+    width: 50px;
 }
 
 .cell {
