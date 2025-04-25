@@ -1,3 +1,5 @@
+import {perlin} from './perlin.js';
+
 export function generatePerlinMaze(rows, cols, scale, threshold) {
     perlin.seed();
     const maze = [];
