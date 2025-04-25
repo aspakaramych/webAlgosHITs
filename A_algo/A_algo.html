@@ -36,17 +36,17 @@
             <div id="grid"></div>
         </section>
 
-        <section id="description-block">
-            <div id="description-header" style="margin-bottom: -10px;">Описание алгоритма 📖</div>
-            <div id="description">
-                <div class="text-description">
+        <section class="description-block">
+            <div class="description-header">Описание алгоритма 📖</div>
+            <div class="description">
+                <div class="description-text">
                     A* (A star) - Алгоритм поиска по первому наилучшему совпадению на графе,
                      который находит маршрут с наименьшей стоимостью от одной вершины (начальной) к другой (целевой, конечной).
                 </div>
             </div>
-            <div id="description-header" style="margin-top: -10px;">Инструкция 📚</div>
-            <div id="description">
-                <div class="text-description">
+            <div class="description-header">Инструкция 📚</div>
+            <div class="description">
+                <div class="description-text">
                     <div>
                         ЛКМ - разместить/убрать стену <br>
                         ПКМ - разместить/убрать начальную/конечную точку
@@ -73,7 +73,7 @@
                 <div>
                     <button id="clear">Очистить поле</button>
                     <button id="generate">Сгенерировать</button>
-                    <input id="size" placeholder="Введите размер поля" value = 10 style="margin-top: 10px; margin-bottom: 10px;">
+                    <input id="size" type="number" placeholder="Введите размер поля" value = 10 style="margin-top: 10px; margin-bottom: 10px;">
                 </div>
             </div>
         </section>
@@ -87,10 +87,5 @@
         </div>
     </div>
     <script src="../themeChanger.js"></script>
-    <footer>
-        <div class="footer">
-            здесь будет подвал
-        </div>
-    </footer>
 </body>
 </html>

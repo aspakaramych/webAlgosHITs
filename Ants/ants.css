@@ -159,10 +159,6 @@ button {
     text-align: center;
 }
 
-.description {
-    align-self: flex-start;
-}
-
 p {
     text-align: left;
     margin: 0;

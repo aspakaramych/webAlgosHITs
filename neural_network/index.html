@@ -35,16 +35,16 @@
     <div class="content-wrapper" id="parent-container">
         <canvas class="shadowable" id="myCanvas" width="50" height="50"></canvas>
         <div class="input-and-button">
-            <div class="description-header" style="margin-bottom: -10px;">Описание алгоритма 📖</div>
+            <div class="description-header">Описание алгоритма 📖</div>
             <div>
-                <p class="text-description">
+                <p class="description-text">
                     Нейронная сеть — это алгоритм машинного обучения, который моделирует работу человеческого мозга.
                     Она состоит из слоев нейронов, которые обрабатывают входные данные и выдают предсказания.
                 </p>
             </div>
-            <div class="description-header" style="margin-bottom: -10px;">Инструкция 📚</div>
+            <div class="description-header">Инструкция 📚</div>
             <div>
-                <p class="text-description">
+                <p class="description-text">
                     Нарисуйте цифру на холсте и нажмите "Предсказать", чтобы получить результат. Используйте кнопку "Стереть",
                     чтобы очистить холст.
                 </p>
@@ -55,7 +55,7 @@
                 <button class="button" id="resetButton">Стереть</button>
             </div>
             <div class="result-container">
-                <p id="result" class="text-description">
+                <p id="result" class="description-text">
                     Нейросеть предсказывает: <span id="result-text"></span>
                 </p>
             </div>
@@ -64,18 +64,10 @@
 </section>
 <div id="error-modal" class="modal">
     <div class="modal-content">
-        <p id="error-text" class="text">
-
-        </p>
+        <p id="error-text" class="text"></p>
         <button id="close-error-modal">Закрыть</button>
     </div>
 </div>
-
-<footer>
-    <div class="footer">
-        здесь будет подвал
-    </div>
-</footer>
 
 <canvas id="resizedCanvas" width="28" height="28" style="display: none"></canvas>
 <script type="module" src="js/index.js"></script>
