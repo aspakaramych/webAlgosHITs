@@ -1,4 +1,4 @@
-let max_pheromones = 10000;
+let max_pheromones = 1000;
 
 export let colors = {
     'orange': [255, 165, 0, 255],
@@ -7,7 +7,7 @@ export let colors = {
     'deepgreen': [0, 255, 0, 255],
     'white': [255, 255, 255, 255],
     'pink': [255, 20, 147, 255],
-    'red': [255, 0, 0, 255],
+    'blue': [0, 0, 255, 255],
     'gray': [128, 128, 128, 255],
 }
 
@@ -57,7 +57,7 @@ export function updatePixel(ctx, matrix, x, y) {
     else if (ceil.food > 0) changeColorPixel(ctx, x, y, colors['green']);
     else if (ceil.colony === true) changeColorPixel(ctx, x, y, colors['orange']);
     else if (ceil.pheromones_food > 0 && ceil.pheromones_food > 10) changeColorPixel(ctx, x, y, colorIntensity(colors['deepgreen'], matrix[x][y].pheromones_food, max_pheromones));
-    else if (ceil.pheromones_home > 0) changeColorPixel(ctx, x, y, colorIntensity(colors['red'], matrix[x][y].pheromones_home, max_pheromones));
+    else if (ceil.pheromones_home > 0) changeColorPixel(ctx, x, y, colorIntensity(colors['blue'], matrix[x][y].pheromones_home, max_pheromones));
     else changeColorPixel(ctx, x, y, colors['white']);
 }
 

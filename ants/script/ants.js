@@ -1,4 +1,4 @@
-import {correctPos, delay, drawRect, generateColony, updatePixel} from './help.js'
+import {correctPos, delay, drawRect, generateColony, updatePixel} from './workWithMatrix.js'
 import {generatePerlinMaze} from './generateMaze.js'
 import {baseCntAnts, canvasHeight, canvasWidth, beta, baseAlpha, maxSteps, coefTranspireFood, coefTranspireHome} from './config.js'
 
