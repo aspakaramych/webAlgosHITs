@@ -19,7 +19,7 @@ async function predict(input) {
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('myCanvas');
     const submitButton = document.getElementById('submitButton');
-    const resetButtom = document.getElementById('resetButton');
+    const resetButton = document.getElementById('resetButton');
     const errorModal = document.getElementById('error-modal');
     const errorText = document.getElementById('error-text');
     const closeErrorModal = document.getElementById('close-error-modal');
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    resetButtom.addEventListener('click', () => {
+    resetButton.addEventListener('click', () => {
         input = []
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);

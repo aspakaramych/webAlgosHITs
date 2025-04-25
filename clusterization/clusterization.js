@@ -6,48 +6,9 @@ document.getElementById('clear').addEventListener('click', clear);
 
 const context = canvas.getContext('2d');
 context.strokeRect(0, 0, canvas.width, canvas.height);
-
-const STYLES = [
-    'red',
-      'blue',
-       'orange',
-         'green',
-          'brown',
-          'purple',
-           'pink',
-            'gray',
-             'black',
-              'magenta',
-               'yellow',
-                'lime',
-];
-
-function clear() {
-    points = [];
-    const context = canvas.getContext('2d');
-    context.clearRect(0, 0, canvas.width, canvas.height);
-}
-
-function getRandomColor() {
-    var letters = '0123456789ABCDEF';
-    var color = '#';
-    for (var i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-}
-
-let points = [];
-
-function getCursorPosition(event) {
-    const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    context.fillRect(x-5, y-5, 10, 10);
-    points.push({x: x, y: y});
-}
-
 canvas.addEventListener('click', getCursorPosition);
+
+let POINTS = [];
 
 function getDistance(point1, point2) {
     return Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2));
@@ -64,25 +25,13 @@ function getNewCentroidCoords(cluster) {
     return {x: (xSum/length), y: (ySum/length)};
 }
 
-function getNormalizedCentroids(centroids, clusters) {
-    for(let i = 0; i < clusters.size; i++) {
-        if(!clusters.has(`${centroids[i].x},${centroids[i].y}`)) {
-            centroids.splice(i, 1);
-        }
-        else {
-            centroids[i] = getNewCentroidCoords(clusters.get(`${centroids[i].x},${centroids[i].y}`))
-        }
-    }
-    return centroids;
-}
-
 // kMeans++
 function getCentroids(k) {
-    let centroids = [points[Math.floor(Math.random() * points.length)]]; // начинаем плясать от рандомной точки
+    let centroids = [POINTS[Math.floor(Math.random() * POINTS.length)]]; // начинаем плясать от рандомной точки
     
     for (let i = 1; i < k; i++) {
         let distancesBetweenPointsAndCentroids = [];
-        for (let point of points) {
+        for (let point of POINTS) {
             let minDist = Infinity;
             for (let centr = 0; centr < centroids.length; centr++) {   // находим ближайший центроид к данной точке
                 let dist = getDistance(point, centroids[centr]);
@@ -93,18 +42,18 @@ function getCentroids(k) {
             distancesBetweenPointsAndCentroids.push(minDist * minDist);
         }
         
-        let sum = 0;
+        let sumDist = 0;
         for (let dist of distancesBetweenPointsAndCentroids) {
-            sum += dist;
+            sumDist += dist;
         }
         
-        let threshold = Math.random() * sum;
+        let threshold = Math.random() * sumDist;
         let currSum = 0;
         
-        for (let j = 0; j < points.length; j++) {               // находится точка: если текущее расстояние дало перевал через порог - 
+        for (let j = 0; j < POINTS.length; j++) {               // находится точка: если текущее расстояние дало перевал через порог - 
             currSum += distancesBetweenPointsAndCentroids[j];   // берем эту точку в качестве центроида (вероятность того, что эта точка
             if (currSum >= threshold) {                         // подходит в качестве центроида (достаточно удалена от уже существующих
-                centroids.push(points[j]);                      // центроидов) велика из-за удалённости, но не 100%)
+                centroids.push(POINTS[j]);                      // центроидов) велика из-за удалённости, но не 100%)
                 break;
             }
         }
@@ -120,7 +69,7 @@ function centralize(centroids) {    // группируем точки в кла
         clusters.set(`${centr.x},${centr.y}`, []);
     }
     
-    for(const point of points) {
+    for(const point of POINTS) {
         let min = Infinity;
         let nearestCentr = null;
         for(const centr of centroids) {
@@ -140,7 +89,7 @@ function updateCentroids(centroids, clusters) {
     let newCentroids = [];
     let emptyClusters = [];
     
-    // уточнение позиций центроидов
+    // уточняем позиции центроидов
     for (let centr of centroids) {
         let currCluster = clusters.get(`${centr.x},${centr.y}`);
         let newCentr = getNewCentroidCoords(currCluster);
@@ -212,36 +161,6 @@ function isTheSame(oldCentroids, newCentroids, threshold = 1) {
     return true;
 }
 
-function draw(clusters) {
-    context.clearRect(1, 1, canvas.width-2, canvas.height-2);
-    
-    let i = 0;
-    
-    for (const [key, value] of clusters) {        
-        context.fillStyle = getRandomColor();
-        for (let point of value) {
-            context.fillRect(point.x-5, point.y-5, 10, 10);
-        }
-        i++;
-    }
-}
-
-function drawWithCentroids(clusters, centroids) {
-    context.clearRect(1, 1, canvas.width-2, canvas.height-2);
-    
-    let i = 0;
-    for (const [key, value] of clusters) {        
-        context.fillStyle = getRandomColor();
-        for (let point of value) {
-            context.fillRect(point.x-5, point.y-5, 10, 10);
-        }
-        context.beginPath();
-        context.arc(centroids[i].x, centroids[i].y, 10, 0, 2 * Math.PI);
-        context.fill();
-        i++;
-    }
-}
-
 // метод силуэтов - оценка качества кластеризации
 // средняя сумма расстояний от точки до точек своего кластера должна быть меньше
 // средней суммы расстояний от точки до точек другого кластера для высокой оценки кластеризации -
@@ -250,8 +169,7 @@ function silhouetteCoef(clusters, centroids) {
     let totalScore = 0;
     
     for (let centr of centroids) {
-        let clusterKey = `${centr.x},${centr.y}`;
-        let clusterPoints = clusters.get(clusterKey) || [];
+        let clusterPoints = clusters.get(`${centr.x},${centr.y}`) || [];
         
         for (let point of clusterPoints) {
             let a = 0;
@@ -301,29 +219,24 @@ function silhouetteCoef(clusters, centroids) {
 
 function kmeansPlusPlus() {
     let bestScore = 0;
-    let maxK = Math.min(10, points.length);
+    let maxK = Math.min(10, POINTS.length);
     let bestClusters = null;
     let bestCentroids = null;
     let k = 1;
-    let nums_k = parseInt(document.getElementById('nums_k').value)
-    let flag = false;
-    if(!isNaN(nums_k)) {
-        k = nums_k;
-        maxK = nums_k + 1;
-        flag = true;
-    }
-    if(points.length === 1) {
-        maxK = 2;
-    }
+
+    let res = validateUserInput(k, maxK);
+    k = res.k;
+    maxK = res.maxK;
+
     for (let i = k; i < maxK; i++) {
         let centroids = getCentroids(i);
         let prevCentroids = null;
         let clusters = null;
         let iterations = 0;
 
-        const maxIterations = 100;
+        const MAXITERATIONS = 100;
         
-        while (!isTheSame(prevCentroids, centroids) && iterations < maxIterations) {
+        while (!isTheSame(prevCentroids, centroids) && iterations < MAXITERATIONS) {
             prevCentroids = centroids;
             clusters = centralize(centroids);
             centroids = updateCentroids(centroids, clusters);
@@ -341,12 +254,44 @@ function kmeansPlusPlus() {
     drawWithCentroids(bestClusters, bestCentroids);
 }
 
+function validateUserInput(k, maxK) {
+    let nums_k = parseInt(document.getElementById('nums_k').value)
+
+    if(!isNaN(nums_k)) {
+        k = nums_k;
+        maxK = nums_k + 1;
+
+    }
+
+    if(POINTS.length === 1) {
+        maxK = 2;
+    }
+
+    return {k: k, maxK: maxK};
+}
+
+function drawWithCentroids(clusters, centroids) {
+    context.clearRect(1, 1, canvas.width-2, canvas.height-2);
+    
+    let i = 0;
+    for (const [key, value] of clusters) {        
+        context.fillStyle = getRandomColor();
+        for (let point of value) {
+            context.fillRect(point.x-5, point.y-5, 10, 10);
+        }
+        context.beginPath();
+        context.arc(centroids[i].x, centroids[i].y, 10, 0, 2 * Math.PI);
+        context.fill();
+        i++;
+    }
+}
+
 
 // DBSCAN
 function epsilonLocalityScan(currPointIndex, epsilon) {
     let neighbours = [];
-    for(let i = 0; i < points.length; i++) {
-        if(getDistance(points[currPointIndex], points[i]) <= epsilon) {
+    for(let i = 0; i < POINTS.length; i++) {
+        if(getDistance(POINTS[currPointIndex], POINTS[i]) <= epsilon) {
             neighbours.push(i);
         }
     }
@@ -361,7 +306,7 @@ function expandCluster(currPointIndex, neighbours, visited, epsilon) {
         if(!visited[neighbourPointIndex]) {
             visited[neighbourPointIndex] = true;
             let neighbourPointNeighbours = epsilonLocalityScan(neighbourPointIndex, epsilon);
-            if(neighbourPointNeighbours.length >= minPoints) {
+            if(neighbourPointNeighbours.length >= MINPOINTS) {
                 for(let index of neighbourPointNeighbours) {
                     if(!visited[index]) {
                         neighbours.push(index);
@@ -374,20 +319,20 @@ function expandCluster(currPointIndex, neighbours, visited, epsilon) {
     return currCluster;
 }
 
-let minPoints = 2;
+let MINPOINTS = 2;
 
 function dbscan() {
     let clusters = [];
-    let visited = new Array(points.length).fill(false);
+    let visited = new Array(POINTS.length).fill(false);
     let noises = [];
 
     let epsilon = document.getElementById("epsilon-value").value;
 
-    for(let i = 0; i < points.length; i++) {
+    for(let i = 0; i < POINTS.length; i++) {
         if(!visited[i]) {
             visited[i] = true;
             let neighbours = epsilonLocalityScan(i, epsilon);
-            if(neighbours.length >= minPoints) {
+            if(neighbours.length >= MINPOINTS) {
                 clusters.push(expandCluster(i, neighbours, visited, epsilon));          
             }
             else {
@@ -398,9 +343,6 @@ function dbscan() {
 
 
     draw_dbscan(clusters, noises);
-    console.log(points);
-    console.log(clusters);
-    console.log(noises);
 }
 
 function draw_dbscan(clusters, noises) {
@@ -409,13 +351,13 @@ function draw_dbscan(clusters, noises) {
     for (let cluster of clusters) {  
         context.fillStyle = getRandomColor();
         for (let point of cluster) {
-            context.fillRect(points[point].x-5, points[point].y-5, 10, 10);
+            context.fillRect(POINTS[point].x-5, POINTS[point].y-5, 10, 10);
         }
     }
 
     for (let point of noises) {  
         context.fillStyle = getRandomColor();
-        context.fillRect(points[point].x-5, points[point].y-5, 10, 10);
+        context.fillRect(POINTS[point].x-5, POINTS[point].y-5, 10, 10);
     }
 
 }
@@ -463,11 +405,15 @@ function mapEquation(map1, map2) {
     if(map1 == null || map2 == null) {
         return false;
     }
+
     let lengths = [];
+
     for (const [key, value] of map1) {
         lengths.push(value.length);
     }
+
     let i = 0;
+
     for (const [key, value] of map2) {
         if(lengths[i++] != value.length) {
             return false;
@@ -484,18 +430,13 @@ function kMeans() {
     let centroidsHistory = new Map();
     let k = 1;
     let maxK = 15;
-    let nums_k = parseInt(document.getElementById('nums_k').value)
-    let flag = false;
-    if(!isNaN(nums_k)) {
-        k = nums_k;
-        maxK = nums_k + 1;
-        flag = true;
-    }
-    if(points.length === 1) {
-        maxK = 2;
-    }
-    for(; k < maxK; k++) {
-        currCentroids = getRandomCentroids(k);
+    
+    let res = validateUserInput(k, maxK);
+    k = res.k;
+    maxK = res.maxK;
+
+    for(let i = k; i < maxK; i++) {
+        currCentroids = getRandomCentroids(i);
         let currCluster = centralize(currCentroids);
         while(!mapEquation(cluster, currCluster)) {
             cluster = currCluster;
@@ -511,10 +452,10 @@ function kMeans() {
     }
 
     let index = 0;
-    if(!flag) {
+    if(k === 1) {
         let maxDiff = 0;
         for(let i = 1; i < wcssValues.length - 1; i++) {
-            let currDiff = wcssValues[i-1] - wcssValues[i] + (wcssValues[i] - wcssValues[i]);
+            let currDiff = wcssValues[i-1] - wcssValues[i];
             if(currDiff > maxDiff) {
                 index = i;
                 maxDiff = currDiff;
@@ -526,4 +467,39 @@ function kMeans() {
     let resultCentroids = centroidsHistory.get(wcssValues[index]);
 
     drawWithCentroids(resultPoints, resultCentroids);
+}
+
+function clear() {
+    POINTS = [];
+    const context = canvas.getContext('2d');
+    context.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+function getCursorPosition(event) {
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    context.fillRect(x-5, y-5, 10, 10);
+    POINTS.push({x: x, y: y});
+}
+
+function getNormalizedCentroids(centroids, clusters) {
+    for(let i = 0; i < clusters.size; i++) {
+        if(!clusters.has(`${centroids[i].x},${centroids[i].y}`)) {
+            centroids.splice(i, 1);
+        }
+        else {
+            centroids[i] = getNewCentroidCoords(clusters.get(`${centroids[i].x},${centroids[i].y}`))
+        }
+    }
+    return centroids;
 }
