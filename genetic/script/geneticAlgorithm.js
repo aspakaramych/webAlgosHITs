@@ -252,7 +252,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     const timeout = setTimeout(resolve, render);
                     controller.signal.addEventListener("abort", () => {
                         clearTimeout(timeout);
-                        reject(new Error("Остановлено"));
                     });
                 })
             }
