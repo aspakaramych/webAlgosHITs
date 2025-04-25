@@ -4,28 +4,19 @@ body {
     padding: 0;
 }
 
-#mainField {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-#table {
-    position: relative;
-    width: 70vh;
-    height: 70vh;
-    background-color: #E5E9F0;
-    border-radius: 15px;
-    cursor: crosshair;
-    flex-shrink: 0;
+p {
+    font-family: 'Minecraft', sans-serif;
+    margin: 0;
+    margin-top: 10px;
+    text-align: left;
+    align-self: flex-start;
 }
 
 button {
     font-family: 'Minecraft', sans-serif;
     font-size: 14px;
     font-weight: 400;
-    height: 5vh;
+    height: max(40px, 6vh);
     background-color: springgreen;
     transition: background-color 0.3s ease;
     border: white 2px solid;
@@ -33,12 +24,18 @@ button {
     cursor: pointer;
 }
 
-#startButton:hover {
+button:hover {
     background-color: limegreen;
 }
 
-#output {
-    text-align: right;
+#plane {
+    position: relative;
+    width: 600px;
+    height: 600px;
+    background-color: #E5E9F0;
+    border-radius: 15px;
+    cursor: crosshair;
+    flex-shrink: 0;
 }
 
 .algorithm {
@@ -68,11 +65,6 @@ button {
     color: #1A1A1A;
 }
 
-p {
-    font-family: 'Minecraft', sans-serif;
-    margin-top: 10px;
-}
-
 .dot {
     position: absolute;
     width: 16px;
@@ -91,3 +83,34 @@ svg {
     pointer-events: none;
 }
 
+.description-header {
+    width: 50%;
+    padding: 5px;
+    background-color: lightgray;
+    border-radius: 10px;
+    margin-top: 15px;
+    font-family: 'Minecraft', sans-serif;
+    text-align: center;
+    align-self: center;
+}
+
+.description {
+    align-self: flex-start;
+}
+
+.inputField {
+    width: 70px;
+    height: 20px;
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    resize: none;
+    font-family: 'Minecraft', sans-serif;
+    font-size: 1rem;
+    align-self: flex-start;
+}
+
+.alpha {
+    align-self: flex-start;
+    margin: 0;
+}

@@ -1,4 +1,4 @@
-import {colors, correctPos, delay, drawRect, generateColony, updatePixel} from './help.js'
+import {correctPos, delay, drawRect, generateColony, updatePixel} from './help.js'
 import {generatePerlinMaze} from './Maze.js'
 
 let canvasHeight = 100;

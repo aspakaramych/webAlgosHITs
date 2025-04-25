@@ -35,8 +35,6 @@ export function visualizeTreeWithD3(tree, containerId) {
     links.each(function (d) {
         const source = d.source;
         const target = d.target;
-
-        // Определяем условие разделения
         const condition = target.data.type === 'leaf'
             ? ''
             : Object.keys(source.data.children).find(key => source.data.children[key] === target.data);
