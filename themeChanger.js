@@ -1,4 +1,4 @@
-const switchTheme = document.getElementById("theme-changer-button").addEventListener("click", changeTheme)
+document.getElementById("theme-changer-button").addEventListener("click", changeTheme)
 const themeLink = document.getElementById("theme-link");
 const themeImg = document.getElementById("theme-changer-button-icon");
 
