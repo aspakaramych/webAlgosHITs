@@ -4,28 +4,19 @@ body {
     padding: 0;
 }
 
-#mainField {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-#table {
-    position: relative;
-    width: 70vh;
-    height: 70vh;
-    background-color: #E5E9F0;
-    border-radius: 15px;
-    cursor: crosshair;
-    flex-shrink: 0;
+p {
+    font-family: 'Minecraft', sans-serif;
+    margin: 0;
+    margin-top: 10px;
+    text-align: left;
+    align-self: flex-start;
 }
 
 button {
     font-family: 'Minecraft', sans-serif;
     font-size: 14px;
     font-weight: 400;
-    height: 5vh;
+    height: max(40px, 6vh);
     background-color: springgreen;
     transition: background-color 0.3s ease;
     border: white 2px solid;
@@ -37,8 +28,14 @@ button:hover {
     background-color: limegreen;
 }
 
-#output {
-    text-align: right;
+#plane {
+    position: relative;
+    width: 600px;
+    height: 600px;
+    background-color: #E5E9F0;
+    border-radius: 15px;
+    cursor: crosshair;
+    flex-shrink: 0;
 }
 
 .algorithm {
@@ -66,11 +63,6 @@ button:hover {
     font-size: 1rem;
     line-height: 1.5;
     color: #1A1A1A;
-}
-
-p {
-    font-family: 'Minecraft', sans-serif;
-    margin-top: 10px;
 }
 
 .dot {
@@ -106,12 +98,6 @@ svg {
     align-self: flex-start;
 }
 
-p {
-    text-align: left;
-    margin: 0;
-    align-self: flex-start;
-}
-
 .inputField {
     width: 70px;
     height: 20px;
@@ -128,13 +114,3 @@ p {
     align-self: flex-start;
     margin: 0;
 }
-
-input[type="range"] {
-    width: 300px;
-    height: 10px;
-    background: transparent; /* Убираем фон */
-    outline: none; /* Убираем обводку при фокусе */
-    /*-webkit-appearance: none; !* Отключаем стандартный вид для WebKit *!*/
-    /*appearance: none;*/
-}
-
