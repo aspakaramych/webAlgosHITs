@@ -389,12 +389,13 @@ function getWcss(map, centroids) {
 }
 
 function getRandomCentroids(k) {
-    const left = 0, right = 700;
-    const top = 0, bottom = 600;
+    const left = 0, right = canvas.width;
+    const bottom = 0, top = canvas.height;
+
     centroids = [];
     for(let i = 0; i < k; i++) {
         const x = (Math.random() * (right - left) + left);
-        const y = (Math.random() * (bottom - top) + top);
+        const y = (Math.random() * (top - bottom) + top);
         centroids.push({x: x, y: y});
     }
 

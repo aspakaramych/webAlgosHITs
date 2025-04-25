@@ -1,4 +1,4 @@
-#main_section {
+#main-section {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -22,7 +22,7 @@
     margin-top: 10px;
 }
 
-#info_description {
+#info-description {
     font-family: 'Minecraft', sans-serif;
     font-size: 14px;
     font-weight: 400;
