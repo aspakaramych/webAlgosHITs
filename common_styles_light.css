@@ -259,6 +259,8 @@ a {
 }
 
 .text-holder {
+    font-family: 'Minecraft', sans-serif;
+    font-size: 1.2rem;
     box-shadow: 0 8px 12px #BEC4D6,
     0 -4px 6px #FFFFFF,
     inset -5px -5px 10px #FFFFFF,

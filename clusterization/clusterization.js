@@ -7,21 +7,6 @@ document.getElementById('clear').addEventListener('click', clear);
 const context = canvas.getContext('2d');
 context.strokeRect(0, 0, canvas.width, canvas.height);
 
-const STYLES = [
-    'red',
-      'blue',
-       'orange',
-         'green',
-          'brown',
-          'purple',
-           'pink',
-            'gray',
-             'black',
-              'magenta',
-               'yellow',
-                'lime',
-];
-
 function clear() {
     points = [];
     const context = canvas.getContext('2d');
