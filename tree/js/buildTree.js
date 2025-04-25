@@ -41,16 +41,12 @@ export function buildTree(data, attributes, target) {
     if (uniqueClasses.size === 1) {
         return {type: 'leaf', value: uniqueClasses.values().next().value};
     }
-
     if (attributes.length === 0) {
         return {type: 'leaf', value: mostFrequentClass(data, target)};
     }
-
     let bestAttribute = null;
     let bestGain = -Infinity;
     const baseEntropy = entropy(data, target);
-
-
     attributes.forEach(attr => {
         const groups = splitData(data, attr);
         let newEntropy = 0;
