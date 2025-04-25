@@ -9,7 +9,7 @@ function entropy(data, target) {
     let entropy = 0;
     for (const key in counts) {
         const probability = counts[key] / total;
-        if (probability > 0) { // Защита от log2(0)
+        if (probability > 0) {
             entropy -= probability * Math.log2(probability);
         }
     }
