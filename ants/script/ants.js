@@ -1,43 +1,41 @@
 import {correctPos, delay, drawRect, generateColony, updatePixel} from './help.js'
-import {generatePerlinMaze} from './Maze.js'
+import {generatePerlinMaze} from './generateMaze.js'
+import {baseCntAnts, canvasHeight, canvasWidth, beta, baseAlpha, maxSteps, coefTranspireFood, coefTranspireHome} from './config.js'
 
-let canvasHeight = 100;
-let canvasWidth = 100;
+let cnt_ants = baseCntAnts;
+let alpha = baseAlpha;
 
-let cnt_ants = 500;
-
+//массив перемещений
 let d = [[-1, 0], [0, -1], [1, 0], [0, 1], [-1, -1], [1, -1], [1, 1], [-1, 1]];
 
-let coef_transpire = 0.001;
-
-let alpha = 6;
-let beta = 7;
-
-let foodZones = [];
-
-let MAX_STEPS = 1000000;
-
 document.addEventListener('DOMContentLoaded', () => {
-    let canvas = document.getElementById('table');
+    let canvas = document.getElementById('plane');
     let ctx = canvas.getContext('2d');
+
     let startButton = document.getElementById('startButton');
     let foodButton = document.getElementById('foodButton');
     let clearButton = document.getElementById('clearButton');
     let obstacleButton = document.getElementById('obstacleButton');
     let colonyButton = document.getElementById('colonyButton');
-    const errorModal = document.getElementById('error-modal');
-    const closeErrorModal = document.getElementById('close-error-modal');
-    const parentContainer = document.getElementById('parent-container');
+
+    let errorModal = document.getElementById('error-modal');
+    let closeErrorModal = document.getElementById('close-error-modal');
+    let parentContainer = document.getElementById('parent-container');
+
     let generateMazeButton = document.getElementById('generateMazeButton');
     let cleanButton = document.getElementById('cleanButton');
-    const slider = document.getElementById('alpha');
-    const sliderValue = document.getElementById('labelInput');
-    const counter_ants = document.getElementById('counter');
+    let slider = document.getElementById('alpha');
+    let sliderValue = document.getElementById('labelInput');
+    let counter_ants = document.getElementById('counter');
     counter_ants.value = 500;
 
+    //текущий режим работы алгоритма
     let mode = 'colony';
     let isDrawingObstacle = false;
-    let colony = [];
+
+    //информация о клетках, муравьях и прочем
+    let colony = []; //colony[0] = x, colony[1] = y
+    let foodZones = [];
     let matrix = Array.from({ length: canvasHeight }, () =>
         Array.from({ length: canvasWidth }, () => ({
             pheromones_food: 0,
@@ -59,11 +57,13 @@ document.addEventListener('DOMContentLoaded', () => {
         cleanButton.style.background = 'lightgray';
     }
 
+    //изменение текущего значения коэффициента alpha
     slider.addEventListener('input', () => {
         sliderValue.textContent = slider.value;
         alpha = slider.value;
     });
 
+    //взаимодействие с канвасом
     canvas.addEventListener('click', (event) => {
         if (mode === 'colony') addColony(event);
         if (mode === 'food') addFood(event);
@@ -89,6 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
         obstacleButton.style.background = 'springgreen';
     })
 
+    //рисование стен
     canvas.addEventListener('mousedown', (event) => {
         if (mode === 'obstacle') {
             isDrawingObstacle = true;
@@ -118,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
             errorModal.style.display = 'flex';
             parentContainer.classList.add('blur');
         } else if (ants.length === 0) {
-            cnt_ants = parseInt(counter_ants.value);
+            cnt_ants = counter_ants.value;
             ants = generateColony(colony, cnt_ants);
             matrix[colony[0]][colony[1]].ants = cnt_ants;
             ants_algorithm();
@@ -148,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     generateMazeButton.addEventListener('click', () => {
         clearCanvas();
-        const maze = generatePerlinMaze(canvasHeight, canvasWidth, 10, 0.15);
+        const maze = generatePerlinMaze(canvasHeight, canvasWidth, 10, 0.17);
         for (let i = 0; i < maze.length; i++) {
             for (let j = 0; j < maze[i].length; j++) {
                 matrix[i][j].obstacle = maze[i][j];
@@ -206,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 inputField.className = 'input-food';
 
                 inputField.id = `nutrition-input-${Date.now()}`;
-                const descriptionElement = document.createElement('div');
+                let descriptionElement = document.createElement('div');
                 descriptionElement.textContent = `Питательность источника:`;
                 descriptionElement.style.position = 'absolute';
                 descriptionElement.style.left = `${event.pageX + 10}px`;
@@ -316,6 +317,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 for (let dx = -ch; dx < ch; dx++) {
                     const currentX = x + dx;
                     const currentY = y + dy;
+                    matrix[currentX][currentY] = {
+                        pheromones_food: 0,
+                        pheromones_home: 0,
+                        food: 0,
+                        ants: 0,
+                        colony: false,
+                        obstacle: false
+                    };
                     matrix[currentX][currentY].colony = true;
                 }
             }
@@ -421,13 +430,14 @@ document.addEventListener('DOMContentLoaded', () => {
         return x === colony[0] && y === colony[1];
     }
 
+    //ищем клетку для перехода с учётом того сколько феромона лежит в каждой клетке
     function nextCeil(ant) {
         let probabilities = Array.from({ length: 8 }, () => ({
             direction: 0,
             value: 0
         }));
 
-        if (ant.steps > MAX_STEPS && ant.state === "search") {
+        if (ant.steps > maxSteps && ant.state === "search") {
             ant.state = 'food';
             ant.memory = [];
             ant.steps = 1;
@@ -452,14 +462,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     ant.steps += 1;
                     heuristic = 1 / (matrix[newX][newY].pheromones_home + 1);
                 } else if (ant.state === 'food') {
-                    //if (Math.random() < 0.005) return Math.floor(Math.random() * d.length);
                     pheromones = matrix[newX][newY].pheromones_home;
                     ant.steps += 1;
-                    // let distanceToColony = Math.abs(newX - colony[0]) + Math.abs(newY - colony[1]);
-                    // heuristic = 1 / (distanceToColony + 1);
-                    //
-                    // let angleHeuristic = calculateAngleHeuristic(ant, newX, newY);
-                    // heuristic *= angleHeuristic;
                     heuristic = 1;
                 }
 
@@ -541,29 +545,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    //испарение феромонов
     function transpirePheromones() {
         for (const cord in pheromonesHome) {
-            pheromonesHome[cord].pheromones = pheromonesHome[cord].pheromones * (1 - 0.01);
+            pheromonesHome[cord].pheromones = pheromonesHome[cord].pheromones * (1 - coefTranspireHome);
             matrix[pheromonesHome[cord].x][pheromonesHome[cord].y].pheromones_home = pheromonesHome[cord].pheromones;
-            // updatePixel(ctx, matrix, pheromonesHome[cord].x, pheromonesHome[cord].y);
             if (pheromonesHome[cord].pheromones <= 0) {
                 matrix[pheromonesHome[cord].x][pheromonesHome[cord].y].pheromones_home = 0;
-                // updatePixel(ctx, matrix, pheromonesHome[cord].x, pheromonesHome[cord].y);
                 delete pheromonesHome[cord];
             }
         }
         for (const cord in pheromonesFood) {
-            pheromonesFood[cord].pheromones = pheromonesFood[cord].pheromones * (1 - 0.005);
+            pheromonesFood[cord].pheromones = pheromonesFood[cord].pheromones * (1 - coefTranspireFood);
             matrix[pheromonesFood[cord].x][pheromonesFood[cord].y].pheromones_food = pheromonesFood[cord].pheromones;
-            //updatePixel(ctx, matrix, pheromonesFood[cord].x, pheromonesFood[cord].y);
-            // if (pheromonesFood[cord].pheromones <= 0) {
-            //     matrix[pheromonesFood[cord].x][pheromonesFood[cord].y].pheromones_food = 0;
-            //     // updatePixel(ctx, matrix, pheromonesFood[cord].x, pheromonesFood[cord].y);
-            //     delete pheromonesFood[cord];
-            // }
+            if (pheromonesFood[cord].pheromones <= 0) {
+                matrix[pheromonesFood[cord].x][pheromonesFood[cord].y].pheromones_food = 0;
+                delete pheromonesFood[cord];
+            }
         }
     }
 
+    //муравьи оставляют феромоны
     function leavePheromoneHome(ant) {
         let x = ant.x, y = ant.y, pheromones = ant.nutrition;
         const key = `${x},${y}`;
@@ -573,6 +575,7 @@ document.addEventListener('DOMContentLoaded', () => {
         matrix[x][y].pheromones_home += ant.nutrition;
     }
 
+    //муравьи оставляют феромоны
     function leavePheromoneFood(ant) {
         let x = ant.x, y = ant.y, pheromones = ant.nutrition / ant.steps;
         const key = `${x},${y}`;
