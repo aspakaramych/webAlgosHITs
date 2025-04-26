@@ -1,4 +1,4 @@
-let max_pheromones = 1000;
+import {maxPheromones} from "./config.js";
 
 export let colors = {
     'orange': [255, 165, 0, 255],
@@ -56,8 +56,8 @@ export function updatePixel(ctx, matrix, x, y) {
     else if (ceil.obstacle) changeColorPixel(ctx, x, y, colors['gray']);
     else if (ceil.food > 0) changeColorPixel(ctx, x, y, colors['green']);
     else if (ceil.colony === true) changeColorPixel(ctx, x, y, colors['orange']);
-    else if (ceil.pheromones_food > 0 && ceil.pheromones_food > 10) changeColorPixel(ctx, x, y, colorIntensity(colors['deepgreen'], matrix[x][y].pheromones_food, max_pheromones));
-    else if (ceil.pheromones_home > 0) changeColorPixel(ctx, x, y, colorIntensity(colors['blue'], matrix[x][y].pheromones_home, max_pheromones));
+    else if (ceil.pheromones_food > 0 && ceil.pheromones_food > 10) changeColorPixel(ctx, x, y, colorIntensity(colors['deepgreen'], matrix[x][y].pheromones_food, maxPheromones));
+    else if (ceil.pheromones_home > 0) changeColorPixel(ctx, x, y, colorIntensity(colors['blue'], matrix[x][y].pheromones_home, maxPheromones));
     else changeColorPixel(ctx, x, y, colors['white']);
 }
 

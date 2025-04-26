@@ -1,5 +1,7 @@
+//для отрисовки
 export const canvasHeight = 100;
 export const canvasWidth = 100;
+export const maxPheromones = 2000;
 
 //параметры для муравьёв
 export const baseCntAnts = 500;

@@ -248,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 drawIndividual(elite);
 
-                await new Promise((resolve, reject) => {
+                await new Promise((resolve) => {
                     const timeout = setTimeout(resolve, render);
                     controller.signal.addEventListener("abort", () => {
                         clearTimeout(timeout);
